@@ -22,6 +22,6 @@ export class CharacterScene extends Phaser.Scene
         const centerX = width * 0.5;
         const centerY = height * 0.5;
 
-        this.add.text(centerX, centerY, 'Character').setOrigin(0.5);
+        this.add.text(centerX, centerY, 'Character');
     }
 }

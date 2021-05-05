@@ -4,6 +4,8 @@ import {NavigationScene} from "./scenes/NavigationScene";
 import {LoadingScene} from "./scenes/LoadingScene";
 import {CharacterScene} from "./scenes/CharacterScene";
 
+//TODO: add aspect ratio to properly scale ui
+
 const config = {
     type: Phaser.AUTO,
     parent: 'hero-game',

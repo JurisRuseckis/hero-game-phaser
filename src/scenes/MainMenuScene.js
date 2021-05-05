@@ -43,21 +43,21 @@ export class MainMenuScene extends Phaser.Scene
 
         const title = this.add.text(menuBox.x, menuBoxBounds.top + menuPadding, "Hero Game").setOrigin(0.5,0);
 
-        const buttonBoxColor = 0xb16551;
-        const buttonBoxBorderColor = 0x462820;
+        const btnBoxColor = 0xb16551;
+        const btnBoxBorderColor = 0x462820;
         const buttons = menuItems.map((menuItem, index) => {
-            const btn = this.add.rectangle(menuBox.x, menuBoxBounds.top + title.width + menuPadding + index * (menuItemHeight + menuPadding), menuWidth - menuPadding*2, menuItemHeight, buttonBoxColor)
+            const btn = this.add.rectangle(menuBox.x, menuBoxBounds.top + title.width + menuPadding + index * (menuItemHeight + menuPadding), menuWidth - menuPadding*2, menuItemHeight, btnBoxColor)
                 .setOrigin(0.5, 0.5);
-            btn.setStrokeStyle(menuBorderWidth, buttonBoxBorderColor);
+            btn.setStrokeStyle(menuBorderWidth, btnBoxBorderColor);
 
             const txt = this.add.text(menuBox.x, btn.y, menuItem.label).setOrigin(0.5);
 
             btn.setInteractive();
             btn.on('pointerover', () => {
-                btn.setFillStyle(buttonBoxBorderColor);
+                btn.setFillStyle(btnBoxBorderColor);
             }, this);
             btn.on('pointerout', () => {
-                btn.setFillStyle(buttonBoxColor);
+                btn.setFillStyle(btnBoxColor);
             }, this);
             btn.on('pointerdown', menuItem.onClick);
         })
@@ -70,9 +70,10 @@ export class MainMenuScene extends Phaser.Scene
             {
                 label: "New Game",
                 onClick: ()=>{
-                    this.scene.start(cfg.scenes.loading, {
-                        sceneKey: cfg.scenes.navigation,
-                    });
+                    this.scene.start(cfg.scenes.navigation);
+                    // this.scene.start(cfg.scenes.loading, {
+                    //     sceneKey: cfg.scenes.navigation,
+                    // });
                     this.registry.set('test', 'register is alive');
                 }
             },
