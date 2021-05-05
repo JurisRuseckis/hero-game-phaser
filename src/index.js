@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import {MainMenuScene} from "./scenes/MainMenuScene";
+import {NavigationScene} from "./scenes/NavigationScene";
+import {LoadingScene} from "./scenes/LoadingScene";
+import {CharacterScene} from "./scenes/CharacterScene";
 
 const config = {
     type: Phaser.AUTO,
@@ -7,7 +10,7 @@ const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     scene: [
-        MainMenuScene,
+        MainMenuScene, NavigationScene, LoadingScene, CharacterScene
     ]
 };
 
