@@ -3,6 +3,12 @@ const viewPort = {
     height: 800
 }
 
+const fontSize = {
+    default: 16,
+    title: 40,
+    large: 20,
+}
+
 export const styles = {
     viewPort: {
         ...viewPort,
@@ -21,7 +27,8 @@ export const styles = {
         btnBorder:  0x462820
     },
 
+    fontSize,
+
     padding: 15,
     borderWidth: 2,
-    defaultTextHeight: 17,
 };
