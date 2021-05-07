@@ -1,3 +1,8 @@
+const misc = {
+    padding: 15,
+    borderWidth: 2,
+}
+
 const viewPort = {
     width: 480,
     height: 800
@@ -9,6 +14,11 @@ const fontSize = {
     large: 20,
 }
 
+const panelLayout = {
+    navHeight: 50,
+    contentHeight: viewPort.height - (50 + misc.padding) // nav height and padding
+};
+
 export const styles = {
     viewPort: {
         ...viewPort,
@@ -17,8 +27,10 @@ export const styles = {
     },
 
     grid: {
-      window: viewPort.width - 20,
+        window: viewPort.width - 20,
     },
+
+    panelLayout,
 
     colors: {
         windowBg : 0xaf826b,
@@ -29,6 +41,5 @@ export const styles = {
 
     fontSize,
 
-    padding: 15,
-    borderWidth: 2,
+    ...misc
 };
