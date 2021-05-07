@@ -18,27 +18,55 @@ export class NavigationScene extends Phaser.Scene
 
     create ()
     {
-        const btnHeight = 30;
-        const navHeight = styles.padding * 2 + btnHeight;
+        const menuItems = this.getMenuItems();
+        const btnHeight = styles.panelLayout.navHeight - styles.padding * 2;
 
-        const nav = this.add.rectangle(0,0, styles.viewPort.width, navHeight, styles.colors.windowBg).setOrigin(0,0);
-        const btn = this.add.rectangle(styles.padding, styles.padding, 50, btnHeight, styles.colors.btnBg).setOrigin(0,0);
-        btn.setStrokeStyle(2, styles.colors.btnBorder);
-        const btnBounds = btn.getBounds();
+        const nav = this.add.rectangle(0,0, styles.viewPort.width, styles.panelLayout.navHeight, styles.colors.windowBg).setOrigin(0,0);
 
-        // smth wrong with buttontext it throws err
-        const btnTxt = this.add.text(btn.x + styles.padding, btnBounds.centerY, 'char', {fontSize: styles.fontSize.large}).setOrigin(0, 0.5);
-        btn.setSize(btnTxt.width + styles.padding * 2, btn.height);
+        const buttons = menuItems.map((menuItem, index) => {
+            const btn = this.add.rectangle(
+                styles.padding + index * (50 + styles.padding),
+                styles.padding,
+                50,
+                btnHeight,
+                styles.colors.btnBg
+            ).setOrigin(0,0);
 
-        btn.setInteractive();
-        btn.on('pointerover', () => {
-            btn.setFillStyle(styles.colors.btnBorder);
-        }, this);
-        btn.on('pointerout', () => {
-            btn.setFillStyle(styles.colors.btnBg);
-        }, this);
-        btn.on('pointerdown', () => {
-            this.scene.launch(cfg.scenes.character);
-        }, this);
+            btn.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
+            const btnCenter = btn.getCenter();
+            // smth wrong with buttontext it throws err
+            const txt = this.add.text(btnCenter.x, btnCenter.y, menuItem.label, {fontSize: styles.fontSize.large}).setOrigin(0.5);
+
+            btn.setInteractive();
+            btn.on('pointerover', () => {
+                btn.setFillStyle(styles.colors.btnBorder);
+            }, this);
+            btn.on('pointerout', () => {
+                btn.setFillStyle(styles.colors.btnBg);
+            }, this);
+            btn.on('pointerdown', menuItem.onClick);
+
+            return {btn, txt};
+        })
+    }
+
+    getMenuItems ()
+    {
+        return [
+            {
+                label: "ch",
+                onClick: ()=>{
+                    this.scene.launch(cfg.scenes.character);
+                    this.registry.set('test', 'register is alive');
+                }
+            },
+            {
+                label: "inv",
+                onClick: ()=>{
+                    this.scene.launch(cfg.scenes.inventory);
+                    this.registry.set('import', 'Importing game');
+                }
+            }
+        ]
     }
 }
