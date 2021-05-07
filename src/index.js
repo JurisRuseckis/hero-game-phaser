@@ -4,6 +4,7 @@ import {NavigationScene} from "./scenes/NavigationScene";
 import {LoadingScene} from "./scenes/LoadingScene";
 import {CharacterScene} from "./scenes/CharacterScene";
 import {styles} from "./styles";
+import {InventoryScene} from "./scenes/InventoryScene";
 
 const config = {
     scale: {
@@ -14,7 +15,7 @@ const config = {
         height: styles.viewPort.height
     },
     scene: [
-        MainMenuScene, NavigationScene, LoadingScene, CharacterScene
+        MainMenuScene, NavigationScene, LoadingScene, CharacterScene, InventoryScene
     ]
 };
 

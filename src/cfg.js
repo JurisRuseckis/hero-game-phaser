@@ -1,8 +1,10 @@
 export const cfg = {
     scenes: {
         character: "character",
+        inventory: "inventory",
         loading: "loading",
         mainMenu: "mainMenu",
-        navigation: "navigation"
+        navigation: "navigation",
+
     }
 }
