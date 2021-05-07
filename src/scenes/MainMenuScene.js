@@ -20,30 +20,33 @@ export class MainMenuScene extends Phaser.Scene
     {
         // will need to load save here
         const menuItems = this.getMenuItems();
-        const menuItemHeight = 50;
+        // precalculate to get box height by aspect ratio
+        const btnWidth = styles.grid.window - styles.padding*2;
+        const menuItemHeight = btnWidth * 0.15;
+
         const menuHeight =
             styles.padding * 2 + // padding before & after title
-            styles.defaultTextHeight + // title
+            styles.fontSize.title + // title
             menuItems.length * (menuItemHeight + styles.padding); // btn + padding between, includes last padding)
 
+        // box itself
         const menuBox = this.add.rectangle(styles.viewPort.centerX, styles.viewPort.centerY, styles.grid.window, menuHeight, styles.colors.windowBg);
         menuBox.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
         const menuBoxBounds = menuBox.getBounds();
-        const title = this.add.text(menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game").setOrigin(0.5,0);
+        const title = this.add.text(menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
 
         const buttons = menuItems.map((menuItem, index) => {
             const btn = this.add.rectangle(
                 menuBox.x,
                 menuBoxBounds.top + title.height + styles.padding * 2 + index * (menuItemHeight + styles.padding),
-                styles.grid.window - styles.padding*2,
+                btnWidth,
                 menuItemHeight,
                 styles.colors.btnBg
             ).setOrigin(0.5, 0);
 
             btn.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
             const btnCenter = btn.getCenter();
-            console.log(btnCenter.y);
-            const txt = this.add.text(menuBox.x, btnCenter.y, menuItem.label).setOrigin(0.5);
+            const txt = this.add.text(menuBox.x, btnCenter.y, menuItem.label, {fontSize: styles.fontSize.large}).setOrigin(0.5);
 
             btn.setInteractive();
             btn.on('pointerover', () => {
