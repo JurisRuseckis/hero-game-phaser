@@ -56,15 +56,37 @@ export class NavigationScene extends Phaser.Scene
             {
                 label: "ch",
                 onClick: ()=>{
-                    this.scene.launch(cfg.scenes.character);
-                    this.registry.set('test', 'register is alive');
+                    const currentScene = this.registry.get('currentScene');
+
+                    if(currentScene){
+                        const currentSceneObj = this.scene.get(this.registry.get('currentScene'))
+                        currentSceneObj.scene.transition({
+                            target: cfg.scenes.character,
+                            duration: 50
+                        });
+                    } else{
+                        this.scene.launch(cfg.scenes.character);
+                    }
+
+                    this.registry.set('currentScene', cfg.scenes.character);
                 }
             },
             {
                 label: "inv",
                 onClick: ()=>{
-                    this.scene.launch(cfg.scenes.inventory);
-                    this.registry.set('import', 'Importing game');
+                    const currentScene = this.registry.get('currentScene');
+
+                    if(currentScene){
+                        const currentSceneObj = this.scene.get(this.registry.get('currentScene'))
+                        currentSceneObj.scene.transition({
+                            target: cfg.scenes.inventory,
+                            duration: 50
+                        });
+                    } else{
+                        this.scene.launch(cfg.scenes.inventory);
+                    }
+
+                    this.registry.set('currentScene', cfg.scenes.inventory);
                 }
             }
         ]
