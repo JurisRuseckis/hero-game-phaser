@@ -1,5 +1,5 @@
 const misc = {
-    padding: 15,
+    padding: 10,
     borderWidth: 2,
 }
 
@@ -15,8 +15,9 @@ const fontSize = {
 }
 
 const panelLayout = {
-    navHeight: 50,
-    contentHeight: viewPort.height - (50 + misc.padding) // nav height and padding
+    navHeight: 70,
+    contentStart: 70 + misc.padding,
+    contentHeight: viewPort.height - (70 + misc.padding * 2) // nav height and padding before & after
 };
 
 export const styles = {
@@ -27,7 +28,7 @@ export const styles = {
     },
 
     grid: {
-        window: viewPort.width - 20,
+        window: viewPort.width - misc.padding * 2,
     },
 
     panelLayout,
