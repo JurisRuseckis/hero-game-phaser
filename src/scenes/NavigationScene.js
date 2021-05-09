@@ -56,39 +56,43 @@ export class NavigationScene extends Phaser.Scene
             {
                 label: "ch",
                 onClick: ()=>{
-                    const currentScene = this.registry.get('currentScene');
-
-                    if(currentScene){
-                        const currentSceneObj = this.scene.get(this.registry.get('currentScene'))
-                        currentSceneObj.scene.transition({
-                            target: cfg.scenes.character,
-                            duration: 50
-                        });
-                    } else{
-                        this.scene.launch(cfg.scenes.character);
-                    }
-
-                    this.registry.set('currentScene', cfg.scenes.character);
+                    this.changeScene(cfg.scenes.character);
                 }
             },
             {
                 label: "inv",
                 onClick: ()=>{
-                    const currentScene = this.registry.get('currentScene');
-
-                    if(currentScene){
-                        const currentSceneObj = this.scene.get(this.registry.get('currentScene'))
-                        currentSceneObj.scene.transition({
-                            target: cfg.scenes.inventory,
-                            duration: 50
-                        });
-                    } else{
-                        this.scene.launch(cfg.scenes.inventory);
-                    }
-
-                    this.registry.set('currentScene', cfg.scenes.inventory);
+                    this.changeScene(cfg.scenes.inventory);
+                }
+            },
+            {
+                label: "duel",
+                onClick: ()=>{
+                    this.changeScene(cfg.scenes.duel);
                 }
             }
         ]
+    }
+
+    /**
+     *
+     * @param {string} targetscene
+     */
+    changeScene(targetscene)
+    {
+        const currentScene = this.registry.get('currentScene');
+        if(currentScene === targetscene) return;
+
+        if(currentScene){
+            const currentSceneObj = this.scene.get(currentScene)
+            currentSceneObj.scene.transition({
+                target: targetscene,
+                duration: 50
+            });
+        } else{
+            this.scene.launch(targetscene);
+        }
+
+        this.registry.set('currentScene', targetscene);
     }
 }
