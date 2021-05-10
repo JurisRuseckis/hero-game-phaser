@@ -23,13 +23,13 @@ export class DuelScene extends Phaser.Scene
                     name: 'man',
                     baseHP: 100,
                     baseSpeed: 0.4,
-                    atk: 5,
+                    atk: 1,
                     img: man
                 }),
                 new Character({
                     name: 'thief',
                     baseHP: 10,
-                    baseSpeed: 0.1,
+                    baseSpeed: 0.3,
                     atk: 1,
                     img: thief
                 }),
@@ -68,7 +68,7 @@ export class DuelScene extends Phaser.Scene
         this.battleWindow = this.add.rectangle(
             this.boxContainerBounds.centerX,
             this.boxContainerBounds.top + this.boxTitle.height + styles.padding * 2 + 200,
-            this.boxContainer.width - styles.padding *2,
+            this.boxContainer.width - styles.padding * 2,
             400,
             styles.colors.btnBg
         );
@@ -125,11 +125,13 @@ export class DuelScene extends Phaser.Scene
         }, this);
         this.attackBtn.on('pointerdown', ()=>{
             duel.update();
-            this.playerHP.setText(`${duel.combatants[0].hp}/${duel.combatants[0].calculateHP()}`);
+            const player = duel.combatants.filter(x => x.label === 'man');
+            const enemy = duel.combatants.filter(x => x.label === 'thief');
+            this.playerHP.setText(`${player[0].hp}/${player[0].calculateHP()}`);
             if(duel.combatants.length < 2){
                 this.enemyHP.setText(`${duel.corpses[0].hp}/${duel.corpses[0].calculateHP()}`);
             } else {
-                this.enemyHP.setText(`${duel.combatants[1].hp}/${duel.combatants[1].calculateHP()}`);
+                this.enemyHP.setText(`${enemy[0].hp}/${enemy[0].calculateHP()}`);
             }
 
         });

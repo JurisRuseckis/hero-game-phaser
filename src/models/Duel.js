@@ -57,26 +57,34 @@ export default class Duel{
     {
         const fastestTurnTime = this.getFastestTurnTime();
         // fastest will be at top
-        this.combatants.map((combatant)=>{
+        this.combatants = this.combatants.map((combatant)=>{
             combatant.turnMeter += fastestTurnTime * combatant.currentSpd;
+            return combatant;
         }).sort((a,b) => (
-            a.turnMeter > b.turnMeter)
+            a.turnMeter < b.turnMeter)
             ? 1
             : (a.turnMeter > b.turnMeter)
                 ? -1
                 : 0
         );
+        console.table(this.combatants);
     }
 
     handleTurns()
     {
         this.advanceTurnMeters();
 
-        this.combatants.map((combatant) => {
-            combatant.turnMeter = 0;
-            this.combatants[1].hp -= combatant.dmg;
-            console.log(`${combatant.label} Attacks ${this.combatants[1].label} for ${combatant.dmg} damage!`)
-        })
+        this.combatants[0].turnMeter = 0;
+        this.combatants[1].hp -= this.combatants[0].dmg;
+        console.log(`${this.combatants[0].label} Attacks ${this.combatants[1].label} for ${this.combatants[0].dmg} damage!`)
+
+        // this.combatants.map((combatant) => {
+        //     combatant.turnMeter = 0;
+        //     this.combatants[1].hp -= combatant.dmg;
+        //     console.log(`${combatant.label} Attacks ${this.combatants[1].label} for ${combatant.dmg} damage!`)
+        //     // if turn does not affect turnmeters then
+        //
+        // })
 
         this.updateCombatantList();
     }
@@ -84,7 +92,7 @@ export default class Duel{
     updateCombatantList()
     {
         this.combatants = this.combatants.filter((c) => {
-            const alive = c.hp >= 0;
+            const alive = c.hp > 0;
             if(!alive){
                 console.log(`${c.label} died!`);
                 this.corpses.push(c);
