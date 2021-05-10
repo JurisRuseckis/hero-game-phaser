@@ -1,3 +1,4 @@
+// TODO: rewrite to support mobile & desktop
 const misc = {
     padding: 20,
     borderWidth: 4,

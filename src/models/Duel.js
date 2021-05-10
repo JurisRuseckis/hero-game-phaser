@@ -7,6 +7,7 @@ import {Combatant} from "./Combatant";
  * @property.enemy
  *
  * @mechanics.speed
+ * TODO: create class for turnMeters so we can reuse it later with more combatants
  * - Each character will have speed attribute which can be alter by traits, mood and equipment.
  * - Each arena will have set of effects which can conditionally alter speed
  * - Duel instance calculates total speed of combatant

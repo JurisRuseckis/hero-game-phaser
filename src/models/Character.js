@@ -7,7 +7,7 @@ export default class Character
      * @param {number} props.baseSpeed
      * @param {string} props.name
      * @param {string} props.img
-     * @param {string} props.atk
+     * @param {number} props.atk
      */
     constructor(props) {
         this.baseHP = props.baseHP;
