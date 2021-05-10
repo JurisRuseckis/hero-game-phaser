@@ -1,3 +1,5 @@
+import {Combatant} from "./Combatant";
+
 /**
  * Duel
  * @property.arena
@@ -30,7 +32,6 @@ export default class Duel{
         this.combatants = props.combatants.map((combatant) => {
             return new Combatant({character: combatant});
         });
-
         this.controls = new DuelControls({});
         this.corpses = [];
         this.status = duelStatus.started;
@@ -38,7 +39,7 @@ export default class Duel{
         // this.arena = props.arena;
     }
 
-    calculateFastestTurn()
+    getFastestTurnTime()
     {
         /**
          * @type {number[]}
@@ -54,13 +55,10 @@ export default class Duel{
 
     advanceTurnMeters()
     {
-        const fastestTurnTime = this.calculateFastestTurn();
-
-
+        const fastestTurnTime = this.getFastestTurnTime();
+        // fastest will be at top
         this.combatants.map((combatant)=>{
-
             combatant.turnMeter += fastestTurnTime * combatant.currentSpd;
-
         }).sort((a,b) => (
             a.turnMeter > b.turnMeter)
             ? 1
@@ -68,7 +66,6 @@ export default class Duel{
                 ? -1
                 : 0
         );
-
     }
 
     handleTurns()
@@ -77,8 +74,8 @@ export default class Duel{
 
         this.combatants.map((combatant) => {
             combatant.turnMeter = 0;
-            combatant.hp -= 5;
-            console.log(`${combatant.label} reporting with ${combatant.hp}HP left!`)
+            this.combatants[1].hp -= combatant.dmg;
+            console.log(`${combatant.label} Attacks ${this.combatants[1].label} for ${combatant.dmg} damage!`)
         })
 
         this.updateCombatantList();
@@ -90,10 +87,17 @@ export default class Duel{
             const alive = c.hp >= 0;
             if(!alive){
                 console.log(`${c.label} died!`);
-                this.corpses.push(c.label);
+                this.corpses.push(c);
             }
             return alive;
         }); // others died
+
+        if(this.combatants.length < 2){
+            this.status = duelStatus.finished;
+            console.log('duel ended');
+            console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
+            console.log(`${this.corpses.map((c) => c.label).join(', ')} has died!`);
+        }
     }
 
     /**
@@ -113,44 +117,8 @@ export default class Duel{
 
         if(this.combatants.length > 1){
             this.handleTurns();
-        } else {
-            this.status = duelStatus.finished;
-            console.log('duel ended');
-            console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
-            console.log(`${this.corpses.join(', ')} has died!`);
         }
 
-    }
-}
-
-class Combatant
-{
-    /**
-     *
-     * @param {Object} props
-     * @param {Character} props.character
-     */
-    constructor(props) {
-
-        this.character = props.character;
-        /**
-         * range 0-1
-         * @type {number}
-         */
-        this.turnMeter = 0;
-        /**
-         *
-         * @type {number}
-         */
-        this.currentSpd = 0;
-        this.label = this.character.name;
-        this.hp = this.calculateHP();
-
-    }
-
-    calculateHP()
-    {
-        return this.character.baseHP;
     }
 }
 

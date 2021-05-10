@@ -25,9 +25,9 @@ export class NavigationScene extends Phaser.Scene
 
         const buttons = menuItems.map((menuItem, index) => {
             const btn = this.add.rectangle(
-                styles.padding + index * (50 + styles.padding),
+                styles.padding + index * (120 + styles.padding),
                 styles.padding,
-                50,
+                120,
                 btnHeight,
                 styles.colors.btnBg
             ).setOrigin(0,0);
