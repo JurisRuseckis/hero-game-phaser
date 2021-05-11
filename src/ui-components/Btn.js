@@ -66,7 +66,7 @@ export default class Btn
     addTxt()
     {
         const btnCenter = this.btnObj.getCenter();
-        this.scene.add.text(
+        this.txtObj = this.scene.add.text(
             btnCenter.x,
             btnCenter.y,
             this.text,
