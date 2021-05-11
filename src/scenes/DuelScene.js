@@ -68,10 +68,16 @@ export class DuelScene extends Phaser.Scene
 
         this.attackBtn.btnObj.on('pointerdown', ()=>{
             duel.update({action: duelActions.attack});
-            this.updateBattleScene(duel);
+            this.updateDuelScene(duel)
         });
         // initial update to fill first turnmeters
         duel.init();
+        this.updateBattleScene(duel);
+    }
+
+    // i need turn update not per time
+    updateDuelScene(duel){
+        // todo: rename battle scene to avoid confusion
         this.updateBattleScene(duel);
     }
 
