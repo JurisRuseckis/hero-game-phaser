@@ -8,6 +8,7 @@ export default class Character
      * @param {string} props.name
      * @param {string} props.img
      * @param {number} props.atk
+     * @param {boolean} props.isPlayable
      */
     constructor(props) {
         this.baseHP = props.baseHP;
@@ -15,5 +16,9 @@ export default class Character
         this.name = props.name;
         this.img = props.img;
         this.atk = props.atk;
+        /**
+         * @type {boolean}
+         */
+        this.isPlayable = props.isPlayable;
     }
 }

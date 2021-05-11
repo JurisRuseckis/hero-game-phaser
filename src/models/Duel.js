@@ -5,7 +5,8 @@ import {Combatant} from "./Combatant";
  * @property.arena
  * @property.player
  * @property.enemy
- *
+ * @mechanics.action
+ * - attack, spell, etc
  * @mechanics.speed
  * TODO: create class for turnMeters so we can reuse it later with more combatants
  * - Each character will have speed attribute which can be alter by traits, mood and equipment.
@@ -21,6 +22,12 @@ const duelStatus = {
     finished: 1,
 }
 
+export const duelActions = {
+    // cant use 0 as it will faile condition true
+    wait: 1,
+    attack: 2,
+}
+
 // todo: rename to battle and make optimized duel class
 export default class Duel{
     /**
@@ -33,7 +40,6 @@ export default class Duel{
         this.combatants = props.combatants.map((combatant) => {
             return new Combatant({character: combatant});
         });
-        this.controls = new DuelControls({});
         this.corpses = [];
         this.status = duelStatus.started;
         // to be implemented
@@ -71,13 +77,26 @@ export default class Duel{
         console.table(this.combatants);
     }
 
-    handleTurns()
+    /**
+     *
+     * @param {number} action
+     * @return boolean
+     */
+    handleTurn(action)
     {
-        this.advanceTurnMeters();
+        // if no action is passed then return
+        if(!action) return false;
 
-        this.combatants[0].turnMeter = 0;
-        this.combatants[1].hp -= this.combatants[0].dmg;
-        console.log(`${this.combatants[0].label} Attacks ${this.combatants[1].label} for ${this.combatants[0].dmg} damage!`)
+        // if action is to wait then end turn
+        if(action === duelActions.wait) return false;
+
+        if(action === duelActions.attack) {
+            this.combatants[0].turnMeter = 0;
+            this.combatants[1].hp -= this.combatants[0].dmg;
+            console.log(`${this.combatants[0].label} Attacks ${this.combatants[1].label} for ${this.combatants[0].dmg} damage!`)
+            return false;
+        }
+        // other actions later...
 
         // this.combatants.map((combatant) => {
         //     combatant.turnMeter = 0;
@@ -86,8 +105,6 @@ export default class Duel{
         //     // if turn does not affect turnmeters then
         //
         // })
-
-        this.updateCombatantList();
     }
 
     updateCombatantList()
@@ -120,21 +137,36 @@ export default class Duel{
         return combatant.character.baseSpeed;
     }
 
-    update()
+    /**
+     *
+     * @param {Object} props
+     * @param {number} props.action
+     */
+    update(props)
     {
         if(this.status === duelStatus.finished) return;
 
-        if(this.combatants.length > 1){
-            this.handleTurns();
+        this.handleTurn(props.action);
+
+        this.advanceTurnMeters();
+
+        this.updateCombatantList();
+
+        // if next turn is not playable then continue or start to simulate ai
+        if(!this.combatants[0].isPlayable){
+            this.update({action:props.action});
         }
-
     }
-}
 
-class DuelControls
-{
-    constructor(props)
-    {
+    /**
+     * duels first phase
+     */
+    init(){
+        this.advanceTurnMeters();
 
+        // if first turn is not playable then simulate ai
+        if(!this.combatants[0].isPlayable){
+            this.update({action:duelActions.attack});
+        }
     }
 }

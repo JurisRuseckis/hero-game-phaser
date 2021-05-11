@@ -3,6 +3,7 @@ export class Combatant {
      *
      * @param {Object} props
      * @param {Character} props.character
+     * @param {boolean} props.isPlayable
      */
     constructor(props) {
 
@@ -17,6 +18,10 @@ export class Combatant {
          * @type {number}
          */
         this.currentSpd = 0;
+        /**
+         *
+         * @type {string}
+         */
         this.label = this.character.name;
         /**
          *
@@ -28,6 +33,10 @@ export class Combatant {
          * @type {number}
          */
         this.dmg = this.calculateDmg();
+        /**
+         * @type {boolean}
+         */
+        this.isPlayable = props.character.isPlayable;
 
     }
 
