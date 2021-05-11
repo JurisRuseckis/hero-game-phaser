@@ -31,15 +31,15 @@ export class MainMenuScene extends Phaser.Scene
             menuItems.length * (menuItemHeight + styles.padding); // btn + padding between, includes last padding)
 
         // box itself
-        const menuBox = this.add.rectangle(styles.viewPort.centerX, styles.viewPort.centerY, styles.grid.window, menuHeight, styles.colors.windowBg);
-        menuBox.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
-        const menuBoxBounds = menuBox.getBounds();
-        const title = this.add.text(menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
+        this.menuBox = this.add.rectangle(styles.viewPort.centerX, styles.viewPort.centerY, styles.grid.window, menuHeight, styles.colors.windowBg);
+        this.menuBox.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
+        const menuBoxBounds = this.menuBox.getBounds();
+        const title = this.add.text(this.menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
 
-        const buttons = menuItems.map((menuItem, index) => {
+        this.buttons = menuItems.map((menuItem, index) => {
             const btn = new Btn({
                 scene: this,
-                x: menuBox.x - btnWidth/2,
+                x: this.menuBox.x - btnWidth/2,
                 y: menuBoxBounds.top + title.height + styles.padding * 2 + index * (menuItemHeight + styles.padding),
                 width: btnWidth,
                 height: menuItemHeight,
@@ -48,7 +48,6 @@ export class MainMenuScene extends Phaser.Scene
             })
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', menuItem.onClick);
-            console.log(btn);
             return btn;
         })
 
