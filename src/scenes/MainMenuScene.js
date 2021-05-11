@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import {styles} from "../styles";
+import Btn from "../ui-components/Btn";
 
 export class MainMenuScene extends Phaser.Scene
 {
@@ -36,28 +37,19 @@ export class MainMenuScene extends Phaser.Scene
         const title = this.add.text(menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
 
         const buttons = menuItems.map((menuItem, index) => {
-            const btn = this.add.rectangle(
-                menuBox.x,
-                menuBoxBounds.top + title.height + styles.padding * 2 + index * (menuItemHeight + styles.padding),
-                btnWidth,
-                menuItemHeight,
-                styles.colors.btnBg
-            ).setOrigin(0.5, 0);
-
-            btn.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
-            const btnCenter = btn.getCenter();
-            const txt = this.add.text(menuBox.x, btnCenter.y, menuItem.label, {fontSize: styles.fontSize.large}).setOrigin(0.5);
-
-            btn.setInteractive();
-            btn.on('pointerover', () => {
-                btn.setFillStyle(styles.colors.btnBorder);
-            }, this);
-            btn.on('pointerout', () => {
-                btn.setFillStyle(styles.colors.btnBg);
-            }, this);
-            btn.on('pointerdown', menuItem.onClick);
-
-            return {btn, txt};
+            const btn = new Btn({
+                scene: this,
+                x: menuBox.x - btnWidth/2,
+                y: menuBoxBounds.top + title.height + styles.padding * 2 + index * (menuItemHeight + styles.padding),
+                width: btnWidth,
+                height: menuItemHeight,
+                text: menuItem.label,
+                textStyle: {fontSize: styles.fontSize.large}
+            })
+            btn.addDefaultEvents();
+            btn.btnObj.on('pointerdown', menuItem.onClick);
+            console.log(btn);
+            return btn;
         })
 
     }
