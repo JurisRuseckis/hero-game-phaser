@@ -9,6 +9,7 @@ export default class Character
      * @param {string} props.img
      * @param {number} props.atk
      * @param {boolean} props.isPlayable
+     * @param {DuelAction[]} props.duelActions
      */
     constructor(props) {
         this.baseHP = props.baseHP;
@@ -16,6 +17,10 @@ export default class Character
         this.name = props.name;
         this.img = props.img;
         this.atk = props.atk;
+        /**
+         * @type {DuelAction[]}
+         */
+        this.duelActions = props.duelActions;
         /**
          * @type {boolean}
          */

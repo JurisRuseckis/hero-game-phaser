@@ -22,12 +22,6 @@ const duelStatus = {
     finished: 1,
 }
 
-export const duelActions = {
-    // cant use 0 as it will faile condition true
-    wait: 1,
-    attack: 2,
-}
-
 // todo: rename to battle and make optimized duel class
 export default class Duel{
     /**
@@ -63,6 +57,13 @@ export default class Duel{
     advanceTurnMeters()
     {
         const fastestTurnTime = this.getFastestTurnTime();
+
+        if(fastestTurnTime === 0){
+            // Someone already has full turnmeter from previous turn, skipping calculating rest.
+            // also we do not need to resort them as killed should be removed and otherwise it should be sorted
+            console.table('Someone already has full turnmeter from previous turn, skipping calculating rest.');
+            return;
+        }
         // fastest will be at top
         this.combatants = this.combatants.map((combatant)=>{
             combatant.turnMeter += fastestTurnTime * combatant.currentSpd;
@@ -78,33 +79,18 @@ export default class Duel{
     }
 
     /**
-     *
-     * @param {number} action
-     * @return boolean
+     * @param {DuelAction} action
      */
-    handleTurn(action)
+    handleAction(action)
     {
         // if no action is passed then return
         if(!action) return false;
 
-        // if action is to wait then end turn
-        if(action === duelActions.wait) return false;
+        // todo: pass in target from somewhere else
+        const moveMaker = this.combatants[0];
+        const target = this.combatants[1];
 
-        if(action === duelActions.attack) {
-            this.combatants[0].turnMeter = 0;
-            this.combatants[1].hp -= this.combatants[0].dmg;
-            console.log(`${this.combatants[0].label} Attacks ${this.combatants[1].label} for ${this.combatants[0].dmg} damage!`)
-            return false;
-        }
-        // other actions later...
-
-        // this.combatants.map((combatant) => {
-        //     combatant.turnMeter = 0;
-        //     this.combatants[1].hp -= combatant.dmg;
-        //     console.log(`${combatant.label} Attacks ${this.combatants[1].label} for ${combatant.dmg} damage!`)
-        //     // if turn does not affect turnmeters then
-        //
-        // })
+        action.applyActionEffects(moveMaker, target);
     }
 
     updateCombatantList()
@@ -139,22 +125,40 @@ export default class Duel{
 
     /**
      *
-     * @param {Object} props
-     * @param {number} props.action
      */
-    update(props)
+    update()
     {
+        // disable
         if(this.status === duelStatus.finished) return;
 
-        this.handleTurn(props.action);
 
+        // getting current turn
         this.advanceTurnMeters();
+
+        let action = null;
+        if(this.combatants[0].isPlayable){
+            // if playable then wait for input
+            return;
+        } else {
+            // calculate AI action
+            action = this.combatants[0].calculateAIAction(this);
+        }
+
+
+        this.handleAction(action);
+
+
 
         this.updateCombatantList();
 
         // if next turn is not playable then continue or start to simulate ai
         if(!this.combatants[0].isPlayable){
-            this.update({action:props.action});
+            this.update();
+
+            // somehow update battle scene when turn is handled
+            // sleep(1000).then(()=>{
+            //     this.update({action:props.action});
+            // });
         }
     }
 
@@ -162,11 +166,6 @@ export default class Duel{
      * duels first phase
      */
     init(){
-        this.advanceTurnMeters();
-
-        // if first turn is not playable then simulate ai
-        if(!this.combatants[0].isPlayable){
-            this.update({action:duelActions.attack});
-        }
+        this.update();
     }
 }

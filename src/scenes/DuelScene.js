@@ -6,6 +6,29 @@ import Character from "../models/Character";
 import man from "../assets/images/man.png";
 import thief from "../assets/images/thief.png";
 import Btn from "../ui-components/Btn";
+import DuelAction from "../models/DuelAction";
+
+export const testActions = [
+    new DuelAction({
+        key: 'wait',
+        operation: (combatant, target) => {
+            combatant.turnMeter = 0;
+            console.log(`${combatant.label} waits`)
+        }
+    }),
+    new DuelAction({
+        key: 'attack',
+        text: '',
+        operation: (combatant, target) => {
+            combatant.turnMeter = 0;
+            // todo: add arena effects
+            // todo: add target effects
+            const dmg = combatant.calculateDmg();
+            target.hp -= dmg;
+            console.log(`${combatant.label} Attacks ${target.label} for ${dmg} damage!`)
+        }
+    }),
+];
 
 export class DuelScene extends Phaser.Scene
 {
@@ -26,14 +49,16 @@ export class DuelScene extends Phaser.Scene
                     baseSpeed: 0.1,
                     atk: 1,
                     img: man,
-                    isPlayable: true
+                    isPlayable: true,
+                    duelActions: testActions
                 }),
                 new Character({
                     name: 'thief',
                     baseHP: 10,
                     baseSpeed: 0.5,
                     atk: 1,
-                    img: thief
+                    img: thief,
+                    duelActions: testActions
                 }),
             ]
         });
