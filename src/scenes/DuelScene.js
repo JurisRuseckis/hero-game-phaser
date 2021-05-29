@@ -7,8 +7,9 @@ import man from "../assets/images/man.png";
 import thief from "../assets/images/thief.png";
 import Btn from "../ui-components/Btn";
 import DuelAction from "../models/DuelAction";
+import {Combatant} from "../models/Combatant";
 
-export const testActions = [
+const testActions = [
     new DuelAction({
         key: 'wait',
         operation: (combatant, target) => {
@@ -30,6 +31,32 @@ export const testActions = [
     }),
 ];
 
+const testDuelTeams = [
+    {
+        team: 1,
+        character: new Character({
+            name: 'man',
+            baseHP: 100,
+            baseSpeed: 0.1,
+            atk: 1,
+            img: man,
+            isPlayable: true,
+            duelActions: testActions
+        })
+    },
+    {
+        team: 2,
+        character: new Character({
+            name: 'thief',
+            baseHP: 10,
+            baseSpeed: 0.5,
+            atk: 1,
+            img: thief,
+            duelActions: testActions
+        })
+    },
+]
+
 export class DuelScene extends Phaser.Scene
 {
     constructor ()
@@ -42,25 +69,12 @@ export class DuelScene extends Phaser.Scene
     preload ()
     {
         const duel = new Duel({
-            combatants: [
-                new Character({
-                    name: 'man',
-                    baseHP: 100,
-                    baseSpeed: 0.1,
-                    atk: 1,
-                    img: man,
-                    isPlayable: true,
-                    duelActions: testActions
-                }),
-                new Character({
-                    name: 'thief',
-                    baseHP: 10,
-                    baseSpeed: 0.5,
-                    atk: 1,
-                    img: thief,
-                    duelActions: testActions
-                }),
-            ]
+            combatants: testDuelTeams.map((combatant) => {
+                return new Combatant({
+                    character: combatant.character,
+                    team: combatant.team
+                });
+            })
         });
         this.data.set('duel', duel);
         // player always will be first
@@ -92,10 +106,10 @@ export class DuelScene extends Phaser.Scene
         const duel = this.data.get('duel');
 
         this.attackBtn.btnObj.on('pointerdown', ()=>{
-            duel.update({action: duelActions.attack});
+            duel.nextTurn({action: duelActions.attack});
             this.updateDuelScene(duel)
         });
-        // initial update to fill first turnmeters
+        // initial update to fill first turn meters
         duel.init();
         this.updateBattleScene(duel);
     }

@@ -1,4 +1,5 @@
 import {Combatant} from "./Combatant";
+import {groupArrByKey} from "../helpers/groupArrByKey";
 
 /**
  * Duel
@@ -27,13 +28,11 @@ export default class Duel{
     /**
      *
      * @param {Object} props
-     * @param {Character[]} props.combatants
+     * @param {Combatant[]} props.combatants
      */
     constructor(props)
     {
-        this.combatants = props.combatants.map((combatant) => {
-            return new Combatant({character: combatant});
-        });
+        this.combatants = props.combatants;
         this.corpses = [];
         this.status = duelStatus.started;
         // to be implemented
@@ -81,16 +80,36 @@ export default class Duel{
     /**
      * @param {DuelAction} action
      */
-    handleAction(action)
+    handleTurn(action)
     {
         // if no action is passed then return
         if(!action) return false;
 
-        // todo: pass in target from somewhere else
+        // todo: pass in target from somewhere else and handle multiple targets
         const moveMaker = this.combatants[0];
         const target = this.combatants[1];
 
         action.applyActionEffects(moveMaker, target);
+
+        // update list after action
+        this.updateCombatantList();
+        const teams = groupArrByKey(this.combatants, 'team');
+        console.log(teams);
+        // check how many teams are left
+        if(teams.length < 2){
+            this.status = duelStatus.finished;
+            console.log('duel ended');
+            console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
+            console.log(`${this.corpses.map((c) => c.label).join(', ')} has died!`);
+        }
+        // if one team is left then calculate victory
+
+        this.nextTurn();
+
+        // somehow update battle scene when turn is handled
+        // sleep(1000).then(()=>{
+        //     this.update({action:props.action});
+        // });
     }
 
     updateCombatantList()
@@ -103,13 +122,6 @@ export default class Duel{
             }
             return alive;
         }); // others died
-
-        if(this.combatants.length < 2){
-            this.status = duelStatus.finished;
-            console.log('duel ended');
-            console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
-            console.log(`${this.corpses.map((c) => c.label).join(', ')} has died!`);
-        }
     }
 
     /**
@@ -124,48 +136,30 @@ export default class Duel{
     }
 
     /**
-     *
+     * advance to next turn
      */
-    update()
+    nextTurn()
     {
-        // disable
+        // check if duel can advance to next turn
         if(this.status === duelStatus.finished) return;
 
 
         // getting current turn
         this.advanceTurnMeters();
 
-        let action = null;
         if(this.combatants[0].isPlayable){
             // if playable then wait for input
             return;
-        } else {
-            // calculate AI action
-            action = this.combatants[0].calculateAIAction(this);
         }
 
-
-        this.handleAction(action);
-
-
-
-        this.updateCombatantList();
-
-        // if next turn is not playable then continue or start to simulate ai
-        if(!this.combatants[0].isPlayable){
-            this.update();
-
-            // somehow update battle scene when turn is handled
-            // sleep(1000).then(()=>{
-            //     this.update({action:props.action});
-            // });
-        }
+        // else ai moves
+        this.handleTurn(this.combatants[0].calculateAIAction(this));
     }
 
     /**
      * duels first phase
      */
     init(){
-        this.update();
+        this.nextTurn();
     }
 }

@@ -1,13 +1,11 @@
-import {RandomInt} from "../helpers/RandomInt";
+import {randomInt} from "../helpers/randomInt";
 
 export class Combatant {
     /**
      *
      * @param {Object} props
      * @param {Character} props.character
-     * @param {boolean} props.isPlayable
      * @param {number} props.team
-     * @param {DuelAction[]} props.duelActions
      */
     constructor(props) {
 
@@ -51,7 +49,7 @@ export class Combatant {
     }
 
     calculateDmg() {
-        return this.character.atk + RandomInt(4);
+        return this.character.atk + randomInt(4);
     }
 
     /**
