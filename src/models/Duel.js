@@ -29,12 +29,14 @@ export default class Duel{
      *
      * @param {Object} props
      * @param {Combatant[]} props.combatants
+     * @param {DuelScene} props.scene - currently passing whole scene
      */
     constructor(props)
     {
         this.combatants = props.combatants;
         this.corpses = [];
         this.status = duelStatus.started;
+        this.scene = props.scene;
         // to be implemented
         // this.arena = props.arena;
     }
@@ -146,7 +148,8 @@ export default class Duel{
         this.advanceTurnMeters();
 
         if(this.combatants[0].isPlayable){
-            // if playable then wait for input
+            // if playable then prepare action btns and wait for input
+            this.scene.updateActionBtns(this.combatants[0].duelActions);
             return;
         }
 

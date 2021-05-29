@@ -9,6 +9,9 @@ import Btn from "../ui-components/Btn";
 import DuelAction from "../models/DuelAction";
 import {Combatant} from "../models/Combatant";
 
+/**
+ * @type {DuelAction[]}
+ */
 const testActions = [
     new DuelAction({
         key: 'wait',
@@ -30,7 +33,10 @@ const testActions = [
         }
     }),
 ];
-
+/**
+ *
+ * @type {({character: Character, team: number})[]}
+ */
 const testDuelTeams = [
     {
         team: 1,
@@ -74,7 +80,8 @@ export class DuelScene extends Phaser.Scene
                     character: combatant.character,
                     team: combatant.team
                 });
-            })
+            }),
+            scene: this
         });
         this.data.set('duel', duel);
         // player always will be first
@@ -87,47 +94,49 @@ export class DuelScene extends Phaser.Scene
     create ()
     {
         this.addBattleScene();
-
-        // todo: pull actions from duel combatant
-        this.attackBtn = new Btn({
-            scene: this,
-            x: this.boxContainerBounds.left + styles.padding,
-            y: this.battleWindowBounds.bottom + styles.padding + 100,
-            width: styles.grid.window - styles.padding*2,
-            height: 200,
-            text:"Attack",
-            textStyle: {fontSize: styles.fontSize.large}
-        })
-        this.attackBtn.addDefaultEvents();
-
-        this.waitBtn = new Btn({
-            scene: this,
-            x: this.boxContainerBounds.left + styles.padding,
-            y: this.battleWindowBounds.bottom + styles.padding + 300 + styles.padding,
-            width: styles.grid.window - styles.padding*2,
-            height: 200,
-            text:"Wait",
-            textStyle: {fontSize: styles.fontSize.large}
-        })
-        this.waitBtn.addDefaultEvents();
-
+        this.actionBtns = [];
         /**
          *
          * @type {Duel}
          */
         const duel = this.data.get('duel');
 
-        this.attackBtn.btnObj.on('pointerdown', ()=>{
-            duel.handleTurn(testActions[1]);
-            this.updateDuelScene(duel)
-        });
-        this.waitBtn.btnObj.on('pointerdown', ()=>{
-            duel.handleTurn(testActions[0]);
-            this.updateDuelScene(duel)
-        });
         // initial update to fill first turn meters
         duel.init();
         this.updateBattleScene(duel);
+    }
+
+    /**
+     * @param {DuelAction[]} actions
+     */
+    updateActionBtns(actions){
+        /**
+         *
+         * @type {Duel}
+         */
+        const duel = this.data.get('duel');
+
+        this.actionBtns.map((action) => {
+            action.destroy();
+        })
+        this.actionBtns = [];
+
+        actions.map((action, index)=>{
+            const btn = new Btn({
+                scene: this,
+                x: this.boxContainerBounds.left + styles.padding,
+                y: this.battleWindowBounds.bottom + styles.padding + 100 + (200 + styles.padding)*index,
+                width: styles.grid.window - styles.padding*2,
+                height: 200,
+                text: action.key,
+                textStyle: {fontSize: styles.fontSize.large}
+            });
+            btn.addDefaultEvents();
+            btn.btnObj.on('pointerdown', ()=>{
+                duel.handleTurn(action);
+                this.updateDuelScene(duel)
+            });
+        })
     }
 
     // i need turn update not per time
