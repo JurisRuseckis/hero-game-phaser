@@ -94,7 +94,6 @@ export default class Duel{
         // update list after action
         this.updateCombatantList();
         const teams = groupArrByKey(this.combatants, 'team');
-        console.log(teams);
         // check how many teams are left
         if(teams.length < 2){
             this.status = duelStatus.finished;
@@ -143,7 +142,6 @@ export default class Duel{
         // check if duel can advance to next turn
         if(this.status === duelStatus.finished) return;
 
-
         // getting current turn
         this.advanceTurnMeters();
 
@@ -159,7 +157,8 @@ export default class Duel{
     /**
      * duels first phase
      */
-    init(){
+    init()
+    {
         this.nextTurn();
     }
 }

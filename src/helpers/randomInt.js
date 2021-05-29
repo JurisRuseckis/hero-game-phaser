@@ -4,6 +4,5 @@
  * @return {number}
  */
 export const randomInt = (max) => {
-    console.log(max);
     return Math.floor(Math.random() * max);
 }

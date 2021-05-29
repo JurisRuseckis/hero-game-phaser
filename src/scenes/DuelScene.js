@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import {styles} from "../styles";
-import Duel, {duelActions} from "../models/Duel";
+import Duel from "../models/Duel";
 import Character from "../models/Character";
 import man from "../assets/images/man.png";
 import thief from "../assets/images/thief.png";
@@ -88,6 +88,7 @@ export class DuelScene extends Phaser.Scene
     {
         this.addBattleScene();
 
+        // todo: pull actions from duel combatant
         this.attackBtn = new Btn({
             scene: this,
             x: this.boxContainerBounds.left + styles.padding,
@@ -99,6 +100,17 @@ export class DuelScene extends Phaser.Scene
         })
         this.attackBtn.addDefaultEvents();
 
+        this.waitBtn = new Btn({
+            scene: this,
+            x: this.boxContainerBounds.left + styles.padding,
+            y: this.battleWindowBounds.bottom + styles.padding + 300 + styles.padding,
+            width: styles.grid.window - styles.padding*2,
+            height: 200,
+            text:"Wait",
+            textStyle: {fontSize: styles.fontSize.large}
+        })
+        this.waitBtn.addDefaultEvents();
+
         /**
          *
          * @type {Duel}
@@ -106,7 +118,11 @@ export class DuelScene extends Phaser.Scene
         const duel = this.data.get('duel');
 
         this.attackBtn.btnObj.on('pointerdown', ()=>{
-            duel.nextTurn({action: duelActions.attack});
+            duel.handleTurn(testActions[1]);
+            this.updateDuelScene(duel)
+        });
+        this.waitBtn.btnObj.on('pointerdown', ()=>{
+            duel.handleTurn(testActions[0]);
             this.updateDuelScene(duel)
         });
         // initial update to fill first turn meters
