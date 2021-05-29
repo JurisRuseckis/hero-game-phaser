@@ -139,13 +139,18 @@ export class DuelScene extends Phaser.Scene
         })
     }
 
-    // i need turn update not per time
+    /**
+     * i need turn update not per time
+     * @param {Duel} duel
+     */
     updateDuelScene(duel){
         // todo: rename battle scene to avoid confusion
         this.updateBattleScene(duel);
     }
 
-    //todo: mby abstract battlescene
+    /**
+     * @param {Duel} duel
+     */
     updateBattleScene(duel){
         const player = duel.combatants.filter(x => x.label === 'man');
         const enemy = duel.combatants.filter(x => x.label === 'thief');
