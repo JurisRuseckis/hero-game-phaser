@@ -73,7 +73,7 @@ export class Combatant {
      * @param {Battle} battle - for analytics
      * @return {CombatAction}
      */
-     calculateAIAction(battle) {
+     calculateBattleAIAction(battle) {
         // for testing purposes currently always attack
         return this.combatAction[1];
     }
