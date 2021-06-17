@@ -1,4 +1,6 @@
 import {randomInt} from "../helpers/randomInt";
+import Battle from "./Battle";
+import CombatAction from "./CombatAction";
 
 export class Combatant {
     /**
@@ -42,6 +44,10 @@ export class Combatant {
          * @type {DuelAction[]}
          */
         this.duelActions = props.character.duelActions;
+        /**
+         * @type {CombatAction[]}
+         */
+        this.combatAction = props.character.combatActions;
     }
 
     calculateHP() {
@@ -60,6 +66,16 @@ export class Combatant {
     calculateAIAction(duel) {
         // for testing purposes currently always attack
         return this.duelActions[1];
+    }
+
+    /**
+     *
+     * @param {Battle} battle - for analytics
+     * @return {CombatAction}
+     */
+     calculateAIAction(battle) {
+        // for testing purposes currently always attack
+        return this.combatAction[1];
     }
 
 }

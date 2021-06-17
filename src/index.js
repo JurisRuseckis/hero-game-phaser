@@ -6,6 +6,7 @@ import {CharacterScene} from "./scenes/CharacterScene";
 import {styles} from "./styles";
 import {InventoryScene} from "./scenes/InventoryScene";
 import {DuelScene} from "./scenes/DuelScene";
+import { BattleScene } from './scenes/BattleScene';
 
 const config = {
     scale: {
@@ -22,6 +23,7 @@ const config = {
         InventoryScene,
         LoadingScene,
         NavigationScene,
+        BattleScene,
     ]
 };
 

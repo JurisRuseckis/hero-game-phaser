@@ -6,6 +6,7 @@ export const cfg = {
         loading: "loading",
         mainMenu: "mainMenu",
         navigation: "navigation",
+        battle: "battle",
 
     }
 }

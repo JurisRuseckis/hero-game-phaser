@@ -1,3 +1,5 @@
+import CombatAction from "./CombatAction";
+
 export default class Character
 {
     /**
@@ -10,6 +12,7 @@ export default class Character
      * @param {number} props.atk
      * @param {boolean} props.isPlayable
      * @param {DuelAction[]} props.duelActions
+     * @param {CombatAction[]} props.combatActions
      */
     constructor(props) {
         this.baseHP = props.baseHP;
@@ -21,6 +24,10 @@ export default class Character
          * @type {DuelAction[]}
          */
         this.duelActions = props.duelActions;
+        /**
+         * @type {CombatAction[]}
+         */
+         this.combatActions = props.combatActions;
         /**
          * @type {boolean}
          */

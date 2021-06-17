@@ -1,26 +1,24 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import {styles} from "../styles";
-import Duel from "../models/Duel";
-import Character from "../models/Character";
-import man from "../assets/images/man.png";
-import thief from "../assets/images/thief.png";
 import Btn from "../ui-components/Btn";
-import DuelAction from "../models/DuelAction";
 import {Combatant} from "../models/Combatant";
+import Battle from "../models/Battle";
+import CombatAction from "../models/CombatAction";
+import Character from "../models/Character";
 
 /**
- * @type {DuelAction[]}
+ * @type {CombatAction[]}
  */
-const testActions = [
-    new DuelAction({
+ const testActions = [
+    new CombatAction({
         key: 'wait',
         operation: (combatant, target) => {
             combatant.turnMeter = 0;
             return `${combatant.label} waits`;
         }
     }),
-    new DuelAction({
+    new CombatAction({
         key: 'attack',
         text: '',
         operation: (combatant, target) => {
@@ -37,7 +35,7 @@ const testActions = [
  *
  * @type {({character: Character, team: number})[]}
  */
-const testDuelTeams = [
+const testBattleTeams = [
     {
         team: 1,
         character: new Character({
@@ -45,10 +43,9 @@ const testDuelTeams = [
             baseHP: 100,
             baseSpeed: 0.1,
             atk: 1,
-            img: man,
             isPlayable: true,
-            duelActions: testActions,
-            combatActions: [],
+            combatActions: testActions,
+            duelActions: [],
         })
     },
     {
@@ -58,26 +55,25 @@ const testDuelTeams = [
             baseHP: 10,
             baseSpeed: 0.5,
             atk: 1,
-            img: thief,
-            duelActions: testActions,
-            combatActions: [],
+            combatActions: testActions,
+            duelActions: [],
         })
     },
 ]
 
-export class DuelScene extends Phaser.Scene
+export class BattleScene extends Phaser.Scene
 {
     constructor ()
     {
         super({
-            key: cfg.scenes.duel
+            key: cfg.scenes.battle
         });
     }
 
     preload ()
     {
-        const duel = new Duel({
-            combatants: testDuelTeams.map((combatant) => {
+        const battle = new Battle({
+            combatants: testBattleTeams.map((combatant) => {
                 return new Combatant({
                     character: combatant.character,
                     team: combatant.team
@@ -85,12 +81,7 @@ export class DuelScene extends Phaser.Scene
             }),
             scene: this
         });
-        this.data.set('duel', duel);
-        // player always will be first
-        this.load.image('player', duel.combatants[0].character.img);
-        // enemy always will be second
-        this.load.image('enemy', duel.combatants[1].character.img);
-
+        this.data.set('battle', battle);
     }
 
     create ()
@@ -99,25 +90,25 @@ export class DuelScene extends Phaser.Scene
         this.actionBtns = [];
         /**
          *
-         * @type {Duel}
+         * @type {Battle}
          */
-        const duel = this.data.get('duel');
+        const battle = this.data.get('battle');
 
         // initial update to fill first turn meters
-        duel.init();
-        this.updateBattleScene(duel);
+        battle.init();
+        this.updateBattleScene(battle);
     }
 
     /**
-     * @param {DuelAction[]} actions
+     * @param {CombatAction[]} actions
      */
     updateActionBtns(actions)
     {
         /**
          *
-         * @type {Duel}
+         * @type {Battle}
          */
-        const duel = this.data.get('duel');
+        const battle = this.data.get('battle');
 
         this.actionBtns.map((action) => {
             action.destroy();
@@ -136,8 +127,8 @@ export class DuelScene extends Phaser.Scene
             });
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', ()=>{
-                duel.handleTurn(action);
-                this.updateDuelScene(duel)
+                battle.handleTurn(action);
+                this.updateBattleScene(battle)
             });
             this.actionBtns.push(btn);
         })
@@ -145,31 +136,20 @@ export class DuelScene extends Phaser.Scene
 
     /**
      * i need turn update not per time
-     * @param {Duel} duel
+     * @param {Battle} battle
      */
-    updateDuelScene(duel)
+    updateBattleScene(battle)
     {
         // todo: rename battle scene to avoid confusion
-        this.updateBattleScene(duel);
+        this.updateBattleScene(battle);
     }
 
     /**
-     * @param {Duel} duel
+     * @param {Battle} battle
      */
-    updateBattleScene(duel)
+    updateBattleScene(battle)
     {
-        const player = duel.combatants.filter(x => x.label === 'man');
-        const enemy = duel.combatants.filter(x => x.label === 'thief');
-
-        this.playerHP.setText(`${player[0].hp}/${player[0].calculateHP()}`);
-
-        if(duel.combatants.length < 2){
-            this.enemyHP.setText(`${duel.corpses[0].hp}/${duel.corpses[0].calculateHP()}`);
-        } else {
-            this.enemyHP.setText(`${enemy[0].hp}/${enemy[0].calculateHP()}`);
-        }
-
-        this.actionText.setText(duel.log[duel.log.length - 1]);
+        //update hp and alive status for chars 
     }
 
     addBattleScene()
@@ -188,7 +168,7 @@ export class DuelScene extends Phaser.Scene
         this.boxTitle = this.add.text(
             this.boxContainer.x,
             this.boxContainerBounds.top + styles.padding,
-            "Duel",
+            "Battle",
             {fontSize: styles.fontSize.title}
         ).setOrigin(0.5,0);
 
@@ -211,28 +191,12 @@ export class DuelScene extends Phaser.Scene
             {fontSize: styles.fontSize.default},
         );
 
-        const playerSprite = this.add.image(this.battleWindowBounds.left + 100, this.battleWindowBounds.centerY, 'player');
-        const enemySprite = this.add.image(this.battleWindowBounds.right - 100, this.battleWindowBounds.centerY, 'enemy');
-        enemySprite.setFlipX(true);
-
         /**
          *
-         * @type {Duel}
+         * @type {Battle}
          */
-        const duel = this.data.get('duel');
-        this.playerHP = this.add.text(
-            this.battleWindowBounds.left + 100,
-            this.battleWindowBounds.bottom - 50,
-            `${duel.combatants[0].calculateHP()}/${duel.combatants[0].calculateHP()}`,
-            {fontSize: styles.fontSize.default}
-        ).setOrigin(0.5);
-
-        this.enemyHP = this.add.text(
-            this.battleWindowBounds.right - 100,
-            this.battleWindowBounds.bottom - 50,
-            `${duel.combatants[1].calculateHP()}/${duel.combatants[1].calculateHP()}`,
-            {fontSize: styles.fontSize.default}
-        ).setOrigin(0.5);
+        const battle = this.data.get('battle');
+        // add hp for all dudes 
     }
 
     /**
@@ -240,21 +204,17 @@ export class DuelScene extends Phaser.Scene
      */
     showResults(props)
     {
-        this.duelResultWindow = this.add.rectangle(
-            this.boxContainerBounds.left + styles.padding,
-            this.battleWindowBounds.bottom + styles.padding + 100,
-            styles.grid.window - styles.padding*2,
-            600,
-            styles.colors.btnBg,
-        ).setOrigin(0);
-        this.duelResultWindow.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
+        console.log('result window');
+        // this.battleResultWindow = this.add.rectangle(
+        //     this.boxContainerBounds.left + styles.padding,
+        //     this.battleWindowBounds.bottom + styles.padding + 100,
+        //     styles.grid.window - styles.padding*2,
+        //     600,
+        //     styles.colors.btnBg,
+        // ).setOrigin(0);
+        // this.battleResultWindow.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
         // win/lost
         // winner team
         // loot for winner
     }
-    // update(time, delta) {
-    //     super.update(time, delta);
-    //     const duel = this.data.get('duel');
-    //     duel.update();
-    // }
 }
