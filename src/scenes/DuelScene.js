@@ -17,7 +17,7 @@ const testActions = [
         key: 'wait',
         operation: (combatant, target) => {
             combatant.turnMeter = 0;
-            console.log(`${combatant.label} waits`)
+            return `${combatant.label} waits`;
         }
     }),
     new DuelAction({
@@ -29,7 +29,7 @@ const testActions = [
             // todo: add target effects
             const dmg = combatant.calculateDmg();
             target.hp -= dmg;
-            console.log(`${combatant.label} Attacks ${target.label} for ${dmg} damage!`)
+            return `${combatant.label} Attacks ${target.label} for ${dmg} damage!`;
         }
     }),
 ];
@@ -109,7 +109,8 @@ export class DuelScene extends Phaser.Scene
     /**
      * @param {DuelAction[]} actions
      */
-    updateActionBtns(actions){
+    updateActionBtns(actions)
+    {
         /**
          *
          * @type {Duel}
@@ -136,6 +137,7 @@ export class DuelScene extends Phaser.Scene
                 duel.handleTurn(action);
                 this.updateDuelScene(duel)
             });
+            this.actionBtns.push(btn);
         })
     }
 
@@ -143,7 +145,8 @@ export class DuelScene extends Phaser.Scene
      * i need turn update not per time
      * @param {Duel} duel
      */
-    updateDuelScene(duel){
+    updateDuelScene(duel)
+    {
         // todo: rename battle scene to avoid confusion
         this.updateBattleScene(duel);
     }
@@ -151,18 +154,24 @@ export class DuelScene extends Phaser.Scene
     /**
      * @param {Duel} duel
      */
-    updateBattleScene(duel){
+    updateBattleScene(duel)
+    {
         const player = duel.combatants.filter(x => x.label === 'man');
         const enemy = duel.combatants.filter(x => x.label === 'thief');
+
         this.playerHP.setText(`${player[0].hp}/${player[0].calculateHP()}`);
+
         if(duel.combatants.length < 2){
             this.enemyHP.setText(`${duel.corpses[0].hp}/${duel.corpses[0].calculateHP()}`);
         } else {
             this.enemyHP.setText(`${enemy[0].hp}/${enemy[0].calculateHP()}`);
         }
+
+        this.actionText.setText(duel.log[duel.log.length - 1]);
     }
 
-    addBattleScene(){
+    addBattleScene()
+    {
         this.boxContainer = this.add.rectangle(
             styles.viewPort.centerX,
             styles.panelLayout.contentStart,
@@ -193,6 +202,13 @@ export class DuelScene extends Phaser.Scene
         this.battleWindow.setStrokeStyle(styles.borderWidth, styles.colors.btnBorder);
         this.battleWindowBounds = this.battleWindow.getBounds();
 
+        this.actionText = this.add.text(
+            this.boxContainerBounds.left + styles.padding,
+            this.battleWindowBounds.bottom + styles.padding,
+            "Placeholder",
+            {fontSize: styles.fontSize.default},
+        );
+
         const playerSprite = this.add.image(this.battleWindowBounds.left + 100, this.battleWindowBounds.centerY, 'player');
         const enemySprite = this.add.image(this.battleWindowBounds.right - 100, this.battleWindowBounds.centerY, 'enemy');
         enemySprite.setFlipX(true);
@@ -217,6 +233,23 @@ export class DuelScene extends Phaser.Scene
         ).setOrigin(0.5);
     }
 
+    /**
+     * @param props
+     */
+    showResults(props)
+    {
+        this.duelResultWindow = this.add.rectangle(
+            this.boxContainerBounds.left + styles.padding,
+            this.battleWindowBounds.bottom + styles.padding + 100,
+            styles.grid.window - styles.padding*2,
+            600,
+            styles.colors.btnBg,
+        ).setOrigin(0);
+        this.duelResultWindow.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
+        // win/lost
+        // winner team
+        // loot for winner
+    }
     // update(time, delta) {
     //     super.update(time, delta);
     //     const duel = this.data.get('duel');

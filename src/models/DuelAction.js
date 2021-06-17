@@ -15,9 +15,10 @@ export default class DuelAction
      *
      * @param {Combatant} combatant
      * @param {Combatant} target
+     * @return {string}
      * todo: add multiple target options
      */
     applyActionEffects(combatant, target) {
-        this.operation(combatant, target);
+        return this.operation(combatant, target);
     }
 }

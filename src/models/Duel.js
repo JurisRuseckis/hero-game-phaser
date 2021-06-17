@@ -37,6 +37,7 @@ export default class Duel{
         this.corpses = [];
         this.status = duelStatus.started;
         this.scene = props.scene;
+        this.log = [];
         // to be implemented
         // this.arena = props.arena;
     }
@@ -76,7 +77,6 @@ export default class Duel{
                 ? -1
                 : 0
         );
-        console.table(this.combatants);
     }
 
     /**
@@ -91,20 +91,24 @@ export default class Duel{
         const moveMaker = this.combatants[0];
         const target = this.combatants[1];
 
-        action.applyActionEffects(moveMaker, target);
+        this.log.push(action.applyActionEffects(moveMaker, target));
 
         // update list after action
         this.updateCombatantList();
         const teams = groupArrByKey(this.combatants, 'team');
         // check how many teams are left
-        if(teams.length < 2){
+        if(Object.keys(teams).length < 2){
             this.status = duelStatus.finished;
+            this.scene.showResults({});
+            console.log(this.log);
             console.log('duel ended');
             console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
             console.log(`${this.corpses.map((c) => c.label).join(', ')} has died!`);
+            this.scene.updateActionBtns([]);
+            return;
         }
         // if one team is left then calculate victory
-
+        // else nextTurn
         this.nextTurn();
 
         // somehow update battle scene when turn is handled
