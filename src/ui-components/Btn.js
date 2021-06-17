@@ -23,7 +23,8 @@ export default class Btn
      * @param {number} props.border.alpha
      *
      */
-    constructor(props) {
+    constructor(props)
+    {
         if(!props.scene) {
             throw 'ArgumentException: missing scene';
         }
@@ -74,13 +75,20 @@ export default class Btn
         ).setOrigin(0.5);
     }
 
-    addDefaultEvents(){
+    addDefaultEvents()
+    {
         this.btnObj.on('pointerover', () => {
             this.btnObj.setFillStyle(styles.colors.btnBorder);
         }, this);
         this.btnObj.on('pointerout', () => {
             this.btnObj.setFillStyle(styles.colors.btnBg);
         }, this);
+    }
+
+    destroy()
+    {
+        this.btnObj.destroy();
+        this.txtObj.destroy();
     }
 
 }
