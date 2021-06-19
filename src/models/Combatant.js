@@ -75,7 +75,15 @@ export class Combatant {
      */
      calculateBattleAIAction(battle) {
         // for testing purposes currently always attack
-        return this.combatAction[1];
+        let action = this.combatAction[1];
+        let availableTargets = action.getAvailableTargets(this, battle.combatants);
+        if(availableTargets){
+            action.pickTarget(this, battle.combatants[availableTargets.shift()])
+            return action;
+        } else {
+            return this.combatAction[0];
+        }
+    
     }
 
 }
