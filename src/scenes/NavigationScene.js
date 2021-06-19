@@ -60,7 +60,13 @@ export class NavigationScene extends Phaser.Scene
                 onClick: ()=>{
                     this.changeScene(cfg.scenes.duel);
                 }
-            }
+            },
+            {
+                label: "battle",
+                onClick: ()=>{
+                    this.changeScene(cfg.scenes.battle);
+                }
+            },
         ]
     }
 
