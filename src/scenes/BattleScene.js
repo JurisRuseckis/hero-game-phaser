@@ -6,91 +6,7 @@ import {Combatant} from "../models/Combatant";
 import Battle from "../models/Battle";
 import CombatAction from "../models/CombatAction";
 import Character from "../models/Character";
-
-/**
- * @type {CombatAction[]}
- */
- const testActions = [
-    new CombatAction({
-        key: 'wait',
-        operation: (combatant, target) => {
-            combatant.turnMeter = 0;
-            return `${combatant.label} waits`;
-        },
-        targetRules: (executor, target) => {
-            return executor == target;
-        }
-    }),
-    new CombatAction({
-        key: 'attack',
-        text: '',
-        operation: (executor, target) => {
-            executor.turnMeter = 0;
-            // todo: add arena effects
-            // todo: add target effects
-            const dmg = executor.calculateDmg();
-            target.hp -= dmg;
-            return `${executor.label} Attacks ${target.label} for ${dmg} damage!`;
-        },
-        targetRules: (executor, target) => {
-            return executor.team != target.team;
-        }
-    }),
-];
-/**
- *
- * @type {({character: Character, team: number})[]}
- */
-const testBattleTeams = [
-    {
-        team: 1,
-        character: new Character({
-            name: 'hero',
-            baseHP: 100,
-            baseSpeed: 0.1,
-            atk: 1,
-            isPlayable: false,
-            combatActions: testActions,
-            duelActions: [],
-        })
-    },
-    {
-        team: 1,
-        character: new Character({
-            name: 'hero assistant',
-            baseHP: 50,
-            baseSpeed: 0.1,
-            atk: 1,
-            isPlayable: false,
-            combatActions: testActions,
-            duelActions: [],
-        })
-    },
-    {
-        team: 2,
-        character: new Character({
-            name: 'thief',
-            baseHP: 10,
-            baseSpeed: 0.5,
-            atk: 1,
-            isPlayable: false,
-            combatActions: testActions,
-            duelActions: [],
-        })
-    },
-    {
-        team: 3,
-        character: new Character({
-            name: 'goblin',
-            baseHP: 10,
-            baseSpeed: 0.5,
-            atk: 1,
-            isPlayable: false,
-            combatActions: testActions,
-            duelActions: [],
-        })
-    },
-]
+import BattleGenerator from "../models/Generators/BattleGenerator";
 
 export class BattleScene extends Phaser.Scene
 {
@@ -103,15 +19,7 @@ export class BattleScene extends Phaser.Scene
 
     preload ()
     {
-        const battle = new Battle({
-            combatants: testBattleTeams.map((combatant) => {
-                return new Combatant({
-                    character: combatant.character,
-                    team: combatant.team
-                });
-            }),
-            scene: this
-        });
+        const battle = BattleGenerator.generate(this);
         this.data.set('battle', battle);
     }
 

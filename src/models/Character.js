@@ -1,4 +1,11 @@
-import CombatAction from "./CombatAction";
+import CombatAction from "./CombatAction"
+
+export const race = {
+    Human: 'human',
+    Orc: 'orc',
+    Dwarf: 'dwarf',
+    Elf: 'elf',
+};
 
 export default class Character
 {
@@ -20,6 +27,7 @@ export default class Character
         this.name = props.name;
         this.img = props.img;
         this.atk = props.atk;
+        this.nationality = props.nationality
         /**
          * @type {DuelAction[]}
          */
