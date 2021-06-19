@@ -16,18 +16,24 @@ import Character from "../models/Character";
         operation: (combatant, target) => {
             combatant.turnMeter = 0;
             return `${combatant.label} waits`;
+        },
+        targetRules: (executor, target) => {
+            return executor == target;
         }
     }),
     new CombatAction({
         key: 'attack',
         text: '',
-        operation: (combatant, target) => {
-            combatant.turnMeter = 0;
+        operation: (executor, target) => {
+            executor.turnMeter = 0;
             // todo: add arena effects
             // todo: add target effects
-            const dmg = combatant.calculateDmg();
+            const dmg = executor.calculateDmg();
             target.hp -= dmg;
-            return `${combatant.label} Attacks ${target.label} for ${dmg} damage!`;
+            return `${executor.label} Attacks ${target.label} for ${dmg} damage!`;
+        },
+        targetRules: (executor, target) => {
+            return executor.team != target.team;
         }
     }),
 ];
@@ -39,11 +45,23 @@ const testBattleTeams = [
     {
         team: 1,
         character: new Character({
-            name: 'man',
+            name: 'hero',
             baseHP: 100,
             baseSpeed: 0.1,
             atk: 1,
-            isPlayable: true,
+            isPlayable: false,
+            combatActions: testActions,
+            duelActions: [],
+        })
+    },
+    {
+        team: 1,
+        character: new Character({
+            name: 'hero assistant',
+            baseHP: 50,
+            baseSpeed: 0.1,
+            atk: 1,
+            isPlayable: false,
             combatActions: testActions,
             duelActions: [],
         })
@@ -55,6 +73,19 @@ const testBattleTeams = [
             baseHP: 10,
             baseSpeed: 0.5,
             atk: 1,
+            isPlayable: false,
+            combatActions: testActions,
+            duelActions: [],
+        })
+    },
+    {
+        team: 3,
+        character: new Character({
+            name: 'goblin',
+            baseHP: 10,
+            baseSpeed: 0.5,
+            atk: 1,
+            isPlayable: false,
             combatActions: testActions,
             duelActions: [],
         })
