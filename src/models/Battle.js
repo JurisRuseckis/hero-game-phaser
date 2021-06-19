@@ -65,6 +65,7 @@ export default class Battle{
             // Someone already has full turnmeter from previous turn, skipping calculating rest.
             // also we do not need to resort them as killed should be removed and otherwise it should be sorted
             console.table('Someone already has full turnmeter from previous turn, skipping calculating rest.');
+            this.combatants.push(this.combatants.shift());
             return;
         }
         // fastest will be at top
@@ -82,6 +83,7 @@ export default class Battle{
 
     /**
      * @param {CombatAction} action
+     * @param {Combatant} target
      */
     handleTurn(action)
     {
@@ -89,10 +91,11 @@ export default class Battle{
         if(!action) return false;
 
         // todo: pass in target from somewhere else and handle multiple targets
-        const moveMaker = this.combatants[0];
-        const target = this.combatants[1];
+        const executor = this.combatants[0];
 
-        this.log.push(action.applyActionEffects(moveMaker, target));
+        const log = action.applyActionEffects(executor);
+        console.log(log);
+        this.log.push(log);
 
         // update list after action
         this.updateCombatantList();
@@ -146,6 +149,7 @@ export default class Battle{
      */
     nextTurn()
     {
+        console.table(this.combatants);
         // check if duel can advance to next turn
         if(this.status === battleStatus.finished) return;
 
@@ -154,12 +158,12 @@ export default class Battle{
 
         if(this.combatants[0].isPlayable){
             // if playable then prepare action btns and wait for input
-            this.scene.updateActionBtns(this.combatants[0].combatActions);
+            // this.scene.updateActionBtns(this.combatants[0].combatActions);
             return;
         }
 
         // else ai moves
-        this.handleTurn(this.combatants[0].calculateAIAction(this));
+        this.handleTurn(this.combatants[0].calculateBattleAIAction(this));
     }
 
     /**
@@ -167,6 +171,7 @@ export default class Battle{
      */
     init()
     {
+        console.log(this);
         this.nextTurn();
     }
 }
