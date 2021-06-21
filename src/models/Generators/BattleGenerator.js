@@ -206,8 +206,6 @@ export default class BattleGenerator
             return combatants;
         }).flat();
 
-        console.log(combatants);
-
         const battle = new Battle({
             combatants: combatants,
             scene: scene
