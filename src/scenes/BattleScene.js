@@ -7,6 +7,7 @@ import Battle from "../models/Battle";
 import CombatAction from "../models/CombatAction";
 import Character from "../models/Character";
 import BattleGenerator from "../models/Generators/BattleGenerator";
+import CombatantStatus from "../ui-components/CombatantStatus";
 
 export class BattleScene extends Phaser.Scene
 {
@@ -15,6 +16,10 @@ export class BattleScene extends Phaser.Scene
         super({
             key: cfg.scenes.battle
         });
+
+        this.turndelay = 100;
+        this.turnTimer = 0;
+        this.turnCount = 0;
     }
 
     preload ()
@@ -80,15 +85,14 @@ export class BattleScene extends Phaser.Scene
     updateBattleScene(battle)
     {
         // todo: rename battle scene to avoid confusion
-        this.updateBattleScene(battle);
-    }
-
-    /**
-     * @param {Battle} battle
-     */
-    updateBattleScene(battle)
-    {
-        //update hp and alive status for chars 
+        Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
+            team.map((combatant, combatantIndex) =>{
+                const cmbStatus = this.combatantStatuses.find(e => e.cmbId == combatant.id);
+                if(cmbStatus){
+                    cmbStatus.txtObj.setText(combatant.hp);
+                }
+            });
+        });
     }
 
     addBattleScene()
@@ -127,7 +131,12 @@ export class BattleScene extends Phaser.Scene
             this.boxContainerBounds.left + styles.padding,
             this.battleWindowBounds.bottom + styles.padding,
             "Placeholder",
-            {fontSize: styles.fontSize.default},
+            {
+                fontSize: styles.fontSize.default, 
+                wordWrap: {
+                    width: this.battleWindow.width - 2 * styles.padding
+                }
+            },
         );
 
         /**
@@ -135,7 +144,23 @@ export class BattleScene extends Phaser.Scene
          * @type {Battle}
          */
         const battle = this.data.get('battle');
-        // add hp for all dudes 
+        // add all combatants
+        this.combatantStatuses = Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
+            const radius = 16;
+
+            return team.map((combatant, combatantIndex) =>{
+                return new CombatantStatus({
+                    scene: this,
+                    x: this.battleWindowBounds.left + styles.padding + combatantIndex * (radius * 2 + styles.padding),
+                    y: this.battleWindowBounds.top + styles.padding + teamIndex * (radius * 2 + styles.padding * 1.5),
+                    radius: radius,
+                    text: combatant.hp,
+                    cmbId: combatant.id
+                })
+            });
+        }).flat();
+
+        console.log(this.combatantStatuses);
     }
 
     /**
@@ -155,5 +180,19 @@ export class BattleScene extends Phaser.Scene
         // win/lost
         // winner team
         // loot for winner
+    }
+
+    update(time, delta){
+        this.turnTimer += delta;
+        // as sometimes we can lag a bit we do a loop 
+        while (this.turnTimer > this.turndelay) {
+            /**
+             *
+             * @type {Battle}
+             */
+            const battle = this.data.get('battle');
+            this.turnCount = battle.nextTurn();
+            this.turnTimer -= this.turndelay;
+        }
     }
 }

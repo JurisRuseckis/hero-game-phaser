@@ -26,6 +26,7 @@ const battleStatus = {
 }
 
 export default class Battle{
+
     /**
      *
      * @param {Object} props
@@ -39,6 +40,7 @@ export default class Battle{
         this.status = battleStatus.started;
         this.scene = props.scene;
         this.log = [];
+        this.turnCount = 0;
         // to be implemented
         // this.arena = props.arena;
     }
@@ -93,8 +95,9 @@ export default class Battle{
         // todo: pass in target from somewhere else and handle multiple targets
         const executor = this.combatants[0];
 
-        const log = action.applyActionEffects(executor);
-        // console.log(log);
+        let log = action.applyActionEffects(executor);
+        this.scene.actionText.setText(log);
+        log = `Turn ${this.turnCount}: ${log}`;
         this.log.push(log);
 
         // update list after action
@@ -112,9 +115,11 @@ export default class Battle{
             this.scene.updateActionBtns([]);
             return;
         }
+
+        this.turnCount++;
         // if one team is left then calculate victory
         // else nextTurn
-        this.nextTurn();
+        // this.nextTurn();
 
         // somehow update battle scene when turn is handled
         // sleep(1000).then(()=>{
@@ -124,6 +129,9 @@ export default class Battle{
 
     updateCombatantList()
     {
+        //update battle scene before carying off corpses
+        this.scene.updateBattleScene(this);
+        
         this.combatants = this.combatants.filter((c) => {
             const alive = c.hp > 0;
             if(!alive){
@@ -160,13 +168,18 @@ export default class Battle{
         this.advanceTurnMeters();
 
         if(this.combatants[0].isPlayable){
-            // if playable then prepare action btns and wait for input
+            // if users is playable 
+
+            // if action is passed then do it,
+            // else nothing
             // this.scene.updateActionBtns(this.combatants[0].combatActions);
-            return;
+        } else {
+            // else ai moves
+            this.handleTurn(this.combatants[0].calculateBattleAIAction(this));
+            // console.table(this.combatants);
         }
 
-        // else ai moves
-        this.handleTurn(this.combatants[0].calculateBattleAIAction(this));
+        return this.turnCount;
     }
 
     /**
@@ -176,5 +189,19 @@ export default class Battle{
     {
         console.table(this.combatants);
         this.nextTurn();
+    }
+
+    
+    /**
+     * 
+     * @param {bool} inTeams 
+     * @returns {Array}
+     */
+    getCombatants(inTeams = false){
+        if(inTeams){
+            return groupArrByKey(this.combatants, 'team');;
+        }
+
+        return this.combatants;
     }
 }
