@@ -27,7 +27,7 @@ import CombatAction from "../CombatAction";
             // todo: add target effects
             const dmg = executor.calculateDmg();
             target.hp -= dmg;
-            return `${executor.label} from team ${executor.team} Attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
+            return `${executor.label} from team ${executor.team} attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target) => {
             return executor.team != target.team;
@@ -39,7 +39,7 @@ const characterRoster = {
     orc : {
         peon: new Character({
             name: 'peon',
-            nationality: race.Orc,
+            race: race.Orc,
             baseHP: 10,
             baseSpeed: 0.1,
             atk: 1,
@@ -49,7 +49,7 @@ const characterRoster = {
         }),
         warrior: new Character({
             name: 'warrior',
-            nationality: race.Orc,
+            race: race.Orc,
             baseHP: 50,
             baseSpeed: 0.3,
             atk: 5,
@@ -59,7 +59,7 @@ const characterRoster = {
         }),
         warchief: new Character({
             name: 'warchief',
-            nationality: race.Orc,
+            race: race.Orc,
             baseHP: 100,
             baseSpeed: 0.2,
             atk: 10,
@@ -71,7 +71,7 @@ const characterRoster = {
     human : {
         peasant: new Character({
             name: 'peasant',
-            nationality: race.Human,
+            race: race.Human,
             baseHP: 8,
             baseSpeed: 0.13,
             atk: 1,
@@ -81,7 +81,7 @@ const characterRoster = {
         }),
         warrior: new Character({
             name: 'warrior',
-            nationality: race.Human,
+            race: race.Human,
             baseHP: 45,
             baseSpeed: 0.4,
             atk: 3,
@@ -91,7 +91,7 @@ const characterRoster = {
         }),
         general: new Character({
             name: 'general',
-            nationality: race.Human,
+            race: race.Human,
             baseHP: 90,
             baseSpeed: 0.3,
             atk: 8,
@@ -103,7 +103,7 @@ const characterRoster = {
     dwarf : {
         miner: new Character({
             name: 'miner',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 9,
             baseSpeed: 0.10,
             atk: 2,
@@ -113,7 +113,7 @@ const characterRoster = {
         }),
         warrior: new Character({
             name: 'warrior',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 45,
             baseSpeed: 0.45,
             atk: 3,
@@ -123,7 +123,7 @@ const characterRoster = {
         }),
         commander: new Character({
             name: 'commander',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 95,
             baseSpeed: 0.25,
             atk: 9,
@@ -135,7 +135,7 @@ const characterRoster = {
     elf : {
         bowyer: new Character({
             name: 'bowyer',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 6,
             baseSpeed: 0.20,
             atk: 2,
@@ -145,7 +145,7 @@ const characterRoster = {
         }),
         archer: new Character({
             name: 'archer',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 30,
             baseSpeed: 0.7,
             atk: 2,
@@ -155,7 +155,7 @@ const characterRoster = {
         }),
         lord: new Character({
             name: 'lord',
-            nationality: race.Dwarf,
+            race: race.Dwarf,
             baseHP: 90,
             baseSpeed: 0.9,
             atk: 7,
@@ -186,8 +186,8 @@ export default class BattleGenerator
      * @returns 
      */
     static generate(scene){
-        const teamCount = randomInt(4+2);
-        const teamSize = randomInt(5+1);
+        const teamCount = randomInt(3)+2;
+        const teamSize = randomInt(4)+1;
         let teams = [];
 
         for(let i = 0; i<teamCount; i++){
@@ -195,7 +195,6 @@ export default class BattleGenerator
         }
         
         const combatants = teams.map((team, index) => { 
-
             let combatants = []
             for (const [key, value] of Object.entries(team)) {
                 combatants.push(new Combatant({

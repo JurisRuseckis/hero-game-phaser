@@ -27,7 +27,7 @@ export default class Character
         this.name = props.name;
         this.img = props.img;
         this.atk = props.atk;
-        this.nationality = props.nationality
+        this.race = props.race
         /**
          * @type {DuelAction[]}
          */
