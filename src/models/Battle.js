@@ -64,7 +64,7 @@ export default class Battle{
         if(fastestTurnTime === 0){
             // Someone already has full turnmeter from previous turn, skipping calculating rest.
             // also we do not need to resort them as killed should be removed and otherwise it should be sorted
-            console.table('Someone already has full turnmeter from previous turn, skipping calculating rest.');
+            // console.table('Someone already has full turnmeter from previous turn, skipping calculating rest.');
             this.combatants.push(this.combatants.shift());
             return;
         }
@@ -94,7 +94,7 @@ export default class Battle{
         const executor = this.combatants[0];
 
         const log = action.applyActionEffects(executor);
-        console.log(log);
+        // console.log(log);
         this.log.push(log);
 
         // update list after action
@@ -106,8 +106,9 @@ export default class Battle{
             this.scene.showResults({});
             console.log(this.log);
             console.log('battle ended');
-            console.log(`${this.combatants.map((c) => c.label).join(',')} has won!`);
-            console.log(`${this.corpses.map((c) => c.label).join(', ')} has died!`);
+            console.log(`team ${this.combatants[0].team} has won`)
+            console.log(`${this.combatants.map((c) => c.label).join(',')} has survived!`);
+            console.log(`${this.corpses.map((c) => `${c.label} from team ${c.team}`).join(', ')} has died!`);
             this.scene.updateActionBtns([]);
             return;
         }
@@ -126,7 +127,9 @@ export default class Battle{
         this.combatants = this.combatants.filter((c) => {
             const alive = c.hp > 0;
             if(!alive){
-                console.log(`${c.label} died!`);
+                const msg = `${c.label} from team ${c.team} died!`;
+                this.log.push(msg);
+                // console.log(msg);
                 this.corpses.push(c);
             }
             return alive;
@@ -149,7 +152,7 @@ export default class Battle{
      */
     nextTurn()
     {
-        console.table(this.combatants);
+        // console.table(this.combatants);
         // check if duel can advance to next turn
         if(this.status === battleStatus.finished) return;
 
@@ -171,7 +174,7 @@ export default class Battle{
      */
     init()
     {
-        console.log(this);
+        console.table(this.combatants);
         this.nextTurn();
     }
 }

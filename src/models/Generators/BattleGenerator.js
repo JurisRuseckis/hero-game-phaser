@@ -10,9 +10,9 @@ import CombatAction from "../CombatAction";
  const defaultActions = [
     new CombatAction({
         key: 'wait',
-        operation: (combatant, target) => {
-            combatant.turnMeter = 0;
-            return `${combatant.label} waits`;
+        operation: (executor, target) => {
+            executor.turnMeter = 0;
+            return `${executor.label} from team ${executor.team} waits`;
         },
         targetRules: (executor, target) => {
             return executor == target;
@@ -27,7 +27,7 @@ import CombatAction from "../CombatAction";
             // todo: add target effects
             const dmg = executor.calculateDmg();
             target.hp -= dmg;
-            return `${executor.label} Attacks ${target.label} for ${dmg} damage!`;
+            return `${executor.label} from team ${executor.team} Attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target) => {
             return executor.team != target.team;
