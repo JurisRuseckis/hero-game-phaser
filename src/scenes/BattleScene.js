@@ -162,8 +162,6 @@ export class BattleScene extends Phaser.Scene
                 })
             });
         }).flat();
-
-        console.log(this.combatantStatuses);
     }
 
     /**

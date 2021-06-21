@@ -5,6 +5,7 @@ export const race = {
     Orc: 'orc',
     Dwarf: 'dwarf',
     Elf: 'elf',
+    Goblin: 'goblin',
 };
 
 export default class Character

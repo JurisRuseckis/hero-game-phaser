@@ -164,6 +164,38 @@ const characterRoster = {
             duelActions: [],
         }),
     },
+    goblins : {
+        goblin: new Character({
+            name: 'goblin',
+            race: race.Goblin,
+            baseHP: 3,
+            baseSpeed: 0.20,
+            atk: 1,
+            isPlayable: false,
+            combatActions: defaultActions,
+            duelActions: [],
+        }),
+        goblinWarrior: new Character({
+            name: 'goblin warrior',
+            race: race.Goblin,
+            baseHP: 15,
+            baseSpeed: 0.7,
+            atk: 1,
+            isPlayable: false,
+            combatActions: defaultActions,
+            duelActions: [],
+        }),
+        goblinChieftan: new Character({
+            name: 'goblin chieftan',
+            race: race.Goblin,
+            baseHP: 45,
+            baseSpeed: 0.9,
+            atk: 4,
+            isPlayable: false,
+            combatActions: defaultActions,
+            duelActions: [],
+        }),
+    }
 };
 
 const teamSeed = [
@@ -177,21 +209,21 @@ const teamSeed = [
 /**
  * class generates random battles 
  * todo: implement power for team and units to randomize some more
+ * todo: add generation params to allow some configuration for generation
  */
 export default class BattleGenerator
 {
     /**
-     * 
      * @param {Phaser.Scene} scene 
      * @returns 
      */
     static generate(scene){
         const teamCount = randomInt(3)+2;
-        const teamSize = randomInt(4)+1;
+        const teamSize = randomInt(4)+2;
         let teams = [];
 
         for(let i = 0; i<teamCount; i++){
-            teams.push(this.generateTeam(teamSize));
+            teams.push(this.generateTeam(teamSize + randomInt(4)));
         }
         
         const combatants = teams.map((team, index) => { 
@@ -218,13 +250,28 @@ export default class BattleGenerator
      * @param {integer} size 
      */
     static generateTeam(size){
-        const rosterOptions = [
-            characterRoster.orc,
-            characterRoster.human,
-            characterRoster.elf,
-            characterRoster.dwarf,
-        ]
+        
+        const roosterIndex = randomInt(5);
+        const rosterOptions = Object.values(characterRoster)[roosterIndex];
+        if(roosterIndex === 4) {
+            size *= 2;
+        }
+        // as we currently hardcoded roster then we can hardcode size them
+        // remove leader slot
+        let available = size - 1; 
+        // leader will be just one so we will multiply first 2 tiers
+        let proportions = [0.75,0.25];
+        let firstTier = Math.floor(available*proportions[0]);
+        let secondTier = available - firstTier;
+        let team = [];
+        for(let i = 0; i<firstTier; i++){
+            team.push({...Object.values(rosterOptions)[0]});
+        }
+        for(let i = 0; i<secondTier; i++){
+            team.push({...Object.values(rosterOptions)[1]});
+        }
+        team.push({...Object.values(rosterOptions)[2]});
 
-        return rosterOptions[randomInt(4)];
+        return team;
     }
 }
