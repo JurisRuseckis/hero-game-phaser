@@ -48,6 +48,7 @@ export default class CombatantStatus
 
         this.addCircle();
         this.addTxt();
+        this.addCross();
     }
 
     addCircle()
@@ -74,6 +75,18 @@ export default class CombatantStatus
             this.text,
             this.textStyle
         ).setOrigin(0.5);
+    }
+
+    addCross()
+    {
+        const btnCenter = this.btnObj.getCenter();
+        this.crossObj = this.scene.add.text(
+            btnCenter.x,
+            btnCenter.y,
+            'X',
+            {fontSize: styles.fontSize.large, color: styles.textColors.red}
+        ).setOrigin(0.5);
+        this.crossObj.setVisible(false);
     }
 
     addDefaultEvents()

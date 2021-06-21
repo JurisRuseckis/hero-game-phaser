@@ -90,6 +90,9 @@ export class BattleScene extends Phaser.Scene
                 const cmbStatus = this.combatantStatuses.find(e => e.cmbId == combatant.id);
                 if(cmbStatus){
                     cmbStatus.txtObj.setText(combatant.hp);
+                    if(combatant.hp <= 0){
+                        cmbStatus.crossObj.setVisible(true);
+                    }
                 }
             });
         });
