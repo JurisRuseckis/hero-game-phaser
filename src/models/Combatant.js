@@ -1,5 +1,8 @@
+import { capitalize } from "../helpers/capitalize";
 import {randomInt} from "../helpers/randomInt";
+import { v4 as uuidv4 } from 'uuid';
 import Battle from "./Battle";
+import Character from "./Character";
 import CombatAction from "./CombatAction";
 
 export class Combatant {
@@ -10,7 +13,13 @@ export class Combatant {
      * @param {number} props.team
      */
     constructor(props) {
-
+        /**
+         * @type {string}
+         */
+        this.id = uuidv4();
+        /**
+         * @type {Character}
+         */
         this.character = props.character;
         /**
          * range 0-1
@@ -26,7 +35,7 @@ export class Combatant {
          *
          * @type {string}
          */
-        this.label = this.character.name;
+        this.label = `${capitalize(this.character.race)} ${capitalize(this.character.name)}`;
         /**
          *
          * @type {number}
