@@ -166,7 +166,7 @@ const characterRoster = {
     },
     goblins : {
         goblin: new Character({
-            name: 'goblin',
+            name: 'mob',
             race: race.Goblin,
             baseHP: 3,
             baseSpeed: 0.20,
@@ -176,7 +176,7 @@ const characterRoster = {
             duelActions: [],
         }),
         goblinWarrior: new Character({
-            name: 'goblin warrior',
+            name: 'warrior',
             race: race.Goblin,
             baseHP: 15,
             baseSpeed: 0.7,
@@ -186,7 +186,7 @@ const characterRoster = {
             duelActions: [],
         }),
         goblinChieftan: new Character({
-            name: 'goblin chieftan',
+            name: 'warboss',
             race: race.Goblin,
             baseHP: 45,
             baseSpeed: 0.9,
