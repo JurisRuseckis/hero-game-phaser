@@ -39,7 +39,8 @@ export const styles = {
         windowBorder: 0x574135,
         btnBg: 0xb16551,
         btnBorder:  0x462820,
-        red: 0xff0000
+        red: 0xff0000,
+        blue: 0x0000ff
     },
 
     textColors: {

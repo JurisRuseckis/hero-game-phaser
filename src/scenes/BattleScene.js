@@ -7,7 +7,7 @@ import Battle from "../models/Battle";
 import CombatAction from "../models/CombatAction";
 import Character from "../models/Character";
 import BattleGenerator from "../models/Generators/BattleGenerator";
-import CombatantStatus from "../ui-components/CombatantStatus";
+import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
 
 export class BattleScene extends Phaser.Scene
 {
@@ -40,7 +40,7 @@ export class BattleScene extends Phaser.Scene
 
         // initial update to fill first turn meters
         battle.init();
-        this.updateBattleScene(battle);
+        // this.updateBattleScene(battle);
     }
 
     /**
@@ -81,21 +81,41 @@ export class BattleScene extends Phaser.Scene
     /**
      * i need turn update not per time
      * @param {Battle} battle
+     * @param {Combatant} executor
+     * @param {CombatAction} action
      */
-    updateBattleScene(battle)
+    updateBattleScene(battle, executor, action)
     {
+        if(this.target){
+            this.combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
+        }
+        if(this.executorId){
+            this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+        }
+
+        this.target = action.target ? action.target : null;
+        this.executorId = executor.id;
+
+        const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
+        targetObj.setStyle(statusOption.target);
+        targetObj.txtObj.setText(this.target.hp);
+        if(this.target.hp <= 0){
+            targetObj.crossObj.setVisible(true);
+        }
+        this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
+        
         // todo: rename battle scene to avoid confusion
-        Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
-            team.map((combatant, combatantIndex) =>{
-                const cmbStatus = this.combatantStatuses.find(e => e.cmbId == combatant.id);
-                if(cmbStatus){
-                    cmbStatus.txtObj.setText(combatant.hp);
-                    if(combatant.hp <= 0){
-                        cmbStatus.crossObj.setVisible(true);
-                    }
-                }
-            });
-        });
+        // Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
+        //     team.map((combatant, combatantIndex) =>{
+        //         const cmbStatus = this.combatantStatuses.find(e => e.cmbId == combatant.id);
+        //         if(cmbStatus){
+        //             cmbStatus.txtObj.setText(combatant.hp);
+        //             if(combatant.hp <= 0){
+        //                 cmbStatus.crossObj.setVisible(true);
+        //             }
+        //         }
+        //     });
+        // });
     }
 
     addBattleScene()

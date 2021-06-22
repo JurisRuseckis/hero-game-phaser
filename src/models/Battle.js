@@ -100,6 +100,8 @@ export default class Battle{
         log = `Turn ${this.turnCount}: ${log}`;
         this.log.push(log);
 
+        //update battle scene before carying off corpses
+        this.scene.updateBattleScene(this, executor, action);
         // update list after action
         this.updateCombatantList();
         const teams = groupArrByKey(this.combatants, 'team');
@@ -129,9 +131,6 @@ export default class Battle{
 
     updateCombatantList()
     {
-        //update battle scene before carying off corpses
-        this.scene.updateBattleScene(this);
-        
         this.combatants = this.combatants.filter((c) => {
             const alive = c.hp > 0;
             if(!alive){

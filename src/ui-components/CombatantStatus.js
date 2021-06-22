@@ -1,5 +1,11 @@
 import {styles} from "../styles";
 
+export const statusOption = {
+    default : 0,
+    executor : 1,
+    target : 2,
+};
+
 export default class CombatantStatus
 {
     /**
@@ -21,7 +27,6 @@ export default class CombatantStatus
      * @param {number} props.border.color
      * @param {number} props.border.alpha
      * 
-     * @param {Array} props.events
      * @param {string} props.cmbId
      *
      */
@@ -43,7 +48,6 @@ export default class CombatantStatus
             width: styles.borderWidth,
             color: styles.colors.btnBorder
         };
-        this.events = props.events || null;
         this.cmbId = props.cmbId || null;
 
         this.addCircle();
@@ -103,6 +107,21 @@ export default class CombatantStatus
     {
         this.btnObj.destroy();
         this.txtObj.destroy();
+    }
+
+    setStyle(status){
+            switch(status){
+                case statusOption.executor:
+                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.blue).setFillStyle(styles.colors.blue);
+                    break;
+                case statusOption.target:
+                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.red).setFillStyle(styles.colors.red);
+                    break;
+                case statusOption.default:
+                default:
+                    this.btnObj.setStrokeStyle(this.border.width, this.border.color).setFillStyle(this.fill);
+                    break;
+            }
     }
 
 }

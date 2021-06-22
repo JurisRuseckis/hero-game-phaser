@@ -42,7 +42,6 @@ export default class Btn
             width: styles.borderWidth,
             color: styles.colors.btnBorder
         };
-        this.events = props.events || null;
 
         this.addBtn();
         this.addTxt();
