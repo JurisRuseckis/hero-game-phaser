@@ -20,7 +20,8 @@ export default class Character
      * @param {number} props.atk
      * @param {boolean} props.isPlayable
      * @param {DuelAction[]} props.duelActions
-     * @param {CombatAction[]} props.combatActions
+     * @param {Object} props.combatActions
+     * @param {BattleAI} props.battleAI
      */
     constructor(props) {
         this.baseHP = props.baseHP;
@@ -28,13 +29,14 @@ export default class Character
         this.name = props.name;
         this.img = props.img;
         this.atk = props.atk;
-        this.race = props.race
+        this.race = props.race;
+        this.battleAI = props.battleAI;
         /**
          * @type {DuelAction[]}
          */
         this.duelActions = props.duelActions;
         /**
-         * @type {CombatAction[]}
+         * @type {Object}
          */
          this.combatActions = props.combatActions;
         /**

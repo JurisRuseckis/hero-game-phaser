@@ -42,6 +42,11 @@ export class Combatant {
          */
         this.hp = this.calculateHP();
         /**
+         *
+         * @type {number}
+         */
+        this.maxHp = this.hp;
+        /**
          * @type {boolean}
          */
         this.isPlayable = props.character.isPlayable;
@@ -54,9 +59,13 @@ export class Combatant {
          */
         this.duelActions = props.character.duelActions;
         /**
-         * @type {CombatAction[]}
+         * @type {Object}
          */
         this.combatAction = props.character.combatActions;
+        /**
+         * @type {BattleAI}
+         */
+        this.ai = props.character.battleAI;
     }
 
     calculateHP() {
@@ -83,16 +92,7 @@ export class Combatant {
      * @return {CombatAction}
      */
      calculateBattleAIAction(battle) {
-        // for testing purposes currently always attack
-        let action = this.combatAction[1];
-        let availableTargets = action.getAvailableTargets(this, battle.combatants);
-        if(availableTargets){
-            action.pickTarget(this, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
-            return action;
-        } else {
-            return this.combatAction[0];
-        }
-    
-    }
+        return this.ai.calculateBattleAIAction(battle,this);
+     }
 
 }

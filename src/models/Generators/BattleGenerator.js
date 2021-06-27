@@ -1,26 +1,28 @@
-import { randomInt } from "../../helpers/randomInt";
+import {randomInt} from "../../helpers/randomInt";
 import Battle from "../Battle";
-import Character, { race } from "../Character";
-import { Combatant } from "../Combatant";
+import Character, {race} from "../Character";
+import {Combatant} from "../Combatant";
 import CombatAction from "../CombatAction";
+import BattleAI from "../BattleAI";
 
 /**
- * @type {CombatAction[]}
+ * @type {Object}
  */
- const defaultActions = [
-    new CombatAction({
+const defaultActions = {
+    wait: new CombatAction({
         key: 'wait',
+        cooldown: 0,
         operation: (executor, target) => {
             executor.turnMeter = 0;
             return `${executor.label} from team ${executor.team} waits`;
         },
         targetRules: (executor, target) => {
-            return executor == target;
+            return executor === target;
         }
     }),
-    new CombatAction({
-        key: 'attack',
-        text: '',
+    attack: new CombatAction({
+        key: 'basic attack',
+        cooldown: 0,
         operation: (executor, target) => {
             executor.turnMeter = 0;
             // todo: add arena effects
@@ -30,10 +32,73 @@ import CombatAction from "../CombatAction";
             return `${executor.label} from team ${executor.team} attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target) => {
-            return executor.team != target.team;
+            return executor.team !== target.team;
+        }
+    })
+};
+
+ /**
+ * @type {Object}
+ */
+const actionPool = {
+     heal : new CombatAction({
+         key: 'heal',
+         cooldown: 10,
+         operation: (executor, target) => {
+             executor.turnMeter = 0;
+             // todo: add arena effects
+             // todo: add target effects
+             const healAmount = executor.calculateDmg()*2;
+             target.hp += healAmount;
+             if(target.hp > target.maxHp){
+                 target.hp = target.maxHp;
+             }
+             return `${executor.label} from team ${executor.team} heals ${target.label} from team ${target.team} for ${healAmount} hp!`;
+         },
+         targetRules: (executor, target) => {
+             return executor.team === target.team;
+         }
+     }),
+ }
+
+const battleAI = {
+    // as all chars will have default actions then basic will be default for all
+    basic: new BattleAI({
+        key: 'basic',
+        battleAI: (battle, executor) => {
+            // for testing purposes currently always attack
+            let action = executor.combatAction.attack;
+            let availableTargets = action.getAvailableTargets(executor, battle.combatants);
+            if(availableTargets){
+                action.pickTarget(executor, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
+                return action;
+            } else {
+                return executor.combatAction.wait;
+            }
         }
     }),
-];
+    leader:  new BattleAI({
+        battleAI: (battle, executor) => {
+
+            let attackAction = executor.combatAction.attack;
+            let availableTargets = attackAction.getAvailableTargets(executor, battle.combatants);
+
+            let healAction = executor.combatAction.heal;
+            let availableHealTargets = healAction.getAvailableTargets(executor, battle.combatants);
+
+            if(availableHealTargets) {
+                healAction.pickTarget(executor, battle.combatants[availableHealTargets[randomInt(availableHealTargets.length)]])
+                return healAction;
+            } else if(availableTargets) {
+                attackAction.pickTarget(executor, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
+                return attackAction;
+            } else {
+                return executor.combatAction.wait;
+            }
+        },
+        key: 'leader'
+    }),
+}
 
 const characterRoster = {
     orc : {
@@ -46,6 +111,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         warrior: new Character({
             name: 'warrior',
@@ -56,6 +122,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         warchief: new Character({
             name: 'warchief',
@@ -64,8 +131,9 @@ const characterRoster = {
             baseSpeed: 0.2,
             atk: 10,
             isPlayable: false,
-            combatActions: defaultActions,
+            combatActions: {...defaultActions, heal:actionPool.heal},
             duelActions: [],
+            battleAI: battleAI.leader,
         }),
     },
     human : {
@@ -78,6 +146,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         warrior: new Character({
             name: 'warrior',
@@ -88,6 +157,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         general: new Character({
             name: 'general',
@@ -96,8 +166,9 @@ const characterRoster = {
             baseSpeed: 0.3,
             atk: 8,
             isPlayable: false,
-            combatActions: defaultActions,
+            combatActions: {...defaultActions, heal:actionPool.heal},
             duelActions: [],
+            battleAI: battleAI.leader,
         }),
     },
     dwarf : {
@@ -110,6 +181,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         warrior: new Character({
             name: 'warrior',
@@ -120,6 +192,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         commander: new Character({
             name: 'commander',
@@ -128,40 +201,44 @@ const characterRoster = {
             baseSpeed: 0.25,
             atk: 9,
             isPlayable: false,
-            combatActions: defaultActions,
+            combatActions: {...defaultActions, heal:actionPool.heal},
             duelActions: [],
+            battleAI: battleAI.leader,
         }),
     },
     elf : {
         bowyer: new Character({
             name: 'bowyer',
-            race: race.Dwarf,
+            race: race.Elf,
             baseHP: 6,
             baseSpeed: 0.20,
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         archer: new Character({
             name: 'archer',
-            race: race.Dwarf,
+            race: race.Elf,
             baseHP: 30,
             baseSpeed: 0.7,
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         lord: new Character({
             name: 'lord',
-            race: race.Dwarf,
+            race: race.Elf,
             baseHP: 90,
             baseSpeed: 0.9,
             atk: 7,
             isPlayable: false,
-            combatActions: defaultActions,
+            combatActions: {...defaultActions, heal:actionPool.heal},
             duelActions: [],
+            battleAI: battleAI.leader,
         }),
     },
     goblins : {
@@ -174,6 +251,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         goblinWarrior: new Character({
             name: 'warrior',
@@ -184,6 +262,7 @@ const characterRoster = {
             isPlayable: false,
             combatActions: defaultActions,
             duelActions: [],
+            battleAI: battleAI.basic,
         }),
         goblinChieftan: new Character({
             name: 'warboss',
@@ -192,8 +271,9 @@ const characterRoster = {
             baseSpeed: 0.9,
             atk: 4,
             isPlayable: false,
-            combatActions: defaultActions,
+            combatActions: {...defaultActions, heal:actionPool.heal},
             duelActions: [],
+            battleAI: battleAI.leader,
         }),
     }
 };
@@ -237,12 +317,10 @@ export default class BattleGenerator
             return combatants;
         }).flat();
 
-        const battle = new Battle({
+        return new Battle({
             combatants: combatants,
             scene: scene
         });
-
-        return battle;
     }
 
     /**

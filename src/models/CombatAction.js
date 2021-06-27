@@ -4,13 +4,18 @@ export default class CombatAction
      *
      * @param {Object} props
      * @param {string} props.key
+     * @param {number} props.cooldown
      * @param {function} props.operation
      * @param {function} props.targetRules
      */
     constructor(props) {
         this.key = props.key;
+
         this.operation = props.operation;
         this.targetRules = props.targetRules;
+
+        this.cooldown = props.cooldown;
+        this.cooldownLeft = 0;
         /**
          * filled after picked 
          * @var {Combatant}
@@ -21,12 +26,17 @@ export default class CombatAction
     /**
      *
      * @param {Combatant} combatant
-     * @param {Combatant} target
      * @return {string}
      * todo: add multiple target options
      */
     applyActionEffects(combatant) {
-        return this.operation(combatant, this.target);
+        let actionTxt = this.operation(combatant, this.target);
+        this.cooldownLeft = this.cooldown;
+        return actionTxt;
+    }
+
+    onCooldown(){
+        return this.cooldownLeft > 0;
     }
 
     /**
@@ -47,10 +57,11 @@ export default class CombatAction
     /**
      * returns indices of combatants that qualifies as targets for this action
      * @param {Combatant} executor 
-     * @param {Combatants[]} combatants 
+     * @param {Combatant[]} combatants
      * @returns {number[]} indices of given array 
      */
     getAvailableTargets(executor, combatants){
+        console.log([this.key,combatants]);
         return combatants.map((combatant,index) => {
             if(this.targetRules(executor, combatant)){
                 return index;
