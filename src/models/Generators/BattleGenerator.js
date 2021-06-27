@@ -43,12 +43,12 @@ const defaultActions = {
 const actionPool = {
      heal : new CombatAction({
          key: 'heal',
-         cooldown: 10,
+         cooldown: 20,
          operation: (executor, target) => {
              executor.turnMeter = 0;
              // todo: add arena effects
              // todo: add target effects
-             const healAmount = executor.calculateDmg()*2;
+             const healAmount = executor.calculateDmg();
              target.hp += healAmount;
              if(target.hp > target.maxHp){
                  target.hp = target.maxHp;
