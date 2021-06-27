@@ -61,7 +61,6 @@ export default class CombatAction
      * @returns {number[]} indices of given array 
      */
     getAvailableTargets(executor, combatants){
-        console.log([this.key,combatants]);
         return combatants.map((combatant,index) => {
             if(this.targetRules(executor, combatant)){
                 return index;
