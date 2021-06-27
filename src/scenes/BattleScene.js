@@ -96,12 +96,15 @@ export class BattleScene extends Phaser.Scene
         this.target = action.target ? action.target : null;
         this.executorId = executor.id;
 
-        const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
-        targetObj.setStyle(statusOption.target);
-        targetObj.txtObj.setText(this.target.hp);
-        if(this.target.hp <= 0){
-            targetObj.crossObj.setVisible(true);
+        if(this.target){
+            const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
+            targetObj.setStyle(statusOption.target);
+            targetObj.txtObj.setText(this.target.hp);
+            if(this.target.hp <= 0){
+                targetObj.crossObj.setVisible(true);
+            }
         }
+
         this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
         
         // todo: rename battle scene to avoid confusion
