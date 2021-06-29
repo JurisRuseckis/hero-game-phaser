@@ -3,7 +3,7 @@ export default class BattleCameraController{
     /**
      * 
      * @param {Object} props 
-     * @param {Object} props.scene 
+     * @param {Phaser.Scene} props.scene 
      */
     constructor(props)
     {
@@ -36,7 +36,7 @@ export default class BattleCameraController{
                 };
 
                 const tileGridLayer = this.scene.map.getLayer('tileGridLayer');
-                const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.game.scale.width;
+                const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
                 
                 
                 if(newPos.x < -this.maxCameraOffset ){
@@ -45,7 +45,7 @@ export default class BattleCameraController{
                     newPos.x = maxXOffset;
                 }
                 
-                const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.game.scale.height;
+                const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
                 if(newPos.y < -this.maxCameraOffset ){
                     newPos.y = -this.maxCameraOffset;
                 } else if (newPos.y > maxYOffset){
