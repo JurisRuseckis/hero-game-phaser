@@ -182,12 +182,11 @@ export default class Battle{
     }
 
     /**
-     * duels first phase
+     * battles first phase
      */
     init()
     {
-        console.table(this.combatants);
-        this.nextTurn();
+        
     }
 
     
