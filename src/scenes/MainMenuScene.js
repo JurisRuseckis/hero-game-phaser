@@ -59,10 +59,10 @@ export class MainMenuScene extends Phaser.Scene
             {
                 label: "New Game",
                 onClick: ()=>{
-                    this.scene.start(cfg.scenes.navigation);
-                    // this.scene.start(cfg.scenes.loading, {
-                    //     sceneKey: cfg.scenes.navigation,
-                    // });
+                    // this.scene.start(cfg.scenes.navigation);
+                    this.scene.start(cfg.scenes.loading, {
+                        sceneKey: cfg.scenes.navigation,
+                    });
                     this.registry.set('test', 'register is alive');
                 }
             },

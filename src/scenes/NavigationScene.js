@@ -67,17 +67,28 @@ export class NavigationScene extends Phaser.Scene
                     this.changeScene(cfg.scenes.battle);
                 }
             },
+            {
+                label: "grid",
+                onClick: ()=>{
+                    this.changeScene(cfg.scenes.battleGrid, false);
+                }
+            },
         ]
     }
 
     /**
      *
      * @param {string} targetscene
+     * @param {boolean} changeLayout
      */
-    changeScene(targetscene)
+    changeScene(targetscene, changeLayout = false)
     {
         const currentScene = this.registry.get('currentScene');
         if(currentScene === targetscene) return;
+
+        if(changeLayout){
+            this.scene.start(targetscene);
+        }
 
         if(currentScene){
             const currentSceneObj = this.scene.get(currentScene)
