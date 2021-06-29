@@ -87,6 +87,10 @@ export default class BattleCameraController{
                 }
             }
         });
+        this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
+            const cam = this.cameras.main;
+            cam.setZoom(cam.zoom - dy/1000);
+        });
     }
 
     checkBtns() {
