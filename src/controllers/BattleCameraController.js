@@ -98,25 +98,20 @@ export default class BattleCameraController{
         const tileGridLayer = this.scene.map.getLayer('tileGridLayer');
         const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
         const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
+        let updateDebugger = false;
 
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.cam.scrollX -= this.camSpeed;
             if(this.cam.scrollX < -this.maxCameraOffset){
                 this.cam.scrollX = -this.maxCameraOffset;
             }
-            this.debugger.displayJson({
-                'x': this.cam.scrollX,
-                'y': this.cam.scrollY
-            });
+            updateDebugger = true;
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.cam.scrollX += this.camSpeed;
             if(this.cam.scrollX > maxXOffset){
                 this.cam.scrollX = maxXOffset;
             }
-            this.debugger.displayJson({
-                'x': this.cam.scrollX,
-                'y': this.cam.scrollY
-            });
+            updateDebugger = true;
         }
     
         if (this.keys.W.isDown || this.cursors.up.isDown) {
@@ -124,15 +119,16 @@ export default class BattleCameraController{
             if(this.cam.scrollY < -this.maxCameraOffset){
                 this.cam.scrollY = -this.maxCameraOffset;
             }
-            this.debugger.displayJson({
-                'x': this.cam.scrollX,
-                'y': this.cam.scrollY
-            });
+            updateDebugger = true;
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
             this.cam.scrollY += this.camSpeed;
             if(this.cam.scrollY > maxYOffset){
                 this.cam.scrollY = maxYOffset;
             }
+            updateDebugger = true;
+        }
+
+        if(updateDebugger){
             this.debugger.displayJson({
                 'x': this.cam.scrollX,
                 'y': this.cam.scrollY
