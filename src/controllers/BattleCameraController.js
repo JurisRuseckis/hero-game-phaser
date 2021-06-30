@@ -89,8 +89,13 @@ export default class BattleCameraController{
         });
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             const cam = this.cameras.main;
-            cam.setZoom(cam.zoom - dy/1000);
-        
+            let newZoom = cam.zoom - dy/1000;
+            if(newZoom < 0.6){
+                newZoom = 0.6;
+            } else if(newZoom > 1.2){
+                newZoom = 1.2;
+            }
+            cam.setZoom(newZoom);
         });
     }
 

@@ -64,7 +64,7 @@ export class NavigationScene extends Phaser.Scene
             {
                 label: "grid",
                 onClick: ()=>{
-                    this.changeScene(cfg.scenes.battleGrid, false);
+                    this.changeScene(cfg.scenes.battleGrid, true);
                 }
             },
         ]
