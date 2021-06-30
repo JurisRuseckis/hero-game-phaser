@@ -11,7 +11,7 @@ export default class BattleCameraController{
         this.debugger = this.scene.debugger;
         this.cam = this.scene.cameras.main;
         this.maxCameraOffset = 200;
-        this.camSpeed = 12;
+        this.camSpeed = 32;
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.keys = this.scene.input.keyboard.addKeys('W,A,S,D');
@@ -90,20 +90,53 @@ export default class BattleCameraController{
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             const cam = this.cameras.main;
             cam.setZoom(cam.zoom - dy/1000);
+        
         });
     }
 
     checkBtns() {
+        const tileGridLayer = this.scene.map.getLayer('tileGridLayer');
+        const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
+        const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
+
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.cam.scrollX -= this.camSpeed;
+            if(this.cam.scrollX < -this.maxCameraOffset){
+                this.cam.scrollX = -this.maxCameraOffset;
+            }
+            this.debugger.displayJson({
+                'x': this.cam.scrollX,
+                'y': this.cam.scrollY
+            });
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.cam.scrollX += this.camSpeed;
+            if(this.cam.scrollX > maxXOffset){
+                this.cam.scrollX = maxXOffset;
+            }
+            this.debugger.displayJson({
+                'x': this.cam.scrollX,
+                'y': this.cam.scrollY
+            });
         }
     
         if (this.keys.W.isDown || this.cursors.up.isDown) {
             this.cam.scrollY -= this.camSpeed;
+            if(this.cam.scrollY < -this.maxCameraOffset){
+                this.cam.scrollY = -this.maxCameraOffset;
+            }
+            this.debugger.displayJson({
+                'x': this.cam.scrollX,
+                'y': this.cam.scrollY
+            });
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
             this.cam.scrollY += this.camSpeed;
+            if(this.cam.scrollY > maxYOffset){
+                this.cam.scrollY = maxYOffset;
+            }
+            this.debugger.displayJson({
+                'x': this.cam.scrollX,
+                'y': this.cam.scrollY
+            });
         }
     }
 }

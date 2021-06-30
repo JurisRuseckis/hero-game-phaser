@@ -19,6 +19,7 @@ export default class Debugger
             fill: '#ffffff'
         });
         this.obj.setScrollFactor(0);
+        this.obj.setName('debug');
 
     }
 

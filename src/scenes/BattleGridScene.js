@@ -99,7 +99,6 @@ export class BattleGridScene extends Phaser.Scene
             y: this.scale.height - (16 + 18)
         });
 
-        console.log(this.scale);
     }
 
     update(time, delta){
