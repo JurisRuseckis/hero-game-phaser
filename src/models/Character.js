@@ -19,7 +19,6 @@ export default class Character
      * @param {string} props.img
      * @param {number} props.atk
      * @param {boolean} props.isPlayable
-     * @param {DuelAction[]} props.duelActions
      * @param {Object} props.combatActions
      * @param {BattleAI} props.battleAI
      */
@@ -31,10 +30,6 @@ export default class Character
         this.atk = props.atk;
         this.race = props.race;
         this.battleAI = props.battleAI;
-        /**
-         * @type {DuelAction[]}
-         */
-        this.duelActions = props.duelActions;
         /**
          * @type {Object}
          */

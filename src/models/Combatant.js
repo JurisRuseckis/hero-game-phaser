@@ -55,10 +55,6 @@ export class Combatant {
          */
         this.team = props.team;
         /**
-         * @type {DuelAction[]}
-         */
-        this.duelActions = props.character.duelActions;
-        /**
          * @type {Object}
          */
         this.combatAction = props.character.combatActions;
@@ -74,16 +70,6 @@ export class Combatant {
 
     calculateDmg() {
         return this.character.atk + randomInt(4);
-    }
-
-    /**
-     *
-     * @param {Duel} duel - for analytics
-     * @return {DuelAction}
-     */
-    calculateAIAction(duel) {
-        // for testing purposes currently always attack
-        return this.duelActions[1];
     }
 
     /**

@@ -5,7 +5,6 @@ import {LoadingScene} from "./scenes/LoadingScene";
 import {CharacterScene} from "./scenes/CharacterScene";
 import {styles} from "./styles";
 import {InventoryScene} from "./scenes/InventoryScene";
-import {DuelScene} from "./scenes/DuelScene";
 import { BattleScene } from './scenes/BattleScene';
 import { BattleGridScene } from './scenes/BattleGridScene';
 
@@ -22,7 +21,6 @@ const config = {
         // BattleScene,
         MainMenuScene,
         CharacterScene,
-        DuelScene,
         InventoryScene,
         LoadingScene,
         NavigationScene,

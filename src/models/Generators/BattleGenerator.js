@@ -110,7 +110,6 @@ const characterRoster = {
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         warrior: new Character({
@@ -121,7 +120,6 @@ const characterRoster = {
             atk: 5,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         warchief: new Character({
@@ -132,7 +130,6 @@ const characterRoster = {
             atk: 10,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            duelActions: [],
             battleAI: battleAI.leader,
         }),
     },
@@ -145,7 +142,6 @@ const characterRoster = {
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         warrior: new Character({
@@ -156,7 +152,6 @@ const characterRoster = {
             atk: 3,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         general: new Character({
@@ -167,7 +162,6 @@ const characterRoster = {
             atk: 8,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            duelActions: [],
             battleAI: battleAI.leader,
         }),
     },
@@ -180,7 +174,6 @@ const characterRoster = {
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         warrior: new Character({
@@ -191,7 +184,6 @@ const characterRoster = {
             atk: 3,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         commander: new Character({
@@ -202,7 +194,6 @@ const characterRoster = {
             atk: 9,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            duelActions: [],
             battleAI: battleAI.leader,
         }),
     },
@@ -215,7 +206,6 @@ const characterRoster = {
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         archer: new Character({
@@ -226,7 +216,6 @@ const characterRoster = {
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         lord: new Character({
@@ -237,7 +226,6 @@ const characterRoster = {
             atk: 7,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            duelActions: [],
             battleAI: battleAI.leader,
         }),
     },
@@ -250,7 +238,6 @@ const characterRoster = {
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         goblinWarrior: new Character({
@@ -261,7 +248,6 @@ const characterRoster = {
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
-            duelActions: [],
             battleAI: battleAI.basic,
         }),
         goblinChieftan: new Character({
@@ -272,7 +258,6 @@ const characterRoster = {
             atk: 4,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            duelActions: [],
             battleAI: battleAI.leader,
         }),
     }

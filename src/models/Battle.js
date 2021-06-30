@@ -4,7 +4,7 @@ import { BattleScene } from "../scenes/BattleScene";
 import CombatAction from "./CombatAction";
 
 /**
- * Duel
+ * battle
  * @property.arena
  * @property.player
  * @property.enemy
@@ -160,7 +160,7 @@ export default class Battle{
     nextTurn()
     {
         // console.table(this.combatants);
-        // check if duel can advance to next turn
+        // check if battle can advance to next turn
         if(this.status === battleStatus.finished) return;
 
         // getting current turn

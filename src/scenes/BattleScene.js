@@ -9,7 +9,7 @@ import Character from "../models/Character";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
 
-//todo: rename this to brawl or duel 
+//todo: rename this to brawl
 export class BattleScene extends Phaser.Scene
 {
     constructor ()
