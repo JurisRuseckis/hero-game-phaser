@@ -20,6 +20,7 @@ export default class Debugger
         });
         this.obj.setScrollFactor(0);
         this.obj.setName('debug');
+        this.obj.setDepth(1);
 
     }
 
