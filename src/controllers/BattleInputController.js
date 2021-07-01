@@ -40,9 +40,10 @@ export default class BattleInputController{
                     x: this.cam.scrollX + this.pointerDownPosition.x - pointer.x,
                     y: this.cam.scrollY + this.pointerDownPosition.y - pointer.y
                 };
+                
 
                 const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
-                const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
+                const maxXOffset = tileGridLayer.widthInPixels + this.maxCameraOffset - this.scene.scale.width;
                 
                 
                 if(newPos.x < -this.maxCameraOffset ){
@@ -94,7 +95,6 @@ export default class BattleInputController{
             this.pointerDownInitialPosition = {...this.pointerDownPosition};
         });
         this.scene.input.on('pointerup', (pointer) => {
-            console.log(pointer, this.cam);
             // curently drag feels like workaround and probably will need a rework
             if (this.pointerDown) {
                 this.pointerDown = false;

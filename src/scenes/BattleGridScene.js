@@ -48,11 +48,9 @@ export class BattleGridScene extends Phaser.Scene
             tiles.push(row);
         }
 
-        
-
         this.tilemap = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
         const tileSet = this.tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
-        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, this.tileSize * tiles[0].length, tiles.length);
+        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, tiles[0].length, tiles.length);
         this.tilemap.putTilesAt(tiles, 0, 0, true, tileGridLayer);
 
         this.debugger = new Debugger({
@@ -60,6 +58,7 @@ export class BattleGridScene extends Phaser.Scene
         });
         
         this.marker = this.createTileSelector();
+
         this.InputController = new BattleInputController({
             scene: this,
         });
@@ -162,11 +161,6 @@ export class BattleGridScene extends Phaser.Scene
       }
 
       createTileSelector() {
-        //  Our tile selection window
-        // let tileSelector = gameObj.add.group();
-    
-        // tileSelector.fixedToCamera = true;
-    
         //  Our painting marker
         let marker = this.add.graphics();
         marker.lineStyle(2, 0xffffff, 1.0);
