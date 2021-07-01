@@ -279,10 +279,9 @@ const teamSeed = [
 export default class BattleGenerator
 {
     /**
-     * @param {Phaser.Scene} scene 
      * @returns 
      */
-    static generate(scene){
+    static generate(){
         const teamCount = randomInt(3)+2;
         const teamSize = randomInt(4)+2;
         let teams = [];
@@ -303,8 +302,7 @@ export default class BattleGenerator
         }).flat();
 
         return new Battle({
-            combatants: combatants,
-            scene: scene
+            combatants: combatants
         });
     }
 

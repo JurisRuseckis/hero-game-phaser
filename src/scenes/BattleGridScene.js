@@ -6,7 +6,8 @@ import Debugger from "../models/Debugger";
 import BattleCameraController from "../controllers/BattleCameraController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
-import { randomInt } from "../helpers/randomInt";
+import Battle, { battleStatus } from "../models/Battle";
+import BattleLog, {battleLogType} from "../models/BattleLog";
 
 export class BattleGridScene extends Phaser.Scene
 {
@@ -28,7 +29,7 @@ export class BattleGridScene extends Phaser.Scene
     preload ()
     {
         this.load.image('battleTileset', tileSetImage);
-        const battle = BattleGenerator.generate(this);
+        const battle = BattleGenerator.generate();
         this.data.set('battle', battle);
     }
 
@@ -79,21 +80,6 @@ export class BattleGridScene extends Phaser.Scene
             });
         }).flat();
 
-
-        this.actionText = this.add.text(
-            500,
-            0,
-            "Placeholder",
-            {
-                fontSize: styles.fontSize.default, 
-                wordWrap: {
-                    width: 500
-                }
-            },
-        );
-        //workaround while brawls/duesl and battles are not seperated
-        this.actionText.setVisible(false);
-
         this.battleLogDebugger = new Debugger({
             scene: this,
             y: this.scale.height - (16 + 18)
@@ -106,8 +92,12 @@ export class BattleGridScene extends Phaser.Scene
         // as sometimes we can lag a bit we do a loop 
         while (this.turnTimer > this.turndelay) {
             const battle = this.data.get('battle');
-            this.turnCount = battle.nextTurn();
-            this.battleLogDebugger.setText(this.actionText.text);
+            const turnResults = battle.nextTurn();
+            // if battle in progress then update scene
+            if(battle.status !== battleStatus.finished){
+                this.updateBattleScene(battle, turnResults.executor, turnResults.action);
+                this.battleLogDebugger.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
+            }
             this.turnTimer -= this.turndelay;
         }
 
@@ -121,50 +111,50 @@ export class BattleGridScene extends Phaser.Scene
         }
     }
 
-    /**
+     /**
      * i need turn update not per time
      * @param {Battle} battle
      * @param {Combatant} executor
      * @param {CombatAction} action
      */
-     updateBattleScene(battle, executor, action)
+      updateBattleScene(battle, executor, action)
+      {
+          if(this.target){
+              this.combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
+          }
+          if(this.executorId){
+              this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+          }
+  
+          this.target = action.target ? action.target : null;
+          this.executorId = executor.id;
+  
+          if(this.target){
+              const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
+              targetObj.setStyle(statusOption.target);
+              targetObj.txtObj.setText(this.target.hp);
+              if(this.target.hp <= 0){
+                  targetObj.crossObj.setVisible(true);
+              }
+          }
+  
+          this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
+          
+      }
+ 
+     /**
+      * @param props
+      */
+     showResults(props)
      {
-         if(this.target){
-             this.combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
-         }
-         if(this.executorId){
-             this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
-         }
+         console.log('result window');
+     }
  
-         this.target = action.target ? action.target : null;
-         this.executorId = executor.id;
- 
-         if(this.target){
-             const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
-             targetObj.setStyle(statusOption.target);
-             targetObj.txtObj.setText(this.target.hp);
-             if(this.target.hp <= 0){
-                 targetObj.crossObj.setVisible(true);
-             }
-         }
- 
-         this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
+     /**
+      * @param {CombatAction[]} actions
+      */
+      updateActionBtns(actions)
+      {
          
-     }
-
-    /**
-     * @param props
-     */
-    showResults(props)
-    {
-        console.log('result window');
-    }
-
-    /**
-     * @param {CombatAction[]} actions
-     */
-     updateActionBtns(actions)
-     {
-        
-     }
+      }
 }

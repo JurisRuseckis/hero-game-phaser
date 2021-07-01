@@ -3,9 +3,8 @@ import {cfg} from "../cfg";
 import {styles} from "../styles";
 import Btn from "../ui-components/Btn";
 import {Combatant} from "../models/Combatant";
-import Battle from "../models/Battle";
+import Battle, { battleStatus } from "../models/Battle";
 import CombatAction from "../models/CombatAction";
-import Character from "../models/Character";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
 
@@ -18,14 +17,13 @@ export class BattleScene extends Phaser.Scene
             key: cfg.scenes.battle
         });
 
-        this.turndelay = 100;
+        this.turndelay = 10;
         this.turnTimer = 0;
-        this.turnCount = 0;
     }
 
     preload ()
     {
-        const battle = BattleGenerator.generate(this);
+        const battle = BattleGenerator.generate();
         this.data.set('battle', battle);
     }
 
@@ -41,7 +39,6 @@ export class BattleScene extends Phaser.Scene
 
         // initial update to fill first turn meters
         battle.init();
-        // this.updateBattleScene(battle);
     }
 
     /**
@@ -107,19 +104,6 @@ export class BattleScene extends Phaser.Scene
         }
 
         this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
-        
-        // todo: rename battle scene to avoid confusion
-        // Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
-        //     team.map((combatant, combatantIndex) =>{
-        //         const cmbStatus = this.combatantStatuses.find(e => e.cmbId == combatant.id);
-        //         if(cmbStatus){
-        //             cmbStatus.txtObj.setText(combatant.hp);
-        //             if(combatant.hp <= 0){
-        //                 cmbStatus.crossObj.setVisible(true);
-        //             }
-        //         }
-        //     });
-        // });
     }
 
     addBattleScene()
@@ -194,17 +178,6 @@ export class BattleScene extends Phaser.Scene
     showResults(props)
     {
         console.log('result window');
-        // this.battleResultWindow = this.add.rectangle(
-        //     this.boxContainerBounds.left + styles.padding,
-        //     this.battleWindowBounds.bottom + styles.padding + 100,
-        //     styles.grid.window - styles.padding*2,
-        //     600,
-        //     styles.colors.btnBg,
-        // ).setOrigin(0);
-        // this.battleResultWindow.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
-        // win/lost
-        // winner team
-        // loot for winner
     }
 
     update(time, delta){
@@ -216,7 +189,13 @@ export class BattleScene extends Phaser.Scene
              * @type {Battle}
              */
             const battle = this.data.get('battle');
-            this.turnCount = battle.nextTurn();
+            const turnResults = battle.nextTurn();
+            // if battle in progress then update scene
+            if(battle.status !== battleStatus.finished){
+                this.updateBattleScene(battle, turnResults.executor, turnResults.action);
+            }
+            
+            
             this.turnTimer -= this.turndelay;
         }
     }

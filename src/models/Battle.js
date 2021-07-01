@@ -2,6 +2,7 @@ import {Combatant} from "./Combatant";
 import {groupArrByKey} from "../helpers/groupArrByKey";
 import { BattleScene } from "../scenes/BattleScene";
 import CombatAction from "./CombatAction";
+import BattleLog, {battleLogType} from "./BattleLog";
 
 /**
  * battle
@@ -20,9 +21,16 @@ import CombatAction from "./CombatAction";
  * - speed and turnMeter can be affected by spells
  */
 
-const battleStatus = {
+export const battleStatus = {
     started: 0,
     finished: 1,
+}
+
+const battleType = {
+    // no movement
+    static: 0,
+    // grid movement
+    field: 1
 }
 
 export default class Battle{
@@ -31,15 +39,13 @@ export default class Battle{
      *
      * @param {Object} props
      * @param {Combatant[]} props.combatants
-     * @param {BattleScene} props.scene - currently passing whole scene
      */
     constructor(props)
     {
         this.combatants = props.combatants;
         this.corpses = [];
         this.status = battleStatus.started;
-        this.scene = props.scene;
-        this.log = [];
+        this.battleLog = new BattleLog();
         this.turnCount = 0;
         // to be implemented
         // this.arena = props.arena;
@@ -95,38 +101,31 @@ export default class Battle{
         // todo: pass in target from somewhere else and handle multiple targets
         const executor = this.combatants[0];
 
-        let log = action.applyActionEffects(executor);
-        this.scene.actionText.setText(log);
-        log = `Turn ${this.turnCount}: ${log}`;
-        this.log.push(log);
+        this.battleLog.addTurn(action.applyActionEffects(executor), executor, action);
 
         //update battle scene before carying off corpses
-        this.scene.updateBattleScene(this, executor, action);
+        // todo moved info to return value so scene can choose which params to use
+        // this.scene.updateBattleScene(this, executor, action);
+
         // update list after action
         this.updateCombatantList();
         const teams = groupArrByKey(this.combatants, 'team');
         // check how many teams are left
         if(Object.keys(teams).length < 2){
             this.status = battleStatus.finished;
-            this.scene.showResults({});
-            console.log(this.log);
+            // move to scene 
+            // this.scene.showResults({});
+            console.log(this.battleLog.print());
             console.log('battle ended');
             console.log(`team ${this.combatants[0].team} has won`)
             console.log(`${this.combatants.map((c) => c.label).join(',')} has survived!`);
             console.log(`${this.corpses.map((c) => `${c.label} from team ${c.team}`).join(', ')} has died!`);
-            this.scene.updateActionBtns([]);
+            // move to scene
+            // this.scene.updateActionBtns([]);
             return;
         }
 
         this.turnCount++;
-        // if one team is left then calculate victory
-        // else nextTurn
-        // this.nextTurn();
-
-        // somehow update battle scene when turn is handled
-        // sleep(1000).then(()=>{
-        //     this.update({action:props.action});
-        // });
     }
 
     updateCombatantList()
@@ -135,7 +134,7 @@ export default class Battle{
             const alive = c.hp > 0;
             if(!alive){
                 const msg = `${c.label} from team ${c.team} died!`;
-                this.log.push(msg);
+                this.battleLog.addText(msg);
                 // console.log(msg);
                 this.corpses.push(c);
             }
@@ -178,7 +177,7 @@ export default class Battle{
             // console.table(this.combatants);
         }
 
-        return this.turnCount;
+        return this.battleLog.getLastOfType(battleLogType.turn);
     }
 
     /**
