@@ -1,4 +1,4 @@
-export default class BattleCameraController{
+export default class BattleInputController{
 
     /**
      * 
@@ -19,6 +19,12 @@ export default class BattleCameraController{
         this.pointerDown;
         this.pointerDownPosition;
         this.pointerDownInitialPosition;
+        
+        this.hoveredTile = {
+            "tileIndex": '',
+            "tileX": '',
+            "tileY": '',
+        };
 
         this.addEvents();
     }
@@ -35,7 +41,7 @@ export default class BattleCameraController{
                     y: this.cam.scrollY + this.pointerDownPosition.y - pointer.y
                 };
 
-                const tileGridLayer = this.scene.map.getLayer('tileGridLayer');
+                const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
                 const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
                 
                 
@@ -59,6 +65,22 @@ export default class BattleCameraController{
                 this.cam.scrollY = newPos.y;
 
                 return;
+            } else {
+                // if not dragging 
+                const tileMapTile = this.scene.tilemap.getTileAtWorldXY(pointer.x + this.cam.scrollX, pointer.y + this.cam.scrollY, false, this.cam);
+                if (tileMapTile) {
+                    this.hoveredTile = {
+                        "tileIndex": tileMapTile.index,
+                        "tileX": tileMapTile.x,
+                        "tileY": tileMapTile.y,
+                    }
+                    // const cardIndex = {
+                    //     column: Math.floor(tileMapTile.x / 13),
+                    //     row: Math.floor(tileMapTile.y / 13)
+                    // };
+                    this.scene.marker.x = tileMapTile.x * this.scene.tileSize;
+                    this.scene.marker.y = tileMapTile.y * this.scene.tileSize;
+                }
             }           
            
         });
@@ -100,23 +122,23 @@ export default class BattleCameraController{
     }
 
     checkBtns() {
-        const tileGridLayer = this.scene.map.getLayer('tileGridLayer');
+        const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
         const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
         const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
-        let updateDebugger = false;
+        // let updateDebugger = false;
 
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.cam.scrollX -= this.camSpeed;
             if(this.cam.scrollX < -this.maxCameraOffset){
                 this.cam.scrollX = -this.maxCameraOffset;
             }
-            updateDebugger = true;
+            // updateDebugger = true;
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.cam.scrollX += this.camSpeed;
             if(this.cam.scrollX > maxXOffset){
                 this.cam.scrollX = maxXOffset;
             }
-            updateDebugger = true;
+            // updateDebugger = true;
         }
     
         if (this.keys.W.isDown || this.cursors.up.isDown) {
@@ -124,20 +146,19 @@ export default class BattleCameraController{
             if(this.cam.scrollY < -this.maxCameraOffset){
                 this.cam.scrollY = -this.maxCameraOffset;
             }
-            updateDebugger = true;
+            // updateDebugger = true;
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
             this.cam.scrollY += this.camSpeed;
             if(this.cam.scrollY > maxYOffset){
                 this.cam.scrollY = maxYOffset;
             }
-            updateDebugger = true;
+            // updateDebugger = true;
         }
 
-        if(updateDebugger){
-            this.debugger.displayJson({
-                'x': this.cam.scrollX,
-                'y': this.cam.scrollY
-            });
-        }
+        this.debugger.displayJson({
+            'camScrollX': this.cam.scrollX,
+            'camScrollY': this.cam.scrollY,
+            ...this.hoveredTile,
+        });
     }
 }

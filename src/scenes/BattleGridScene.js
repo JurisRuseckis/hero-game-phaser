@@ -3,7 +3,7 @@ import {cfg} from "../cfg";
 import {styles} from "../styles";
 import tileSetImage from "../assets/tileset.png";
 import Debugger from "../models/Debugger";
-import BattleCameraController from "../controllers/BattleCameraController";
+import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
 import Battle, { battleStatus } from "../models/Battle";
@@ -35,7 +35,7 @@ export class BattleGridScene extends Phaser.Scene
 
     create ()
     {
-        const grid = [];
+        const tiles = [];
         for(let i = 0; i < 100; i++){
             let row = [];
             for(let j = 0; j< 100; j++){
@@ -45,19 +45,22 @@ export class BattleGridScene extends Phaser.Scene
                     row.push(1);
                 }
             }
-            grid.push(row);
+            tiles.push(row);
         }
 
-        this.map = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
-        const tileSet = this.map.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
-        const tileGridLayer = this.map.createBlankLayer('tileGridLayer', tileSet, 0, 0, this.tileSize * grid[0].length, grid.length);
-        this.map.putTilesAt(grid, 0, 0, true, tileGridLayer);
+        
+
+        this.tilemap = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
+        const tileSet = this.tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
+        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, this.tileSize * tiles[0].length, tiles.length);
+        this.tilemap.putTilesAt(tiles, 0, 0, true, tileGridLayer);
 
         this.debugger = new Debugger({
             scene: this,
         });
         
-        this.cameraController = new BattleCameraController({
+        this.marker = this.createTileSelector();
+        this.InputController = new BattleInputController({
             scene: this,
         });
 
@@ -101,7 +104,7 @@ export class BattleGridScene extends Phaser.Scene
             this.turnTimer -= this.turndelay;
         }
 
-        this.cameraController.checkBtns();
+        this.InputController.checkBtns();
         if(this.debugger.update){
             this.debugger.redraw();
         }
@@ -157,4 +160,18 @@ export class BattleGridScene extends Phaser.Scene
       {
          
       }
+
+      createTileSelector() {
+        //  Our tile selection window
+        // let tileSelector = gameObj.add.group();
+    
+        // tileSelector.fixedToCamera = true;
+    
+        //  Our painting marker
+        let marker = this.add.graphics();
+        marker.lineStyle(2, 0xffffff, 1.0);
+        marker.strokeRect(0, 0, this.tileSize, this.tileSize);
+        return marker;
+    }
+    
 }
