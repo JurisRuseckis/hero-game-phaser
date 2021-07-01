@@ -67,7 +67,7 @@ export default class BattleInputController{
                 return;
             } else {
                 // if not dragging 
-                const tileMapTile = this.scene.tilemap.getTileAtWorldXY(pointer.x + this.cam.scrollX, pointer.y + this.cam.scrollY, false, this.cam);
+                const tileMapTile = this.getTile(pointer);
                 if (tileMapTile) {
                     this.hoveredTile = {
                         "tileIndex": tileMapTile.index,
@@ -94,6 +94,7 @@ export default class BattleInputController{
             this.pointerDownInitialPosition = {...this.pointerDownPosition};
         });
         this.scene.input.on('pointerup', (pointer) => {
+            console.log(pointer, this.cam);
             // curently drag feels like workaround and probably will need a rework
             if (this.pointerDown) {
                 this.pointerDown = false;
@@ -160,5 +161,9 @@ export default class BattleInputController{
             'camScrollY': this.cam.scrollY,
             ...this.hoveredTile,
         });
+    }
+
+    getTile(pointer){
+        return this.scene.tilemap.getTileAtWorldXY(pointer.x + pointer.camera.scrollX, pointer.y + pointer.camera.scrollY, false, pointer.camera);
     }
 }
