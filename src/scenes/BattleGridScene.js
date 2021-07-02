@@ -5,9 +5,9 @@ import tileSetImage from "../assets/tileset.png";
 import Debugger from "../models/Debugger";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
-import CombatantStatus, { statusOption } from "../ui-components/CombatantStatus";
+import GridUnit, { statusOption } from "../ui-components/GridUnit";
 import Battle, { battleStatus } from "../models/Battle";
-import BattleLog, {battleLogType} from "../models/BattleLog";
+import {battleLogType} from "../models/BattleLog";
 
 export class BattleGridScene extends Phaser.Scene
 {
@@ -35,23 +35,12 @@ export class BattleGridScene extends Phaser.Scene
 
     create ()
     {
-        const tiles = [];
-        for(let i = 0; i < 100; i++){
-            let row = [];
-            for(let j = 0; j< 100; j++){
-                if(i===0||j===0||i===99||j===99){
-                    row.push(0);
-                } else {
-                    row.push(1);
-                }
-            }
-            tiles.push(row);
-        }
+        const battle = this.data.get('battle');
 
         this.tilemap = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
         const tileSet = this.tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
-        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, tiles[0].length, tiles.length);
-        this.tilemap.putTilesAt(tiles, 0, 0, true, tileGridLayer);
+        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, battle.arena.width, battle.arena.height);
+        this.tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
 
         this.debugger = new Debugger({
             scene: this,
@@ -59,32 +48,64 @@ export class BattleGridScene extends Phaser.Scene
         
         this.marker = this.createTileSelector();
 
-        this.InputController = new BattleInputController({
-            scene: this,
-        });
-
-        const battle = this.data.get('battle');
-        const startPos = {
-            x: 1,
-            y: 1,
-        }
+        const teamStartPos = [
+            {
+                x: 1,
+                y: Math.ceil(battle.arena.height/2) -1,
+            },
+            {
+                x: battle.arena.width-2,
+                y: Math.ceil(battle.arena.height/2) -1,
+            },
+            {
+                x: Math.ceil(battle.arena.width/2) -1,
+                y: 1,
+            },
+            {
+                x: Math.ceil(battle.arena.width/2) -1,
+                y: battle.arena.height-2,
+            }
+        ]
 
         this.combatantStatuses = Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
+            const startPos = teamStartPos[teamIndex];
+            const verticalDir = teamIndex < 2;
+            const posOffset = Math.floor(team.length/2);
             return team.map((combatant, combatantIndex) =>{
-                return new CombatantStatus({
+
+                let props = {
                     scene: this,
-                    x: (startPos.x + combatantIndex) * this.tileSize + this.unitStartPos,
-                    y: (startPos.y + teamIndex) * this.tileSize + this.unitStartPos,
-                    radius: this.unitSize/2,
+                    tileCoords:{x:0,y:0},
+                    tileSize: this.tileSize,
+                    unitSize: this.unitSize,
                     text: combatant.hp,
                     cmbId: combatant.id
-                })
+                };
+
+
+                if(verticalDir){
+                    props.tileCoords = {
+                        x:startPos.x,
+                        y:startPos.y + combatantIndex - posOffset
+                    };
+                } else {
+                    props.tileCoords = {
+                        x:startPos.x + combatantIndex - posOffset,
+                        y:startPos.y
+                    };
+                }
+
+                return new GridUnit(props)
             });
         }).flat();
 
         this.battleLogDebugger = new Debugger({
             scene: this,
             y: this.scale.height - (16 + 18)
+        });
+
+        this.InputController = new BattleInputController({
+            scene: this,
         });
 
     }

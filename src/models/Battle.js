@@ -26,7 +26,7 @@ export const battleStatus = {
     finished: 1,
 }
 
-const battleType = {
+export const battleType = {
     // no movement
     static: 0,
     // grid movement
@@ -39,6 +39,8 @@ export default class Battle{
      *
      * @param {Object} props
      * @param {Combatant[]} props.combatants
+     * @param {Arena} props.arena
+     * @param {integer} props.battleType
      */
     constructor(props)
     {
@@ -47,8 +49,8 @@ export default class Battle{
         this.status = battleStatus.started;
         this.battleLog = new BattleLog();
         this.turnCount = 0;
-        // to be implemented
-        // this.arena = props.arena;
+        this.arena = props.arena;
+        this.battleType = props.battleType;
     }
 
     getFastestTurnTime()

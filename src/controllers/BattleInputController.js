@@ -1,3 +1,5 @@
+import { randomInt } from "../helpers/randomInt";
+
 export default class BattleInputController{
 
     /**
@@ -43,20 +45,20 @@ export default class BattleInputController{
                 
 
                 const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
-                const maxXOffset = tileGridLayer.widthInPixels + this.maxCameraOffset - this.scene.scale.width;
+                // todo: handle smaller arenas than viewport 
+                const maxOffset = this.getMaxOffset(tileGridLayer);
                 
                 
                 if(newPos.x < -this.maxCameraOffset ){
                     newPos.x = -this.maxCameraOffset;
-                } else if (newPos.x > maxXOffset){
-                    newPos.x = maxXOffset;
+                } else if (newPos.x > maxOffset.x){
+                    newPos.x = maxOffset.x;
                 }
                 
-                const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
                 if(newPos.y < -this.maxCameraOffset ){
                     newPos.y = -this.maxCameraOffset;
-                } else if (newPos.y > maxYOffset){
-                    newPos.y = maxYOffset;
+                } else if (newPos.y > maxOffset.y){
+                    newPos.y = maxOffset.y;
                 }
     
                 this.pointerDownPosition.x = pointer.x;
@@ -68,26 +70,26 @@ export default class BattleInputController{
                 return;
             } else {
                 // if not dragging 
-                const tileMapTile = this.getTile(pointer);
-                if (tileMapTile) {
+                const tile = this.getTileAtWorldXY(pointer);
+                if (tile) {
                     this.hoveredTile = {
-                        "tileIndex": tileMapTile.index,
-                        "tileX": tileMapTile.x,
-                        "tileY": tileMapTile.y,
+                        "tileIndex": tile.index,
+                        "tileX": tile.x,
+                        "tileY": tile.y,
                     }
                     // const cardIndex = {
                     //     column: Math.floor(tileMapTile.x / 13),
                     //     row: Math.floor(tileMapTile.y / 13)
                     // };
-                    this.scene.marker.x = tileMapTile.x * this.scene.tileSize;
-                    this.scene.marker.y = tileMapTile.y * this.scene.tileSize;
+                    this.scene.marker.x = tile.x * this.scene.tileSize;
+                    this.scene.marker.y = tile.y * this.scene.tileSize;
                 }
             }           
            
         });
         this.scene.input.on('pointerdown', (pointer) => {
             // screen drag start
-            this.pointerDown = true;
+            // this.pointerDown = true;
             this.pointerDownPosition = {
                 x: pointer.x,
                 y: pointer.y,
@@ -109,6 +111,20 @@ export default class BattleInputController{
                     return;
                 }
             }
+
+            const tile = this.getTileAtWorldXY(pointer);
+            if (tile) {
+                const combatant = this.scene.combatantStatuses[randomInt(this.scene.combatantStatuses.length)];
+                if(!tile.properties['cmbId'] && tile.index !== 0){
+                    let oldTile = this.getTileAt(combatant.tileCoords.x, combatant.tileCoords.y);
+                    oldTile.properties['cmbId'] = false;
+                    tile.properties['cmbId'] = combatant.cmbId;
+                    combatant.moveToCoords({
+                        x: tile.x,
+                        y: tile.y
+                    });
+                }
+            }
         });
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             const cam = this.cameras.main;
@@ -124,8 +140,7 @@ export default class BattleInputController{
 
     checkBtns() {
         const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
-        const maxXOffset = tileGridLayer.width + this.maxCameraOffset - this.scene.scale.width;
-        const maxYOffset = tileGridLayer.heightInPixels + this.maxCameraOffset - this.scene.scale.height;
+        const maxOffset = this.getMaxOffset(tileGridLayer);
         // let updateDebugger = false;
 
         if (this.keys.A.isDown || this.cursors.left.isDown) {
@@ -136,8 +151,8 @@ export default class BattleInputController{
             // updateDebugger = true;
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.cam.scrollX += this.camSpeed;
-            if(this.cam.scrollX > maxXOffset){
-                this.cam.scrollX = maxXOffset;
+            if(this.cam.scrollX > maxOffset.x){
+                this.cam.scrollX = maxOffset.x;
             }
             // updateDebugger = true;
         }
@@ -150,8 +165,8 @@ export default class BattleInputController{
             // updateDebugger = true;
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
             this.cam.scrollY += this.camSpeed;
-            if(this.cam.scrollY > maxYOffset){
-                this.cam.scrollY = maxYOffset;
+            if(this.cam.scrollY > maxOffset.y){
+                this.cam.scrollY = maxOffset.y;
             }
             // updateDebugger = true;
         }
@@ -163,7 +178,36 @@ export default class BattleInputController{
         });
     }
 
-    getTile(pointer){
+    getTileAtWorldXY(pointer){
         return this.scene.tilemap.getTileAtWorldXY(pointer.x + pointer.camera.scrollX, pointer.y + pointer.camera.scrollY, false, pointer.camera);
+    }
+
+    getTileAt(x,y){
+        return this.scene.tilemap.getTileAt(x,y);
+    }
+
+    getMaxOffset(tileGridLayer){ 
+        const width = tileGridLayer.widthInPixels + this.maxCameraOffset;
+        const height = tileGridLayer.heightInPixels + this.maxCameraOffset;
+
+        let x = 0;
+        if(width < this.scene.scale.width){
+            x = 0;
+        } else {
+            x = width - this.scene.scale.width;
+        }
+
+        let y = 0;
+        if(height < this.scene.scale.height){
+            y = 0;
+        } else {
+            y = height - this.scene.scale.height;
+        }
+        
+        
+        return {
+            x:x,
+            y:y,
+        }
     }
 }

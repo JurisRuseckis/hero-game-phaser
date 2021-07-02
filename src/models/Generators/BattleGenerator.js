@@ -1,9 +1,10 @@
 import {randomInt} from "../../helpers/randomInt";
-import Battle from "../Battle";
+import Battle, { battleType } from "../Battle";
 import Character, {race} from "../Character";
 import {Combatant} from "../Combatant";
 import CombatAction from "../CombatAction";
 import BattleAI from "../BattleAI";
+import Arena from "../Arena";
 
 /**
  * @type {Object}
@@ -284,6 +285,7 @@ export default class BattleGenerator
     static generate(){
         const teamCount = randomInt(3)+2;
         const teamSize = randomInt(4)+2;
+        const bType = battleType.field;
         let teams = [];
 
         for(let i = 0; i<teamCount; i++){
@@ -301,8 +303,11 @@ export default class BattleGenerator
             return combatants;
         }).flat();
 
+        const arenaSize = teamSize*2 + 20 + randomInt(15);
         return new Battle({
-            combatants: combatants
+            combatants: combatants,
+            arena: new Arena(this.generateArena(bType,arenaSize,arenaSize)),
+            battleType: bType,
         });
     }
 
@@ -334,5 +339,28 @@ export default class BattleGenerator
         team.push({...Object.values(rosterOptions)[2]});
 
         return team;
+    }
+
+    static generateArena(bType, width, height){
+        let tiles = [];
+        for(let i = 0; i < height; i++){
+            let row = [];
+            for(let j = 0; j< width; j++){
+                if(i===0||j===0||i===(height-1)||j===(width-1)){
+                    row.push(0);
+                } else {
+                    row.push(1);
+                }
+            }
+            tiles.push(row);
+        }
+
+
+        return {
+            battletype: bType,
+            width: width,
+            height: height,
+            tiles: tiles,
+        }
     }
 }
