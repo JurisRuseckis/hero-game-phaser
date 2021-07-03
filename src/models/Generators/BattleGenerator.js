@@ -291,22 +291,68 @@ export default class BattleGenerator
         for(let i = 0; i<teamCount; i++){
             teams.push(this.generateTeam(teamSize + randomInt(4)));
         }
+
+        const arenaSize = teamSize*2 + 20 + randomInt(15);
+        const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
+
+        const teamStartPos = [
+            {
+                x: 1,
+                y: Math.ceil(arena.height/2) -1,
+            },
+            {
+                x: arena.width-2,
+                y: Math.ceil(arena.height/2) -1,
+            },
+            {
+                x: Math.ceil(arena.width/2) -1,
+                y: 1,
+            },
+            {
+                x: Math.ceil(arena.width/2) -1,
+                y: arena.height-2,
+            }
+        ]
         
-        const combatants = teams.map((team, index) => { 
+        const combatants = teams.map((team, teamIndex) => { 
+            /**
+             * @type {integer}
+             */
+            const startPos = teamStartPos[teamIndex];
+            const verticalDir = teamIndex < 2;
+            /**
+             * @type {integer}
+             */
+            const posOffset = Math.floor(team.length/2);
             let combatants = []
-            for (const [key, value] of Object.entries(team)) {
-                combatants.push(new Combatant({
+            for (const [combatantIndex, value] of Object.entries(team)) {
+                combatantIndex = parseInt(combatantIndex);
+
+                let props = {
                     character: value,
-                    team: index+1
-                }));
+                    team: teamIndex+1
+                }
+
+                if(verticalDir){
+                    props.coordinates = {
+                        x:startPos.x,
+                        y:startPos.y + combatantIndex - posOffset
+                    };
+                } else {
+                    props.coordinates = {
+                        x:startPos.x + combatantIndex - posOffset,
+                        y:startPos.y
+                    };
+                }
+
+                combatants.push(new Combatant(props));
             }
             return combatants;
         }).flat();
 
-        const arenaSize = teamSize*2 + 20 + randomInt(15);
         return new Battle({
             combatants: combatants,
-            arena: new Arena(this.generateArena(bType,arenaSize,arenaSize)),
+            arena: arena,
             battleType: bType,
         });
     }

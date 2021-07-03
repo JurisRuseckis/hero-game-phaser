@@ -120,8 +120,10 @@ export default class Battle{
             console.log(this.battleLog.print());
             console.log('battle ended');
             console.log(`team ${this.combatants[0].team} has won`)
-            console.log(`${this.combatants.map((c) => c.label).join(',')} has survived!`);
-            console.log(`${this.corpses.map((c) => `${c.label} from team ${c.team}`).join(', ')} has died!`);
+            console.log('survivors');
+            console.table(this.combatants);
+            console.log('corpses');
+            console.table(this.corpses);
             // move to scene
             // this.scene.updateActionBtns([]);
             return;

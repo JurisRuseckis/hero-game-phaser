@@ -48,55 +48,18 @@ export class BattleGridScene extends Phaser.Scene
         
         this.marker = this.createTileSelector();
 
-        const teamStartPos = [
-            {
-                x: 1,
-                y: Math.ceil(battle.arena.height/2) -1,
-            },
-            {
-                x: battle.arena.width-2,
-                y: Math.ceil(battle.arena.height/2) -1,
-            },
-            {
-                x: Math.ceil(battle.arena.width/2) -1,
-                y: 1,
-            },
-            {
-                x: Math.ceil(battle.arena.width/2) -1,
-                y: battle.arena.height-2,
-            }
-        ]
-
-        this.combatantStatuses = Object.values(battle.getCombatants(true)).map((team, teamIndex)=>{
-            const startPos = teamStartPos[teamIndex];
-            const verticalDir = teamIndex < 2;
-            const posOffset = Math.floor(team.length/2);
-            return team.map((combatant, combatantIndex) =>{
-
-                let props = {
-                    scene: this,
-                    tileCoords:{x:0,y:0},
-                    tileSize: this.tileSize,
-                    unitSize: this.unitSize,
-                    text: combatant.hp,
-                    cmbId: combatant.id
-                };
-
-
-                if(verticalDir){
-                    props.tileCoords = {
-                        x:startPos.x,
-                        y:startPos.y + combatantIndex - posOffset
-                    };
-                } else {
-                    props.tileCoords = {
-                        x:startPos.x + combatantIndex - posOffset,
-                        y:startPos.y
-                    };
-                }
-
-                return new GridUnit(props)
+        this.combatantStatuses = Object.values(battle.getCombatants(false)).map((combatant)=>{
+            const gridUnit = new GridUnit({
+                scene: this,
+                tileCoords:combatant.coordinates,
+                tileSize: this.tileSize,
+                unitSize: this.unitSize,
+                text: combatant.hp,
+                cmbId: combatant.id
             });
+            gridUnit.addDefaultEvents();
+
+            return gridUnit;
         }).flat();
 
         this.battleLogDebugger = new Debugger({

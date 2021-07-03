@@ -62,6 +62,14 @@ export class Combatant {
          * @type {BattleAI}
          */
         this.ai = props.character.battleAI;
+        /**
+         * @type {Object}
+         */
+        this.coordinates = props.coordinates;
+        /**
+         * @type {Phaser.Math.Vector2}
+         */
+        this.direction = props.direction || Phaser.Math.Vector2.ZERO;
     }
 
     calculateHP() {
