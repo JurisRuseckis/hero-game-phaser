@@ -66,10 +66,12 @@ export default class CombatantStatus
         this.cmbId = props.cmbId || null;
 
         this.container = this.scene.add.container(this.x, this.y);
+        // this.container.setInteractive();
 
         this.addCircle();
         this.addTxt();
         this.addCross();
+        // this.addFieldOfView();
     }
 
     addCircle()
@@ -116,13 +118,32 @@ export default class CombatantStatus
         this.container.add(this.crossObj);
     }
 
+    addFieldOfView(){
+        const btnCenter = this.btnObj.getCenter();
+        let graphics = this.scene.add.graphics();
+
+        graphics.fillStyle(0xaaaaaa, .5);
+
+        graphics.slice(btnCenter.x, btnCenter.y, 1024, Phaser.Math.DegToRad(60), Phaser.Math.DegToRad(-60), true);
+    
+        graphics.fillPath();
+
+        this.fow = graphics;
+        this.fow.setVisible(false);
+
+        this.container.add(this.fow);
+    }
+
     addDefaultEvents()
     {
+        
         this.btnObj.on('pointerover', () => {
             this.btnObj.setFillStyle(styles.colors.btnBorder);
+            // this.fow.setVisible(true);
         }, this);
         this.btnObj.on('pointerout', () => {
             this.btnObj.setFillStyle(styles.colors.btnBg);
+            // this.fow.setVisible(false);
         }, this);
     }
 
@@ -147,7 +168,13 @@ export default class CombatantStatus
     }
 
     moveToCoords(coords){
-        this.container.x = this.x = coords.x * this.tileSize;
-        this.container.y = this.y = coords.y * this.tileSize;
+        this.scene.tweens.add({
+            targets: this.container,
+            duration: 500,
+            x: coords.x * this.tileSize,
+            y: coords.y * this.tileSize,
+            delay: 0,
+            repeat: 0,
+        });
     }
 }

@@ -48,19 +48,7 @@ export class BattleGridScene extends Phaser.Scene
         
         this.marker = this.createTileSelector();
 
-        this.combatantStatuses = Object.values(battle.getCombatants(false)).map((combatant)=>{
-            const gridUnit = new GridUnit({
-                scene: this,
-                tileCoords:combatant.coordinates,
-                tileSize: this.tileSize,
-                unitSize: this.unitSize,
-                text: combatant.hp,
-                cmbId: combatant.id
-            });
-            gridUnit.addDefaultEvents();
-
-            return gridUnit;
-        }).flat();
+        this.combatantStatuses = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
         this.battleLogDebugger = new Debugger({
             scene: this,
@@ -142,6 +130,22 @@ export class BattleGridScene extends Phaser.Scene
       updateActionBtns(actions)
       {
          
+      }
+
+      drawCombatants(combatants) {
+        return combatants.map((combatant)=>{
+            const gridUnit = new GridUnit({
+                scene: this,
+                tileCoords:combatant.coordinates,
+                tileSize: this.tileSize,
+                unitSize: this.unitSize,
+                text: combatant.hp,
+                cmbId: combatant.id
+            });
+            gridUnit.addDefaultEvents();
+
+            return gridUnit;
+        }).flat();
       }
 
       createTileSelector() {
