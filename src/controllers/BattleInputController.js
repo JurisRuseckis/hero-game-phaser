@@ -4,23 +4,18 @@ export default class BattleInputController{
 
     /**
      * 
-     * @param {Object} props 
-     * @param {Phaser.Scene} props.scene 
+     * @param {Object} props
+     * @param {Phaser.Scene} props.scene
      */
     constructor(props)
     {
         this.scene = props.scene;
-        this.debugger = this.scene.debugger;
         this.cam = this.scene.cameras.main;
         this.maxCameraOffset = 200;
         this.camSpeed = 32;
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.keys = this.scene.input.keyboard.addKeys('W,A,S,D');
-
-        this.pointerDown;
-        this.pointerDownPosition;
-        this.pointerDownInitialPosition;
         
         this.hoveredTile = {
             "tileIndex": '',
@@ -43,8 +38,8 @@ export default class BattleInputController{
                     y: this.cam.scrollY + this.pointerDownPosition.y - pointer.y
                 };
                 
-
-                const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
+                const tilemap = this.scene.data.get('tilemap');
+                const tileGridLayer = tilemap.getLayer('battleGridLayer');
                 // todo: handle smaller arenas than viewport 
                 const maxOffset = this.getMaxOffset(tileGridLayer);
                 
@@ -70,17 +65,15 @@ export default class BattleInputController{
                 // if not dragging 
                 const tile = this.getTileAtWorldXY(pointer);
                 if (tile) {
+                    const marker = this.scene.data.get('marker');
                     this.hoveredTile = {
                         "tileIndex": tile.index,
                         "tileX": tile.x,
                         "tileY": tile.y,
                     }
-                    // const cardIndex = {
-                    //     column: Math.floor(tileMapTile.x / 13),
-                    //     row: Math.floor(tileMapTile.y / 13)
-                    // };
-                    this.scene.marker.x = tile.x * this.scene.tileSize;
-                    this.scene.marker.y = tile.y * this.scene.tileSize;
+
+                    marker.x = tile.x * this.scene.tileSize;
+                    marker.y = tile.y * this.scene.tileSize;
                 }
             }           
            
@@ -99,7 +92,9 @@ export default class BattleInputController{
             if (this.pointerDown) {
                 this.pointerDown = false;
 
-                this.debugger.displayJson({
+                const debugWindow = this.scene.data.get('debugWindow');
+
+                debugWindow.displayJson({
                     'x': this.cam.scrollX,
                     'y': this.cam.scrollY
                 });
@@ -115,9 +110,10 @@ export default class BattleInputController{
              */
             const tile = this.getTileAtWorldXY(pointer);
             if (tile) {
-                const combatant = this.scene.combatantStatuses[randomInt(this.scene.combatantStatuses.length)];
+                const combatantStatuses = this.scene.data.get('combatantStatuses');
+                const combatant = combatantStatuses[randomInt(combatantStatuses.length)];
                 if(!tile.properties['cmbId'] && tile.index !== 0){
-                    let oldTile = this.getTileAt(combatant.tileCoords.x, combatant.tileCoords.y);
+                    let oldTile = this.getTileAt(combatant.tileCoordinates.x, combatant.tileCoordinates.y);
                     oldTile.properties['cmbId'] = false;
                     tile.properties['cmbId'] = combatant.cmbId;
                     combatant.moveToCoords({
@@ -141,7 +137,8 @@ export default class BattleInputController{
     }
 
     checkBtns() {
-        const tileGridLayer = this.scene.tilemap.getLayer('battleGridLayer');
+        const tilemap = this.scene.data.get('tilemap');
+        const tileGridLayer = tilemap.getLayer('battleGridLayer');
         const maxOffset = this.getMaxOffset(tileGridLayer);
         // let updateDebugger = false;
 
@@ -173,7 +170,8 @@ export default class BattleInputController{
             // updateDebugger = true;
         }
 
-        this.debugger.displayJson({
+        const debugWindow = this.scene.data.get('debugWindow');
+        debugWindow.displayJson({
             'camScrollX': this.cam.scrollX,
             'camScrollY': this.cam.scrollY,
             ...this.hoveredTile,
@@ -181,11 +179,13 @@ export default class BattleInputController{
     }
 
     getTileAtWorldXY(pointer){
-        return this.scene.tilemap.getTileAtWorldXY(pointer.x + pointer.camera.scrollX, pointer.y + pointer.camera.scrollY, false, pointer.camera);
+        const tilemap = this.scene.data.get('tilemap');
+        return tilemap.getTileAtWorldXY(pointer.x + pointer.camera.scrollX, pointer.y + pointer.camera.scrollY, false, pointer.camera);
     }
 
     getTileAt(x,y){
-        return this.scene.tilemap.getTileAt(x,y);
+        const tilemap = this.scene.data.get('tilemap');
+        return tilemap.getTileAt(x,y);
     }
 
     getMaxOffset(tileGridLayer){ 

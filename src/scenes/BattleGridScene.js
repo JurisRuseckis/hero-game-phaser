@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import tileSetImage from "../assets/tileset.png";
-import Debugger from "../models/Debugger";
+import DebugWindow from "../models/DebugWindow";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../ui-components/GridUnit";
@@ -22,7 +22,6 @@ export class BattleGridScene extends Phaser.Scene
 
         this.tileSize = 48;
         this.unitSize = 32;
-        this.unitStartPos = (this.tileSize - this.unitSize)/2;
     }
 
     preload ()
@@ -36,31 +35,41 @@ export class BattleGridScene extends Phaser.Scene
     {
         const battle = this.data.get('battle');
 
-        this.tilemap = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
-        const tileSet = this.tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
-        const tileGridLayer = this.tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, battle.arena.width, battle.arena.height);
-        this.tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
+        const tilemap = this.make.tilemap({ tileWidth: this.tileSize, tileHeight: this.tileSize });
+        const tileSet = tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
+        const tileGridLayer = tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, battle.arena.width, battle.arena.height);
+        tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
 
-        this.debugger = new Debugger({
+        const debugWindow = new DebugWindow({
             scene: this,
         });
         
-        this.marker = this.createTileSelector();
+        const marker = this.createTileSelector();
 
-        this.combatantStatuses = this.drawCombatants(Object.values(battle.getCombatants(false)));
+        const combatantStatuses = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
-        this.battleLogDebugger = new Debugger({
+        const battleLogDebugWindow = new DebugWindow({
             scene: this,
             y: this.scale.height - (16 + 18)
         });
 
-        this.InputController = new BattleInputController({
+        const inputController = new BattleInputController({
             scene: this,
         });
 
+        this.data.set('tilemap', tilemap);
+        this.data.set('debugWindow', debugWindow);
+        this.data.set('marker', marker);
+        this.data.set('combatantStatuses', combatantStatuses);
+        this.data.set('battleLogDebugWindow', battleLogDebugWindow);
+        this.data.set('inputController', inputController);
     }
 
     update(time, delta){
+        const battleLogDebugWindow = this.data.get('battleLogDebugWindow');
+        const debugWindow = this.data.get('debugWindow');
+        const inputController = this.data.get('inputController');
+
         this.turnTimer += delta;
         // as sometimes we can lag a bit we do a loop 
         while (this.turnTimer > this.turndelay) {
@@ -69,18 +78,18 @@ export class BattleGridScene extends Phaser.Scene
             // if battle in progress then update scene
             if(battle.status !== battleStatus.finished){
                 this.updateBattleScene(battle, turnResults.executor, turnResults.action);
-                this.battleLogDebugger.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
+                battleLogDebugWindow.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
             }
             this.turnTimer -= this.turndelay;
         }
 
-        this.InputController.checkBtns();
-        if(this.debugger.update){
-            this.debugger.redraw();
+        inputController.checkBtns();
+        if(debugWindow.update){
+            debugWindow.redraw();
         }
 
-        if(this.battleLogDebugger.update){
-            this.battleLogDebugger.redraw();
+        if(battleLogDebugWindow.update){
+            battleLogDebugWindow.redraw();
         }
     }
 
@@ -92,18 +101,20 @@ export class BattleGridScene extends Phaser.Scene
      */
       updateBattleScene(battle, executor, action)
       {
+          const combatantStatuses = this.data.get('combatantStatuses');
+
           if(this.target){
-              this.combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
+              combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
           }
           if(this.executorId){
-              this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+              combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
           }
   
           this.target = action.target ? action.target : null;
           this.executorId = executor.id;
   
           if(this.target){
-              const targetObj = this.combatantStatuses.find(c => c.cmbId === this.target.id)
+              const targetObj = combatantStatuses.find(c => c.cmbId === this.target.id)
               targetObj.setStyle(statusOption.target);
               targetObj.txtObj.setText(this.target.hp);
               if(this.target.hp <= 0){
@@ -111,7 +122,7 @@ export class BattleGridScene extends Phaser.Scene
               }
           }
   
-          this.combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
+          combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
           
       }
  

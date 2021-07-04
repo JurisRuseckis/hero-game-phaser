@@ -1,4 +1,4 @@
-export default class Debugger
+export default class DebugWindow
 {
     /**
      * 
