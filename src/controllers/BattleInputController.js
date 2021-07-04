@@ -128,14 +128,22 @@ export default class BattleInputController{
                         const battle = this.scene.data.get('battle');
                         const combatants = battle.getCombatants();
                         const combatant = combatants.find(c => c.id === this.selectedUnit.cmbId);
-                        combatant.coordinates =
+                        // if there is such combatant and he's not dead
+                        if(combatant){
+                            // somehow vector references, and we do not need to set it here
+                            // this could cause problems later
+                            // combatant.coordinates.set(tile.x, tile.y);
 
-                        oldTile.properties['cmbId'] = false;
-                        tile.properties['cmbId'] = this.selectedUnit.cmbId;
-                        this.selectedUnit.moveToCoords({
-                            x: tile.x,
-                            y: tile.y
-                        });
+                            oldTile.properties['cmbId'] = false;
+                            tile.properties['cmbId'] = this.selectedUnit.cmbId;
+                            this.selectedUnit.moveToCoords({
+                                x: tile.x,
+                                y: tile.y
+                            });
+                            console.log(combatant);
+
+                        }
+
                         this.selectedUnit.setStyle(statusOption.default);
                         this.selectedUnit = null;
                     }
