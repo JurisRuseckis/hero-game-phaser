@@ -1,7 +1,5 @@
 import {Combatant} from "./Combatant";
 import {groupArrByKey} from "../helpers/groupArrByKey";
-import { BattleScene } from "../scenes/BattleScene";
-import CombatAction from "./CombatAction";
 import BattleLog, {battleLogType} from "./BattleLog";
 
 /**
@@ -93,7 +91,6 @@ export default class Battle{
 
     /**
      * @param {CombatAction} action
-     * @param {Combatant} target
      */
     handleTurn(action)
     {
@@ -195,12 +192,12 @@ export default class Battle{
     
     /**
      * 
-     * @param {bool} inTeams 
+     * @param {boolean} inTeams
      * @returns {Array}
      */
     getCombatants(inTeams = false){
         if(inTeams){
-            return groupArrByKey(this.combatants, 'team');;
+            return groupArrByKey(this.combatants, 'team');
         }
 
         return this.combatants;

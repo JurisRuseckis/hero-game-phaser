@@ -66,8 +66,6 @@ export default class BattleInputController{
     
                 this.cam.scrollX = newPos.x;
                 this.cam.scrollY = newPos.y;
-
-                return;
             } else {
                 // if not dragging 
                 const tile = this.getTileAtWorldXY(pointer);
@@ -112,6 +110,9 @@ export default class BattleInputController{
                 }
             }
 
+            /**
+             * @type {Phaser.Tilemaps.Tile}
+             */
             const tile = this.getTileAtWorldXY(pointer);
             if (tile) {
                 const combatant = this.scene.combatantStatuses[randomInt(this.scene.combatantStatuses.length)];
@@ -126,6 +127,7 @@ export default class BattleInputController{
                 }
             }
         });
+        // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             const cam = this.cameras.main;
             let newZoom = cam.zoom - dy/1000;
@@ -190,14 +192,14 @@ export default class BattleInputController{
         const width = tileGridLayer.widthInPixels + this.maxCameraOffset;
         const height = tileGridLayer.heightInPixels + this.maxCameraOffset;
 
-        let x = 0;
+        let x;
         if(width < this.scene.scale.width){
             x = 0;
         } else {
             x = width - this.scene.scale.width;
         }
 
-        let y = 0;
+        let y;
         if(height < this.scene.scale.height){
             y = 0;
         } else {

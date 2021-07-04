@@ -1,9 +1,6 @@
 import { capitalize } from "../helpers/capitalize";
 import {randomInt} from "../helpers/randomInt";
 import { v4 as uuidv4 } from 'uuid';
-import Battle from "./Battle";
-import Character from "./Character";
-import CombatAction from "./CombatAction";
 
 export class Combatant {
     /**
@@ -67,6 +64,7 @@ export class Combatant {
          */
         this.coordinates = props.coordinates;
         /**
+         * unitVector of direction
          * @type {Phaser.Math.Vector2}
          */
         this.direction = props.direction || Phaser.Math.Vector2.ZERO;

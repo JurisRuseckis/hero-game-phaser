@@ -13,15 +13,18 @@ export default class CombatantStatus
      *
      * @param {Object} props
      * @param {Phaser.Scene} props.scene
-     * @param {number} props.x=0
-     * @param {number} props.y=0
-     * @param {number} props.radius=64
+     *
+     * @param {number} props.tileSize=0
+     * @param {number} props.unitSize=0
+     *
+     * @param {Phaser.Math.Vector2} props.tileCoordinates
+     * @param {Phaser.Math.Vector2} props.direction
+     *
      * @param {number} props.fill={styles.colors.btnBg}
      * @param {number} props.fillAlpha=1
      * @param {number} props.text=""
      * @param {number} props.textStyle
      *
-
      * @param {Object} props.border
      * @param {number} props.border.width
      * @param {number} props.border.color
@@ -42,13 +45,20 @@ export default class CombatantStatus
         //size 
         this.tileSize = props.tileSize || 0;
         this.unitSize = props.unitSize || 0;
-        this.offset = (this.tileSize - this.unitSize)/2
         this.radius = this.unitSize/2
 
-        //coords
-        this.tileCoords = props.tileCoords || {x:0,y:0};
-        this.x = this.tileCoords.x * this.tileSize;
-        this.y = this.tileCoords.y * this.tileSize;
+        //position
+        this.center = this.tileSize/2;
+        /**
+         *
+         * @type {Phaser.Math.Vector2}
+         */
+        this.tileCoordinates = props.tileCoordinates || new Phaser.Math.Vector2(0,0);
+        /**
+         * unitVector
+         * @type {Phaser.Math.Vector2}
+         */
+        this.direction = props.direction || Phaser.Math.Vector2.UP;
         
         // fill & borders
         this.fill = props.fill || styles.colors.btnBg;
@@ -65,24 +75,24 @@ export default class CombatantStatus
         
         this.cmbId = props.cmbId || null;
 
-        this.container = this.scene.add.container(this.x, this.y);
+        this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize, this.tileCoordinates.y * this.tileSize);
         // this.container.setInteractive();
 
         this.addCircle();
         this.addTxt();
         this.addCross();
-        // this.addFieldOfView();
+        this.addFieldOfView();
     }
 
     addCircle()
     {
         this.btnObj = this.scene.add.circle(
-            this.offset,
-            this.offset,
+            this.center,
+            this.center,
             this.radius,
             this.fill,
             this.fillAlpha
-        ).setOrigin(0);
+        ).setOrigin(0.5);
 
         this.btnObj.setStrokeStyle(this.border.width, this.border.color);
 
@@ -120,16 +130,20 @@ export default class CombatantStatus
 
     addFieldOfView(){
         const btnCenter = this.btnObj.getCenter();
-        let graphics = this.scene.add.graphics();
+        let graphics = this.scene.add.graphics({
+            x: btnCenter.x,
+            y: btnCenter.y
+        });
 
         graphics.fillStyle(0xaaaaaa, .5);
 
-        graphics.slice(btnCenter.x, btnCenter.y, 1024, Phaser.Math.DegToRad(60), Phaser.Math.DegToRad(-60), true);
+        graphics.slice(0, 0, 32, Phaser.Math.DegToRad(60), Phaser.Math.DegToRad(-60), true);
     
         graphics.fillPath();
 
         this.fow = graphics;
-        this.fow.setVisible(false);
+        this.fow.setAngle(this.getAngle());
+        // this.fow.setVisible(false);
 
         this.container.add(this.fow);
     }
@@ -167,14 +181,30 @@ export default class CombatantStatus
             }
     }
 
-    moveToCoords(coords){
+    moveToCoords(tilePosition){
+
+        this.direction.set(tilePosition.x - this.tileCoordinates.x,tilePosition.y - this.tileCoordinates.y).normalize();
+        this.tileCoordinates.set(tilePosition.x,tilePosition.y);
+
         this.scene.tweens.add({
-            targets: this.container,
-            duration: 500,
-            x: coords.x * this.tileSize,
-            y: coords.y * this.tileSize,
+            targets: this.fow,
+            duration: 250,
+            angle: this.getAngle(),
             delay: 0,
             repeat: 0,
         });
+
+        this.scene.tweens.add({
+            targets: this.container,
+            duration: 1000,
+            x: this.tileCoordinates.x * this.tileSize,
+            y: this.tileCoordinates.y * this.tileSize,
+            delay: 0,
+            repeat: 0,
+        });
+    }
+
+    getAngle(){
+        return Math.atan2(this.direction.y, this.direction.x) * 180 / Math.PI;
     }
 }

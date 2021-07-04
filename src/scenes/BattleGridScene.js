@@ -1,12 +1,11 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
-import {styles} from "../styles";
 import tileSetImage from "../assets/tileset.png";
 import Debugger from "../models/Debugger";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../ui-components/GridUnit";
-import Battle, { battleStatus } from "../models/Battle";
+import { battleStatus } from "../models/Battle";
 import {battleLogType} from "../models/BattleLog";
 
 export class BattleGridScene extends Phaser.Scene
@@ -136,11 +135,12 @@ export class BattleGridScene extends Phaser.Scene
         return combatants.map((combatant)=>{
             const gridUnit = new GridUnit({
                 scene: this,
-                tileCoords:combatant.coordinates,
+                tileCoordinates: new Phaser.Math.Vector2(combatant.coordinates.x,combatant.coordinates.y),
                 tileSize: this.tileSize,
                 unitSize: this.unitSize,
                 text: combatant.hp,
-                cmbId: combatant.id
+                cmbId: combatant.id,
+                direction: combatant.direction
             });
             gridUnit.addDefaultEvents();
 

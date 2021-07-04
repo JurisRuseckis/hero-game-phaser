@@ -5,7 +5,9 @@ import {Combatant} from "../Combatant";
 import CombatAction from "../CombatAction";
 import BattleAI from "../BattleAI";
 import Arena from "../Arena";
+import Phaser from "phaser";
 
+// noinspection JSUnusedLocalSymbols
 /**
  * @type {Object}
  */
@@ -264,14 +266,6 @@ const characterRoster = {
     }
 };
 
-const teamSeed = [
-    'elf',
-    'human',
-    'dwarf',
-    'elf',
-    'custom',
-]
-
 /**
  * class generates random battles 
  * todo: implement power for team and units to randomize some more
@@ -296,27 +290,35 @@ export default class BattleGenerator
         const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
 
         const teamStartPos = [
+            //left
             {
                 x: 1,
                 y: Math.ceil(arena.height/2) -1,
+                dir: Phaser.Math.Vector2.RIGHT
             },
+            //right
             {
                 x: arena.width-2,
                 y: Math.ceil(arena.height/2) -1,
+                dir: Phaser.Math.Vector2.LEFT
             },
+            //up
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: 1,
+                dir: Phaser.Math.Vector2.DOWN
             },
+            //down
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: arena.height-2,
+                dir: Phaser.Math.Vector2.UP
             }
         ]
         
         const combatants = teams.map((team, teamIndex) => { 
             /**
-             * @type {integer}
+             * @type {{x: number, y: number, dir: Phaser.Math.Vector2}}
              */
             const startPos = teamStartPos[teamIndex];
             const verticalDir = teamIndex < 2;
@@ -326,21 +328,22 @@ export default class BattleGenerator
             const posOffset = Math.floor(team.length/2);
             let combatants = []
             for (const [combatantIndex, value] of Object.entries(team)) {
-                combatantIndex = parseInt(combatantIndex);
+                const cIndex = parseInt(combatantIndex);
 
                 let props = {
                     character: value,
-                    team: teamIndex+1
+                    team: teamIndex+1,
+                    direction: startPos.dir,
                 }
 
                 if(verticalDir){
                     props.coordinates = {
                         x:startPos.x,
-                        y:startPos.y + combatantIndex - posOffset
+                        y:startPos.y + cIndex - posOffset
                     };
                 } else {
                     props.coordinates = {
-                        x:startPos.x + combatantIndex - posOffset,
+                        x:startPos.x + cIndex - posOffset,
                         y:startPos.y
                     };
                 }
