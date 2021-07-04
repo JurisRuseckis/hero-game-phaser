@@ -16,8 +16,9 @@ export default class CombatAction
 
         this.cooldown = props.cooldown;
         this.cooldownLeft = 0;
+
         /**
-         * filled after picked 
+         * filled after action is picked
          * @var {Combatant}
          */
         this.target = null;
@@ -26,11 +27,12 @@ export default class CombatAction
     /**
      *
      * @param {Combatant} combatant
+     * @param {Arena} arena
      * @return {string}
      * todo: add multiple target options
      */
-    applyActionEffects(combatant) {
-        let actionTxt = this.operation(combatant, this.target);
+    applyActionEffects(combatant,arena) {
+        let actionTxt = this.operation(combatant, this.target, arena);
         this.cooldownLeft = this.cooldown;
         return actionTxt;
     }
@@ -58,11 +60,12 @@ export default class CombatAction
      * returns indices of combatants that qualifies as targets for this action
      * @param {Combatant} executor 
      * @param {Combatant[]} combatants
-     * @returns {number[]} indices of given array 
+     * @param {Arena} arena
+     * @returns {number[]} indices of given array
      */
-    getAvailableTargets(executor, combatants){
-        return combatants.map((combatant,index) => {
-            if(this.targetRules(executor, combatant)){
+    getAvailableTargets(executor, combatants, arena){
+        return combatants.map((target,index) => {
+            if(this.targetRules(executor, target, arena)){
                 return index;
             }
             return null;

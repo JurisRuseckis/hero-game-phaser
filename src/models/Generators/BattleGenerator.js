@@ -15,18 +15,29 @@ const defaultActions = {
     wait: new CombatAction({
         key: 'wait',
         cooldown: 0,
-        operation: (executor, target) => {
+        operation: (executor, target, arena) => {
             executor.turnMeter = 0;
             return `${executor.label} from team ${executor.team} waits`;
         },
-        targetRules: (executor, target) => {
+        targetRules: (executor, target, arena) => {
+            return executor === target;
+        }
+    }),
+    walk:  new CombatAction({
+        key: 'walk',
+        cooldown: 0,
+        operation: (executor, target, arena) => {
+            executor.turnMeter = 0;
+            return `${executor.label} from team ${executor.team} waits`;
+        },
+        targetRules: (executor, target, arena) => {
             return executor === target;
         }
     }),
     attack: new CombatAction({
         key: 'basic attack',
         cooldown: 0,
-        operation: (executor, target) => {
+        operation: (executor, target, arena) => {
             executor.turnMeter = 0;
             // todo: add arena effects
             // todo: add target effects
@@ -34,7 +45,7 @@ const defaultActions = {
             target.hp -= dmg;
             return `${executor.label} from team ${executor.team} attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
         },
-        targetRules: (executor, target) => {
+        targetRules: (executor, target, arena) => {
             return executor.team !== target.team;
         }
     })
@@ -71,7 +82,7 @@ const battleAI = {
         battleAI: (battle, executor) => {
             // for testing purposes currently always attack
             let action = executor.combatAction.attack;
-            let availableTargets = action.getAvailableTargets(executor, battle.combatants);
+            let availableTargets = action.getAvailableTargets(executor, battle.combatants, battle.arena);
             if(availableTargets){
                 action.pickTarget(executor, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
                 return action;
@@ -84,10 +95,10 @@ const battleAI = {
         battleAI: (battle, executor) => {
 
             let attackAction = executor.combatAction.attack;
-            let availableTargets = attackAction.getAvailableTargets(executor, battle.combatants);
+            let availableTargets = attackAction.getAvailableTargets(executor, battle.combatants, battle.arena);
 
             let healAction = executor.combatAction.heal;
-            let availableHealTargets = healAction.getAvailableTargets(executor, battle.combatants);
+            let availableHealTargets = healAction.getAvailableTargets(executor, battle.combatants, battle.arena);
 
             if(availableHealTargets) {
                 healAction.pickTarget(executor, battle.combatants[availableHealTargets[randomInt(availableHealTargets.length)]])
