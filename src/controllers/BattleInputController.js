@@ -1,4 +1,4 @@
-import { randomInt } from "../helpers/randomInt";
+import {statusOption} from "../ui-components/GridUnit";
 
 export default class BattleInputController{
 
@@ -16,6 +16,12 @@ export default class BattleInputController{
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.keys = this.scene.input.keyboard.addKeys('W,A,S,D');
+
+        /**
+         *
+         * @type {GridUnit}
+         */
+        this.selectedUnit = null;
         
         this.hoveredTile = {
             "tileIndex": '',
@@ -110,16 +116,37 @@ export default class BattleInputController{
              */
             const tile = this.getTileAtWorldXY(pointer);
             if (tile) {
-                const combatantStatuses = this.scene.data.get('combatantStatuses');
-                const combatant = combatantStatuses[randomInt(combatantStatuses.length)];
-                if(!tile.properties['cmbId'] && tile.index !== 0){
-                    let oldTile = this.getTileAt(combatant.tileCoordinates.x, combatant.tileCoordinates.y);
-                    oldTile.properties['cmbId'] = false;
-                    tile.properties['cmbId'] = combatant.cmbId;
-                    combatant.moveToCoords({
-                        x: tile.x,
-                        y: tile.y
-                    });
+
+                if(this.selectedUnit){
+                    if(!tile.properties['cmbId'] && tile.index !== 0){
+                        let oldTile = this.getTileAt(this.selectedUnit.tileCoordinates.x, this.selectedUnit.tileCoordinates.y);
+
+                        /**
+                         *
+                         * @type {Battle}
+                         */
+                        const battle = this.scene.data.get('battle');
+                        const combatants = battle.getCombatants();
+                        const combatant = combatants.find(c => c.id === this.selectedUnit.cmbId);
+                        combatant.coordinates =
+
+                        oldTile.properties['cmbId'] = false;
+                        tile.properties['cmbId'] = this.selectedUnit.cmbId;
+                        this.selectedUnit.moveToCoords({
+                            x: tile.x,
+                            y: tile.y
+                        });
+                        this.selectedUnit.setStyle(statusOption.default);
+                        this.selectedUnit = null;
+                    }
+                } else {
+                    if(tile.properties['cmbId']){
+                        const gridUnits = this.scene.data.get('gridUnits');
+                        this.selectedUnit = gridUnits.find(c => c.cmbId === tile.properties['cmbId']) || null;
+                        if(this.selectedUnit){
+                            this.selectedUnit.setStyle(statusOption.selected);
+                        }
+                    }
                 }
             }
         });
@@ -175,6 +202,7 @@ export default class BattleInputController{
             'camScrollX': this.cam.scrollX,
             'camScrollY': this.cam.scrollY,
             ...this.hoveredTile,
+            'selectedUnit': this.selectedUnit ? this.selectedUnit.cmbId : null
         });
     }
 

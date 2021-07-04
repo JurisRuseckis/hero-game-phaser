@@ -4,9 +4,10 @@ export const statusOption = {
     default : 0,
     executor : 1,
     target : 2,
+    selected : 3,
 };
 
-export default class CombatantStatus
+export default class GridUnit
 {
     /**
      * Currently adding some defaults cause lazy
@@ -67,6 +68,7 @@ export default class CombatantStatus
             width: styles.borderWidth,
             color: styles.colors.btnBorder
         };
+        this.status = statusOption.default;
 
         // text
         this.text = props.text || "";
@@ -76,7 +78,7 @@ export default class CombatantStatus
         this.cmbId = props.cmbId || null;
 
         this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize, this.tileCoordinates.y * this.tileSize);
-        // this.container.setInteractive();
+        this.container.setInteractive();
 
         this.addCircle();
         this.addTxt();
@@ -152,11 +154,16 @@ export default class CombatantStatus
     {
         
         this.btnObj.on('pointerover', () => {
-            this.btnObj.setFillStyle(styles.colors.btnBorder);
+            if(this.status === statusOption.default) {
+                this.btnObj.setFillStyle(styles.colors.btnBorder);
+            }
             // this.fow.setVisible(true);
         }, this);
         this.btnObj.on('pointerout', () => {
-            this.btnObj.setFillStyle(styles.colors.btnBg);
+            if(this.status === statusOption.default){
+                this.btnObj.setFillStyle(styles.colors.btnBg);
+            }
+
             // this.fow.setVisible(false);
         }, this);
     }
@@ -167,12 +174,16 @@ export default class CombatantStatus
     }
 
     setStyle(status){
+            this.status = status;
             switch(status){
                 case statusOption.executor:
-                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.blue).setFillStyle(styles.colors.blue);
+                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.blue);
                     break;
                 case statusOption.target:
-                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.red).setFillStyle(styles.colors.red);
+                    this.btnObj.setStrokeStyle(this.border.width, styles.colors.red);
+                    break;
+                case statusOption.selected:
+                    this.btnObj.setFillStyle(styles.colors.green);
                     break;
                 case statusOption.default:
                 default:
@@ -182,8 +193,9 @@ export default class CombatantStatus
     }
 
     moveToCoords(tilePosition){
-
-        this.direction.set(tilePosition.x - this.tileCoordinates.x,tilePosition.y - this.tileCoordinates.y).normalize();
+        this.direction.set(tilePosition.x - this.tileCoordinates.x,tilePosition.y - this.tileCoordinates.y);
+        const distance = this.direction.length();
+        this.direction.normalize();
         this.tileCoordinates.set(tilePosition.x,tilePosition.y);
 
         this.scene.tweens.add({
@@ -196,7 +208,7 @@ export default class CombatantStatus
 
         this.scene.tweens.add({
             targets: this.container,
-            duration: 1000,
+            duration: distance * 100,
             x: this.tileCoordinates.x * this.tileSize,
             y: this.tileCoordinates.y * this.tileSize,
             delay: 0,

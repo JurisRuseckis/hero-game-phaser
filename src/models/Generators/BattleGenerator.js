@@ -337,15 +337,9 @@ export default class BattleGenerator
                 }
 
                 if(verticalDir){
-                    props.coordinates = {
-                        x:startPos.x,
-                        y:startPos.y + cIndex - posOffset
-                    };
+                    props.coordinates = new Phaser.Math.Vector2(startPos.x, startPos.y + cIndex - posOffset)
                 } else {
-                    props.coordinates = {
-                        x:startPos.x + cIndex - posOffset,
-                        y:startPos.y
-                    };
+                    props.coordinates = new Phaser.Math.Vector2(startPos.x + cIndex - posOffset,startPos.y)
                 }
 
                 combatants.push(new Combatant(props));

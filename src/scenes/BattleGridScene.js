@@ -40,13 +40,15 @@ export class BattleGridScene extends Phaser.Scene
         const tileGridLayer = tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, battle.arena.width, battle.arena.height);
         tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
 
+        this.data.set('tilemap', tilemap);
+
         const debugWindow = new DebugWindow({
             scene: this,
         });
         
         const marker = this.createTileSelector();
 
-        const combatantStatuses = this.drawCombatants(Object.values(battle.getCombatants(false)));
+        const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
         const battleLogDebugWindow = new DebugWindow({
             scene: this,
@@ -57,10 +59,10 @@ export class BattleGridScene extends Phaser.Scene
             scene: this,
         });
 
-        this.data.set('tilemap', tilemap);
+
         this.data.set('debugWindow', debugWindow);
         this.data.set('marker', marker);
-        this.data.set('combatantStatuses', combatantStatuses);
+        this.data.set('gridUnits', gridUnits);
         this.data.set('battleLogDebugWindow', battleLogDebugWindow);
         this.data.set('inputController', inputController);
     }
@@ -101,20 +103,20 @@ export class BattleGridScene extends Phaser.Scene
      */
       updateBattleScene(battle, executor, action)
       {
-          const combatantStatuses = this.data.get('combatantStatuses');
+          const gridUnits = this.data.get('gridUnits');
 
           if(this.target){
-              combatantStatuses.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
+              gridUnits.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
           }
           if(this.executorId){
-              combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+              gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
           }
   
           this.target = action.target ? action.target : null;
           this.executorId = executor.id;
   
           if(this.target){
-              const targetObj = combatantStatuses.find(c => c.cmbId === this.target.id)
+              const targetObj = gridUnits.find(c => c.cmbId === this.target.id)
               targetObj.setStyle(statusOption.target);
               targetObj.txtObj.setText(this.target.hp);
               if(this.target.hp <= 0){
@@ -122,7 +124,7 @@ export class BattleGridScene extends Phaser.Scene
               }
           }
   
-          combatantStatuses.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
+          gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
           
       }
  
@@ -143,10 +145,12 @@ export class BattleGridScene extends Phaser.Scene
       }
 
       drawCombatants(combatants) {
+        const tilemap = this.data.get('tilemap');
+
         return combatants.map((combatant)=>{
             const gridUnit = new GridUnit({
                 scene: this,
-                tileCoordinates: new Phaser.Math.Vector2(combatant.coordinates.x,combatant.coordinates.y),
+                tileCoordinates: combatant.coordinates,
                 tileSize: this.tileSize,
                 unitSize: this.unitSize,
                 text: combatant.hp,
@@ -154,6 +158,8 @@ export class BattleGridScene extends Phaser.Scene
                 direction: combatant.direction
             });
             gridUnit.addDefaultEvents();
+            const tile = tilemap.getTileAt(combatant.coordinates.x, combatant.coordinates.y);
+            tile.properties['cmbId'] = combatant.id;
 
             return gridUnit;
         }).flat();

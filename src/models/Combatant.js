@@ -8,6 +8,8 @@ export class Combatant {
      * @param {Object} props
      * @param {Character} props.character
      * @param {number} props.team
+     * @param {Phaser.Math.Vector2} props.coordinates
+     * @param {Phaser.Math.Vector2} props.direction
      */
     constructor(props) {
         /**
@@ -60,7 +62,7 @@ export class Combatant {
          */
         this.ai = props.character.battleAI;
         /**
-         * @type {Object}
+         * @type {Phaser.Math.Vector2}
          */
         this.coordinates = props.coordinates;
         /**
