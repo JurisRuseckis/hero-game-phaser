@@ -39,6 +39,7 @@ export class BattleGridScene extends Phaser.Scene
         const tileSet = tilemap.addTilesetImage('battleTileset', null, this.tileSize, this.tileSize, 0, 0);
         const tileGridLayer = tilemap.createBlankLayer('battleGridLayer', tileSet, 0, 0, battle.arena.width, battle.arena.height);
         tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
+        battle.arena.tilemap = tilemap;
 
         this.data.set('tilemap', tilemap);
 
