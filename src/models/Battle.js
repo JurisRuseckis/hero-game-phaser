@@ -100,11 +100,7 @@ export default class Battle{
         // todo: pass in target from somewhere else and handle multiple targets
         const executor = this.combatants[0];
 
-        if(action.targetRules(executor, action.target, this.arena)){
-            this.battleLog.addTurn(action.applyActionEffects(executor, this.arena), executor, action);
-        } else {
-            return false;
-        }
+        this.battleLog.addTurn(action.applyActionEffects(executor, this.arena), executor, action);
 
         //update battle scene before carying off corpses
         // todo moved info to return value so scene can choose which params to use
