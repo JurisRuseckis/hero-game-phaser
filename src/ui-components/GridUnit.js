@@ -54,7 +54,7 @@ export default class GridUnit
          *
          * @type {Phaser.Math.Vector2}
          */
-        this.tileCoordinates = props.tileCoordinates || new Phaser.Math.Vector2(0,0);
+        this.tileCoordinates = props.tileCoordinates ? new Phaser.Math.Vector2(props.tileCoordinates.x, props.tileCoordinates.y) : new Phaser.Math.Vector2(0,0);
         /**
          * unitVector
          * @type {Phaser.Math.Vector2}
