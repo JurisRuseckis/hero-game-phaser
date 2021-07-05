@@ -116,44 +116,11 @@ export default class BattleInputController{
              */
             const tile = this.getTileAtWorldXY(pointer);
             if (tile) {
-
-                if(this.selectedUnit){
-                    if(!tile.properties['cmbId'] && tile.index !== 0){
-                        let oldTile = this.getTileAt(this.selectedUnit.tileCoordinates.x, this.selectedUnit.tileCoordinates.y);
-
-                        /**
-                         *
-                         * @type {Battle}
-                         */
-                        const battle = this.scene.data.get('battle');
-                        const combatants = battle.getCombatants();
-                        const combatant = combatants.find(c => c.id === this.selectedUnit.cmbId);
-                        // if there is such combatant and he's not dead
-                        if(combatant){
-                            // somehow vector references, and we do not need to set it here
-                            // this could cause problems later
-                            // combatant.coordinates.set(tile.x, tile.y);
-
-                            oldTile.properties['cmbId'] = false;
-                            tile.properties['cmbId'] = this.selectedUnit.cmbId;
-                            this.selectedUnit.moveToCoords({
-                                x: tile.x,
-                                y: tile.y
-                            });
-                            console.log(combatant);
-
-                        }
-
-                        this.selectedUnit.setStyle(statusOption.default);
-                        this.selectedUnit = null;
-                    }
-                } else {
-                    if(tile.properties['cmbId']){
-                        const gridUnits = this.scene.data.get('gridUnits');
-                        this.selectedUnit = gridUnits.find(c => c.cmbId === tile.properties['cmbId']) || null;
-                        if(this.selectedUnit){
-                            this.selectedUnit.setStyle(statusOption.selected);
-                        }
+                if(tile.properties['cmbId']){
+                    const gridUnits = this.scene.data.get('gridUnits');
+                    this.selectedUnit = gridUnits.find(c => c.cmbId === tile.properties['cmbId']) || null;
+                    if(this.selectedUnit){
+                        this.selectedUnit.setStyle(statusOption.selected);
                     }
                 }
             }
