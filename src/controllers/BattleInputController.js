@@ -12,6 +12,8 @@ export default class BattleInputController{
         this.scene = props.scene;
         this.cam = this.scene.cameras.main;
         this.maxCameraOffset = 200;
+        this.cam.scrollX = -this.maxCameraOffset;
+        this.cam.scrollY = -this.maxCameraOffset;
         this.camSpeed = 32;
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
