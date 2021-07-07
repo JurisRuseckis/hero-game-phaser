@@ -2,7 +2,7 @@ import {randomInt} from "../../helpers/randomInt";
 import Battle, { battleType } from "../Battle";
 import Character, {race} from "../Character";
 import {Combatant} from "../Combatant";
-import CombatAction from "../CombatAction";
+import CombatAction, {actionTags} from "../CombatAction";
 import BattleAI from "../BattleAI";
 import Arena from "../Arena";
 import Phaser from "phaser";
@@ -14,39 +14,48 @@ import Phaser from "phaser";
 const defaultActions = {
     wait: new CombatAction({
         key: 'wait',
+        tags: [actionTags.any],
+        range: 2,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
             return `${executor.label} from team ${executor.team} waits`;
         },
         targetRules: (executor, target, arena) => {
-            return executor === target;
+            return true;
         }
     }),
     walk:  new CombatAction({
         key: 'walk',
+        tags: [actionTags.any],
+        range: 2,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
-            return `${executor.label} from team ${executor.team} waits`;
+            const init = new Phaser.Math.Vector2(executor.coordinates.x, executor.coordinates.y);
+            executor.coordinates.set(target.tile.x, target.tile.y);
+            return `${executor.label} from team ${executor.team} walks from tile at [${init.x},${init.y}] to tile at [${target.tile.x},${target.tile.y}]`;
         },
         targetRules: (executor, target, arena) => {
-            return executor === target;
+            return !target.tile.properties['cmbId']
+                && target.tile.index !== 0
+                && target.tile.x !== executor.coordinates.x
+                && target.tile.y !== executor.coordinates.y
         }
     }),
     attack: new CombatAction({
         key: 'basic attack',
+        tags: [actionTags.targetable],
+        range: 1,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
-            // todo: add arena effects
-            // todo: add target effects
             const dmg = executor.calculateDmg();
-            target.hp -= dmg;
-            return `${executor.label} from team ${executor.team} attacks ${target.label} from team ${target.team} for ${dmg} damage!`;
+            target.combatant.hp -= dmg;
+            return `${executor.label} from team ${executor.team} attacks ${target.combatant.label} from team ${target.combatant.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target, arena) => {
-            return executor.team !== target.team;
+            return executor.team !== target.combatant.team;
         }
     })
 };
@@ -57,20 +66,21 @@ const defaultActions = {
 const actionPool = {
      heal : new CombatAction({
          key: 'heal',
+         tags: [actionTags.targetable],
+         range: 2,
          cooldown: 20,
-         operation: (executor, target) => {
+         operation: (executor, target, arena) => {
              executor.turnMeter = 0;
-             // todo: add arena effects
-             // todo: add target effects
              const healAmount = executor.calculateDmg();
-             target.hp += healAmount;
-             if(target.hp > target.maxHp){
-                 target.hp = target.maxHp;
+             target.combatant.hp += healAmount;
+             if(target.combatant.hp > target.combatant.maxHp){
+                 target.combatant.hp = target.combatant.maxHp;
              }
-             return `${executor.label} from team ${executor.team} heals ${target.label} from team ${target.team} for ${healAmount} hp!`;
+             return `${executor.label} from team ${executor.team} heals ${target.combatant.label} from team ${target.combatant.team} for ${healAmount} hp!`;
          },
-         targetRules: (executor, target) => {
-             return executor.team === target.team;
+         targetRules: (executor, target, arena) => {
+             console.log(target)
+             return executor.team === target.combatant.team;
          }
      }),
  }
@@ -80,37 +90,27 @@ const battleAI = {
     basic: new BattleAI({
         key: 'basic',
         battleAI: (battle, executor) => {
-            // for testing purposes currently always attack
-            let action = executor.combatAction.attack;
-            let availableTargets = action.getAvailableTargets(executor, battle.combatants, battle.arena);
-            if(availableTargets){
-                action.pickTarget(executor, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
-                return action;
+            const closestEnemy = BattleAI.getClosestEnemy(executor, battle.getCombatants())
+            let x = executor.combatAction.walk;
+            const att = executor.combatAction.attack;
+            if(closestEnemy.distance > att.range){
+                let xTargets = x.getAvailableTargets(executor, battle.combatants, battle.arena);
+                const closestTileToEnemy = BattleAI.getClosestAvailableTileToEnemy(xTargets, closestEnemy.combatant.coordinates, att.range);
+                if(closestTileToEnemy && x.pickTarget(executor,closestTileToEnemy.target,battle.arena)){
+                    return x;
+                }
             } else {
-                return executor.combatAction.wait;
+                let targetTile = battle.arena.tilemap.getTileAt(closestEnemy.combatant.coordinates.x, closestEnemy.combatant.coordinates.y)
+                if(att.pickTarget(executor, {
+                    tile: targetTile,
+                    combatant: closestEnemy.combatant
+                }, battle.arena)){
+                    return att;
+                }
             }
+
+            return executor.combatAction.wait;
         }
-    }),
-    leader:  new BattleAI({
-        battleAI: (battle, executor) => {
-
-            let attackAction = executor.combatAction.attack;
-            let availableTargets = attackAction.getAvailableTargets(executor, battle.combatants, battle.arena);
-
-            let healAction = executor.combatAction.heal;
-            let availableHealTargets = healAction.getAvailableTargets(executor, battle.combatants, battle.arena);
-
-            if(availableHealTargets) {
-                healAction.pickTarget(executor, battle.combatants[availableHealTargets[randomInt(availableHealTargets.length)]])
-                return healAction;
-            } else if(availableTargets) {
-                attackAction.pickTarget(executor, battle.combatants[availableTargets[randomInt(availableTargets.length)]])
-                return attackAction;
-            } else {
-                return executor.combatAction.wait;
-            }
-        },
-        key: 'leader'
     }),
 }
 
@@ -144,7 +144,7 @@ const characterRoster = {
             atk: 10,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            battleAI: battleAI.leader,
+            battleAI: battleAI.basic,
         }),
     },
     human : {
@@ -176,7 +176,7 @@ const characterRoster = {
             atk: 8,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            battleAI: battleAI.leader,
+            battleAI: battleAI.basic,
         }),
     },
     dwarf : {
@@ -208,7 +208,7 @@ const characterRoster = {
             atk: 9,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            battleAI: battleAI.leader,
+            battleAI: battleAI.basic,
         }),
     },
     elf : {
@@ -240,7 +240,7 @@ const characterRoster = {
             atk: 7,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            battleAI: battleAI.leader,
+            battleAI: battleAI.basic,
         }),
     },
     goblins : {
@@ -272,7 +272,7 @@ const characterRoster = {
             atk: 4,
             isPlayable: false,
             combatActions: {...defaultActions, heal:actionPool.heal},
-            battleAI: battleAI.leader,
+            battleAI: battleAI.basic,
         }),
     }
 };
@@ -297,7 +297,7 @@ export default class BattleGenerator
             teams.push(this.generateTeam(teamSize + randomInt(4)));
         }
 
-        const arenaSize = teamSize*2 + 20 + randomInt(15);
+        const arenaSize = teamSize*2 + 10;
         const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
 
         const teamStartPos = [
