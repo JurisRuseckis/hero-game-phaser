@@ -57,23 +57,24 @@ export default class CombatAction
 
     /**
      * validates and sets target
-     * @param {Combatant} executor 
-     * @param {Object} target
+     * @param {Combatant} executor
+     * @param {{combatant: Combatant, tile: Phaser.Tilemaps.Tile}} target
+     * @param {Arena} arena
      * @param {Combatant} target.combatant
      * @param {Phaser.Math.Vector2} target.tile
      * @returns {boolean}
      */
-    pickTarget(executor,target){
+    pickTarget(executor,target, arena){
 
         //check if target tile is in range
         const executorCoords = new Phaser.Math.Vector2(executor.coordinates.x, executor.coordinates.y);
         const targetCoords = new Phaser.Math.Vector2(target.tile.x, target.tile.y);
-        const dist = targetCoords.subtract(executorCoords).length();
+        const dist = Math.round(targetCoords.subtract(executorCoords).length());
         if(dist > this.range){
             return false;
         }
 
-        if(!this.targetRules(executor, target)){
+        if(!this.targetRules(executor, target, arena)){
             return false;
         }
         
@@ -86,14 +87,11 @@ export default class CombatAction
      * @param {Combatant} executor 
      * @param {Combatant[]} combatants
      * @param {Arena} arena
-     * @returns {{combatants: Combatant[], availableTiles: Phaser.Math.Vector2[]}} indices of given array
+     * @returns {{combatant: Combatant, tile: Phaser.Tilemaps.Tile}[]} indices of given array
      */
     getAvailableTargets(executor, combatants, arena){
+        let availableTargets = [];
 
-        let target = {
-            combatants: [],
-            availableTiles: []
-        };
 
         const rSq = this.range * this.range;
         const sq = {
@@ -109,24 +107,31 @@ export default class CombatAction
                 const dx = executor.coordinates.x - col;
                 const distSq = dy * dy + dx * dx;
                 if(distSq <= rSq){
-                    // if tile is in range then push all the things needed to target
-                    target.availableTiles.push(new Phaser.Math.Vector2(col, row));
+                    // if tile is in range then push all the things needed to availableTargets
                     const tile = arena.tilemap.getTileAt(col, row);
+                    // there should always be tile at this point
+                    let target = {
+                        tile: tile
+                    }
 
                     if(this.tags.includes(actionTags.targetable)){
                         const cmbId = tile.properties['cmbId'];
                         if(cmbId){
-                            const combatant = combatants.find(c => c.id === cmbId);
-                            if(combatant && this.targetRules(executor, combatant, arena)){
-                                target.combatants.push(combatant);
+                            target.combatant = combatants.find(c => c.id === cmbId);
+                            if(target.combatant && this.targetRules(executor, target, arena)){
+                                availableTargets.push(target);
                             }
 
+                        }
+                    } else {
+                        if(this.targetRules(executor, target, arena)){
+                            availableTargets.push(target);
                         }
                     }
                 }
             }
         }
 
-        return target;
+        return availableTargets;
     }
 }
