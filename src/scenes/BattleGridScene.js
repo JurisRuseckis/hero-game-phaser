@@ -75,7 +75,8 @@ export class BattleGridScene extends Phaser.Scene
 
         this.turnTimer += delta;
         // as sometimes we can lag a bit we do a loop 
-        while (this.turnTimer > this.turndelay) {
+        while (this.turnTimer > this.turndelay /*&& this.turnCount < 100*/) {
+            this.turnCount++;
             const battle = this.data.get('battle');
             const turnResults = battle.nextTurn();
             // if battle in progress then update scene
@@ -102,32 +103,38 @@ export class BattleGridScene extends Phaser.Scene
      * @param {Combatant} executor
      * @param {CombatAction} action
      */
-      updateBattleScene(battle, executor, action)
-      {
-          const gridUnits = this.data.get('gridUnits');
+    updateBattleScene(battle, executor, action)
+    {
+        const gridUnits = this.data.get('gridUnits');
+        if(this.target && this.target.combatant){
+            gridUnits.find(c => c.cmbId === this.target.combatant.id).setStyle(statusOption.default);
+        }
+        if(this.executorId){
+            gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+        }
 
-          if(this.target){
-              gridUnits.find(c => c.cmbId === this.target.id).setStyle(statusOption.default);
-          }
-          if(this.executorId){
-              gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
-          }
-  
-          this.target = action.target ? action.target : null;
-          this.executorId = executor.id;
-  
-          if(this.target){
-              const targetObj = gridUnits.find(c => c.cmbId === this.target.id)
-              targetObj.setStyle(statusOption.target);
-              targetObj.txtObj.setText(this.target.hp);
-              if(this.target.hp <= 0){
-                  targetObj.crossObj.setVisible(true);
-              }
-          }
-  
-          gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.executor);
-          
-      }
+        this.target = action.target ? action.target : null;
+        this.executorId = executor.id;
+
+        if(this.target && this.target.combatant){
+            const targetObj = gridUnits.find(c => c.cmbId === this.target.combatant.id)
+            targetObj.setStyle(statusOption.target);
+            targetObj.txtObj.setText(this.target.combatant.hp);
+            if(this.target.combatant.hp <= 0){
+                targetObj.crossObj.setVisible(true);
+                const tile = battle.arena.tilemap.getTileAt(this.target.combatant.coordinates.x,this.target.combatant.coordinates.y);
+                tile.properties['cmbId'] = null;
+            }
+        }
+
+
+        const gridUnit =gridUnits.find(c => c.cmbId === this.executorId);
+        gridUnit.setStyle(statusOption.executor);
+        if(action.key === 'walk'){
+            gridUnit.moveToCoords(executor.coordinates);
+        }
+
+    }
  
      /**
       * @param props
