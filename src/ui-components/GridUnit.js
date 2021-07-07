@@ -23,7 +23,6 @@ export default class GridUnit
      *
      * @param {number} props.fill={styles.colors.btnBg}
      * @param {number} props.fillAlpha=1
-     * @param {number} props.text=""
      * @param {number} props.textStyle
      *
      * @param {Object} props.border
@@ -31,7 +30,7 @@ export default class GridUnit
      * @param {number} props.border.color
      * @param {number} props.border.alpha
      * 
-     * @param {string} props.cmbId
+     * @param {Combatant} props.combatant
      *
      */
     constructor(props)
@@ -39,6 +38,12 @@ export default class GridUnit
         if(!props.scene) {
             throw 'ArgumentException: missing scene';
         }
+        if(!props.combatant) {
+            throw 'ArgumentException: missing combatant';
+        }
+
+
+        this.combatant = props.combatant;
 
         // scene
         this.scene = props.scene;
@@ -54,12 +59,12 @@ export default class GridUnit
          *
          * @type {Phaser.Math.Vector2}
          */
-        this.tileCoordinates = props.tileCoordinates ? new Phaser.Math.Vector2(props.tileCoordinates.x, props.tileCoordinates.y) : new Phaser.Math.Vector2(0,0);
+        this.tileCoordinates = new Phaser.Math.Vector2(this.combatant.coordinates.x, this.combatant.coordinates.y);
         /**
          * unitVector
          * @type {Phaser.Math.Vector2}
          */
-        this.direction = props.direction || Phaser.Math.Vector2.UP;
+        this.direction = new Phaser.Math.Vector2(this.combatant.direction.x, this.combatant.direction.y);
         
         // fill & borders
         this.fill = props.fill || styles.colors.btnBg;
@@ -69,13 +74,7 @@ export default class GridUnit
             color: styles.colors.btnBorder
         };
         this.status = statusOption.default;
-
-        // text
-        this.text = props.text || "";
         this.textStyle = props.textStyle || {};
-
-        
-        this.cmbId = props.cmbId || null;
 
         this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize, this.tileCoordinates.y * this.tileSize);
         this.container.setInteractive();
@@ -109,7 +108,7 @@ export default class GridUnit
         this.txtObj = this.scene.add.text(
             btnCenter.x,
             btnCenter.y,
-            this.text,
+            this.combatant.hp.toString(),
             this.textStyle
         ).setOrigin(0.5);
 

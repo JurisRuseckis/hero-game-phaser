@@ -107,17 +107,17 @@ export class BattleGridScene extends Phaser.Scene
     {
         const gridUnits = this.data.get('gridUnits');
         if(this.target && this.target.combatant){
-            gridUnits.find(c => c.cmbId === this.target.combatant.id).setStyle(statusOption.default);
+            gridUnits.find(c => c.combatant.id === this.target.combatant.id).setStyle(statusOption.default);
         }
         if(this.executorId){
-            gridUnits.find(c => c.cmbId === this.executorId).setStyle(statusOption.default);
+            gridUnits.find(c => c.combatant.id === this.executorId).setStyle(statusOption.default);
         }
 
         this.target = action.target ? action.target : null;
         this.executorId = executor.id;
 
         if(this.target && this.target.combatant){
-            const targetObj = gridUnits.find(c => c.cmbId === this.target.combatant.id)
+            const targetObj = gridUnits.find(c => c.combatant.id === this.target.combatant.id)
             targetObj.setStyle(statusOption.target);
             targetObj.txtObj.setText(this.target.combatant.hp);
             if(this.target.combatant.hp <= 0){
@@ -128,7 +128,7 @@ export class BattleGridScene extends Phaser.Scene
         }
 
 
-        const gridUnit =gridUnits.find(c => c.cmbId === this.executorId);
+        const gridUnit =gridUnits.find(c => c.combatant.id === this.executorId);
         gridUnit.setStyle(statusOption.executor);
         if(action.key === 'walk'){
             gridUnit.moveToCoords(executor.coordinates);
@@ -158,12 +158,9 @@ export class BattleGridScene extends Phaser.Scene
         return combatants.map((combatant)=>{
             const gridUnit = new GridUnit({
                 scene: this,
-                tileCoordinates: combatant.coordinates,
                 tileSize: this.tileSize,
                 unitSize: this.unitSize,
-                text: combatant.hp,
-                cmbId: combatant.id,
-                direction: combatant.direction
+                combatant: combatant,
             });
             gridUnit.addDefaultEvents();
             const tile = tilemap.getTileAt(combatant.coordinates.x, combatant.coordinates.y);

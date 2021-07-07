@@ -1,5 +1,3 @@
-import {statusOption} from "../ui-components/GridUnit";
-
 export default class BattleInputController{
 
     /**
@@ -18,12 +16,6 @@ export default class BattleInputController{
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.keys = this.scene.input.keyboard.addKeys('W,A,S,D');
-
-        /**
-         *
-         * @type {GridUnit}
-         */
-        this.selectedUnit = null;
         
         this.hoveredTile = {
             "tileIndex": '',
@@ -107,24 +99,10 @@ export default class BattleInputController{
                     'y': this.cam.scrollY
                 });
 
-                if (this.pointerDownPosition.x !== this.pointerDownInitialPosition.x
-                    || this.pointerDownPosition.y !== this.pointerDownInitialPosition.y) {
-                    return;
-                }
-            }
-
-            /**
-             * @type {Phaser.Tilemaps.Tile}
-             */
-            const tile = this.getTileAtWorldXY(pointer);
-            if (tile) {
-                if(tile.properties['cmbId']){
-                    const gridUnits = this.scene.data.get('gridUnits');
-                    this.selectedUnit = gridUnits.find(c => c.cmbId === tile.properties['cmbId']) || null;
-                    if(this.selectedUnit){
-                        this.selectedUnit.setStyle(statusOption.selected);
-                    }
-                }
+                // if (this.pointerDownPosition.x !== this.pointerDownInitialPosition.x
+                //     || this.pointerDownPosition.y !== this.pointerDownInitialPosition.y) {
+                //     return;
+                // }
             }
         });
         // noinspection JSUnusedLocalSymbols
@@ -179,7 +157,6 @@ export default class BattleInputController{
             'camScrollX': this.cam.scrollX,
             'camScrollY': this.cam.scrollY,
             ...this.hoveredTile,
-            'selectedUnit': this.selectedUnit ? this.selectedUnit.cmbId : null
         });
     }
 
