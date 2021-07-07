@@ -116,14 +116,21 @@ export class BattleGridScene extends Phaser.Scene
         this.target = action.target ? action.target : null;
         this.executorId = executor.id;
 
+
         if(this.target && this.target.combatant){
             const targetObj = gridUnits.find(c => c.combatant.id === this.target.combatant.id)
             targetObj.setStyle(statusOption.target);
             targetObj.txtObj.setText(this.target.combatant.hp);
             if(this.target.combatant.hp <= 0){
                 targetObj.crossObj.setVisible(true);
-                const tile = battle.arena.tilemap.getTileAt(this.target.combatant.coordinates.x,this.target.combatant.coordinates.y);
-                tile.properties['cmbId'] = null;
+                // const targetTile = battle.arena.tilemap.getTileAt(this.target.combatant.coordinates.x,this.target.combatant.coordinates.y);
+                // using reference of tile instead
+                if(!this.target.tile.properties['corpses']){
+                    this.target.tile.properties['corpses'] = [this.target.tile.properties['cmbId']]
+                } else {
+                    this.target.tile.properties['corpses'].push(this.target.tile.properties['cmbId'])
+                }
+                this.target.tile.properties['cmbId'] = null;
             }
         }
 
@@ -131,7 +138,10 @@ export class BattleGridScene extends Phaser.Scene
         const gridUnit =gridUnits.find(c => c.combatant.id === this.executorId);
         gridUnit.setStyle(statusOption.executor);
         if(action.key === 'walk'){
+            const originTile = battle.arena.tilemap.getTileAt(gridUnit.tileCoordinates.x,gridUnit.tileCoordinates.y);
+            this.target.tile.properties['cmbId'] = originTile.properties['cmbId'];
             gridUnit.moveToCoords(executor.coordinates);
+            originTile.properties['cmbId'] = null;
         }
 
     }

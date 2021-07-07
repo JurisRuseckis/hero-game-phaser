@@ -67,9 +67,10 @@ export default class BattleInputController{
                 if (tile) {
                     const marker = this.scene.data.get('marker');
                     this.hoveredTile = {
-                        "tileIndex": tile.index,
-                        "tileX": tile.x,
-                        "tileY": tile.y,
+                        'tileIndex': tile.index,
+                        'tileX': tile.x,
+                        'tileY': tile.y,
+                        'tileProperties': tile.properties
                     }
 
                     marker.x = tile.x * this.scene.tileSize;
