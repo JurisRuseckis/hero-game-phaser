@@ -18,6 +18,7 @@ export default class DebugWindow
             backgroundColor: '#000000',
             fill: '#ffffff'
         });
+        this.obj.setAlpha(0.5);
         this.obj.setScrollFactor(0);
         this.obj.setName('debug');
         this.obj.setDepth(1);

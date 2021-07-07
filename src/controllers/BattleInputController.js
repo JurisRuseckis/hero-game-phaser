@@ -64,14 +64,37 @@ export default class BattleInputController{
             } else {
                 // if not dragging 
                 const tile = this.getTileAtWorldXY(pointer);
+                const battle = this.scene.data.get('battle');
                 if (tile) {
                     const marker = this.scene.data.get('marker');
+
                     this.hoveredTile = {
                         'tileIndex': tile.index,
                         'tileX': tile.x,
                         'tileY': tile.y,
-                        'tileProperties': tile.properties
+                        'tileProperties': tile.properties,
                     }
+
+                    if(tile.properties['cmbId']){
+                        const cmbObj = battle.getCombatants().find(c => c.id === tile.properties['cmbId']);
+                        if(cmbObj){
+                            this.hoveredTile.combatant = cmbObj.print();
+                        } else {
+                            this.hoveredTile.combatant = 'probably MIA!';
+                        }
+                    }
+
+                    if(tile.properties['corpses']){
+                        this.hoveredTile.corpses = tile.properties['corpses'].map((combatantCorpse) => {
+                            const cmbObj = battle.corpses.find(c => c.id === combatantCorpse);
+                            if(cmbObj){
+                                return cmbObj.print();
+                            } else {
+                                return 'probably MIA! wtf?';
+                            }
+                        })
+                    }
+
 
                     marker.x = tile.x * this.scene.tileSize;
                     marker.y = tile.y * this.scene.tileSize;

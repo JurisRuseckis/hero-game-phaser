@@ -89,4 +89,15 @@ export class Combatant {
         return this.ai.calculateBattleAIAction(battle,this);
      }
 
+     print() {
+         return {
+             'id': this.id,
+             'label': this.label,
+             'hp': `${this.hp}/${this.maxHp}`,
+             'turnMeter': this.turnMeter,
+             'currentSpd': this.currentSpd,
+             'team': this.team,
+         }
+     }
+
 }

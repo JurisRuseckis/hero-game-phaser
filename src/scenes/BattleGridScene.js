@@ -72,18 +72,17 @@ export class BattleGridScene extends Phaser.Scene
         const battleLogDebugWindow = this.data.get('battleLogDebugWindow');
         const debugWindow = this.data.get('debugWindow');
         const inputController = this.data.get('inputController');
+        const battle = this.data.get('battle');
 
         this.turnTimer += delta;
         // as sometimes we can lag a bit we do a loop 
-        while (this.turnTimer > this.turndelay /*&& this.turnCount < 100*/) {
+        while (this.turnTimer > this.turndelay
+            && battle.status !== battleStatus.finished /*&& this.turnCount < 100*/) {
             this.turnCount++;
-            const battle = this.data.get('battle');
             const turnResults = battle.nextTurn();
             // if battle in progress then update scene
-            if(battle.status !== battleStatus.finished){
-                this.updateBattleScene(battle, turnResults.executor, turnResults.action);
-                battleLogDebugWindow.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
-            }
+            this.updateBattleScene(battle, turnResults.executor, turnResults.action);
+            battleLogDebugWindow.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
             this.turnTimer -= this.turndelay;
         }
 
