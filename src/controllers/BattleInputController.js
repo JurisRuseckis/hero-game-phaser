@@ -107,7 +107,7 @@ export default class BattleInputController{
         });
         this.scene.input.on('pointerdown', (pointer) => {
             // screen drag start
-            this.pointerDown = true;
+            // this.pointerDown = true;
             this.pointerDownPosition = {
                 x: pointer.x,
                 y: pointer.y,
