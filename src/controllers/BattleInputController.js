@@ -9,9 +9,12 @@ export default class BattleInputController{
     {
         this.scene = props.scene;
         this.cam = this.scene.cameras.main;
-        this.maxCameraOffset = 200;
-        this.cam.scrollX = -this.maxCameraOffset;
-        this.cam.scrollY = -this.maxCameraOffset;
+
+        this.maxCameraOffset = this.getMaxOffset();
+
+        console.log(this.maxCameraOffset);
+        this.cam.scrollX = this.maxCameraOffset.min.x;
+        this.cam.scrollY = this.maxCameraOffset.min.y;
         this.camSpeed = 32;
 
         this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -104,7 +107,7 @@ export default class BattleInputController{
         });
         this.scene.input.on('pointerdown', (pointer) => {
             // screen drag start
-            // this.pointerDown = true;
+            this.pointerDown = true;
             this.pointerDownPosition = {
                 x: pointer.x,
                 y: pointer.y,
@@ -143,35 +146,33 @@ export default class BattleInputController{
     }
 
     checkBtns() {
-        const tilemap = this.scene.data.get('tilemap');
-        const tileGridLayer = tilemap.getLayer('battleGridLayer');
-        const maxOffset = this.getMaxOffset(tileGridLayer);
+        const maxOffset = this.getMaxOffset();
         // let updateDebugger = false;
 
         if (this.keys.A.isDown || this.cursors.left.isDown) {
             this.cam.scrollX -= this.camSpeed;
-            if(this.cam.scrollX < -this.maxCameraOffset){
-                this.cam.scrollX = -this.maxCameraOffset;
+            if(this.cam.scrollX < maxOffset.min.x){
+                this.cam.scrollX = maxOffset.min.x;
             }
             // updateDebugger = true;
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
             this.cam.scrollX += this.camSpeed;
-            if(this.cam.scrollX > maxOffset.x){
-                this.cam.scrollX = maxOffset.x;
+            if(this.cam.scrollX > maxOffset.max.x){
+                this.cam.scrollX = maxOffset.max.x;
             }
             // updateDebugger = true;
         }
     
         if (this.keys.W.isDown || this.cursors.up.isDown) {
             this.cam.scrollY -= this.camSpeed;
-            if(this.cam.scrollY < -this.maxCameraOffset){
-                this.cam.scrollY = -this.maxCameraOffset;
+            if(this.cam.scrollY < maxOffset.min.y){
+                this.cam.scrollY = maxOffset.min.y;
             }
             // updateDebugger = true;
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
             this.cam.scrollY += this.camSpeed;
-            if(this.cam.scrollY > maxOffset.y){
-                this.cam.scrollY = maxOffset.y;
+            if(this.cam.scrollY > maxOffset.max.y){
+                this.cam.scrollY = maxOffset.max.y;
             }
             // updateDebugger = true;
         }
@@ -194,28 +195,45 @@ export default class BattleInputController{
         return tilemap.getTileAt(x,y);
     }
 
-    getMaxOffset(tileGridLayer){ 
-        const width = tileGridLayer.widthInPixels + this.maxCameraOffset;
-        const height = tileGridLayer.heightInPixels + this.maxCameraOffset;
+    getMaxOffset(){
 
-        let x;
-        if(width < this.scene.scale.width){
-            x = 0;
+        const tilemap = this.scene.data.get('tilemap');
+        const tileGridLayer = tilemap.getLayer('battleGridLayer');
+
+        const defaultOffset = 200;
+        const width = tileGridLayer.widthInPixels + defaultOffset;
+        const height = tileGridLayer.heightInPixels + defaultOffset;
+        const diff = new Phaser.Math.Vector2(width - this.scene.scale.width, height - this.scene.scale.height)
+
+        let maxX;
+        let minX;
+        if(diff.x < 0){
+            minX = maxX = diff.x/2;
         } else {
-            x = width - this.scene.scale.width;
+            minX = -defaultOffset;
+            maxX = diff.x;
         }
 
-        let y;
-        if(height < this.scene.scale.height){
-            y = 0;
+        let minY = -defaultOffset;
+        let maxY;
+        if(diff.y < 0 ){
+            maxY = -defaultOffset;
         } else {
-            y = height - this.scene.scale.height;
+            maxY = diff.y;
         }
-        
-        
+
         return {
-            x:x,
-            y:y,
+            min: new Phaser.Math.Vector2(minX, minY),
+            max: new Phaser.Math.Vector2(maxX, maxY),
         }
+    }
+
+    /**
+     *
+     * @param {Phaser.Input.Pointer} pointer
+     * @return {Phaser.Math.Vector2}
+     */
+    getDragDistance(pointer){
+        return new Phaser.Math.Vector2(this.pointerDownPosition.x - pointer.x, this.pointerDownPosition.y - pointer.y);
     }
 }
