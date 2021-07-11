@@ -45,13 +45,18 @@ export default class Btn
 
         this.addBtn();
         this.addTxt();
+
+        this.container = this.scene.add.container(this.x, this.y, [
+            this.btnObj,
+            this.txtObj,
+        ]);
     }
 
     addBtn()
     {
         this.btnObj = this.scene.add.rectangle(
-            this.x,
-            this.y,
+            0,
+            0,
             this.width,
             this.height,
             this.fill,
@@ -59,8 +64,6 @@ export default class Btn
         ).setOrigin(0);
 
         this.btnObj.setStrokeStyle(this.border.width, this.border.color);
-
-        this.btnObj.setInteractive();
     }
 
     addTxt()
@@ -76,6 +79,7 @@ export default class Btn
 
     addDefaultEvents()
     {
+        this.btnObj.setInteractive();
         this.btnObj.on('pointerover', () => {
             this.btnObj.setFillStyle(styles.colors.btnBorder);
         }, this);
@@ -86,8 +90,7 @@ export default class Btn
 
     destroy()
     {
-        this.btnObj.destroy();
-        this.txtObj.destroy();
+        this.container.destroy();
     }
 
 }

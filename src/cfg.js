@@ -6,5 +6,6 @@ export const cfg = {
         mainMenu: "mainMenu",
         navigation: "navigation",
         battleGrid: "battleGrid",
+        battleUI: "battleUI",
     }
 }

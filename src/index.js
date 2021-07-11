@@ -6,6 +6,7 @@ import {CharacterScene} from "./scenes/CharacterScene";
 import {styles} from "./styles";
 import {InventoryScene} from "./scenes/InventoryScene";
 import { BattleGridScene } from './scenes/BattleGridScene';
+import {BattleUIScene} from "./scenes/BattleUIScene";
 
 const config = {
     scale: {
@@ -16,16 +17,16 @@ const config = {
         height: styles.viewPort.height
     },
     scene: [
-        // BattleGridScene,
-        // BattleScene,
+        //BattleGridScene,
         MainMenuScene,
         CharacterScene,
         InventoryScene,
         LoadingScene,
         NavigationScene,
-        BattleScene,
         BattleGridScene,
+        BattleUIScene,
     ]
 };
 
+// noinspection JSUnusedLocalSymbols
 const game = new Phaser.Game(config);

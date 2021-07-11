@@ -114,9 +114,7 @@ export default class Battle{
             this.status = battleStatus.finished;
             // move to scene 
             // this.scene.showResults({});
-            console.log(this.battleLog.print());
-            console.log('battle ended');
-            console.log(`team ${this.combatants[0].team} has won`)
+            this.battleLog.addText(`Battle ended. Team ${this.combatants[0].team} has won`)
             console.log('survivors');
             console.table(this.combatants);
             console.log('corpses');

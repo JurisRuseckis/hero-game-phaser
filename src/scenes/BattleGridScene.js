@@ -6,7 +6,6 @@ import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../ui-components/GridUnit";
 import { battleStatus } from "../models/Battle";
-import {battleLogType} from "../models/BattleLog";
 
 export class BattleGridScene extends Phaser.Scene
 {
@@ -51,25 +50,28 @@ export class BattleGridScene extends Phaser.Scene
 
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
-        const battleLogDebugWindow = new DebugWindow({
-            scene: this,
-            y: this.scale.height - (16 + 18)
-        });
+        // const battleLogWindow = new BattleLogWindow({
+        //     scene: this,
+        //     battleLog: battle.battleLog,
+        //     alignment: battleLogAlignment.bottomLeft
+        // });
 
-        const inputController = new BattleInputController({
-            scene: this,
+        this.scene.launch(cfg.scenes.battleUI, {
+            battle: battle
         });
 
 
         this.data.set('debugWindow', debugWindow);
         this.data.set('marker', marker);
         this.data.set('gridUnits', gridUnits);
-        this.data.set('battleLogDebugWindow', battleLogDebugWindow);
+
+        const inputController = new BattleInputController({
+            scene: this,
+        });
         this.data.set('inputController', inputController);
     }
 
     update(time, delta){
-        const battleLogDebugWindow = this.data.get('battleLogDebugWindow');
         const debugWindow = this.data.get('debugWindow');
         const inputController = this.data.get('inputController');
         const battle = this.data.get('battle');
@@ -82,17 +84,13 @@ export class BattleGridScene extends Phaser.Scene
             const turnResults = battle.nextTurn();
             // if battle in progress then update scene
             this.updateBattleScene(battle, turnResults.executor, turnResults.action);
-            battleLogDebugWindow.setText(battle.battleLog.getLastOfType(battleLogType.turn).text);
             this.turnTimer -= this.turndelay;
         }
+
 
         inputController.checkBtns();
         if(debugWindow.update){
             debugWindow.redraw();
-        }
-
-        if(battleLogDebugWindow.update){
-            battleLogDebugWindow.redraw();
         }
     }
 

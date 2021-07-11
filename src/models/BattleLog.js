@@ -34,7 +34,7 @@ export default class BattleLog
 
     print(){
         return this.logs.map((log, index)=>{
-            return `Turn ${index+1}: ${log.text}`;
+            return `Log ${index+1}: ${log.text}`;
         })
     } 
 }

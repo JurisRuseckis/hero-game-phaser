@@ -11,8 +11,14 @@ export default class BattleInputController{
         this.cam = this.scene.cameras.main;
 
         this.maxCameraOffset = this.getMaxOffset();
+        // will need to make this work sometime
+        // this.cam.setBounds(
+        //     this.maxCameraOffset.min.x,
+        //     this.maxCameraOffset.min.y,
+        //     this.maxCameraOffset.max.x - this.maxCameraOffset.min.x,
+        //     this.maxCameraOffset.max.y - this.maxCameraOffset.min.y,
+        //     );
 
-        console.log(this.maxCameraOffset);
         this.cam.scrollX = this.maxCameraOffset.min.x;
         this.cam.scrollY = this.maxCameraOffset.min.y;
         this.camSpeed = 32;
@@ -35,35 +41,11 @@ export default class BattleInputController{
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser
             if (this.pointerDown) {
-
-                const newPos = {
-                    x: this.cam.scrollX + this.pointerDownPosition.x - pointer.x,
-                    y: this.cam.scrollY + this.pointerDownPosition.y - pointer.y
-                };
-                
-                const tilemap = this.scene.data.get('tilemap');
-                const tileGridLayer = tilemap.getLayer('battleGridLayer');
-                // todo: handle smaller arenas than viewport 
-                const maxOffset = this.getMaxOffset(tileGridLayer);
-                
-                
-                if(newPos.x < -this.maxCameraOffset ){
-                    newPos.x = -this.maxCameraOffset;
-                } else if (newPos.x > maxOffset.x){
-                    newPos.x = maxOffset.x;
-                }
-                
-                if(newPos.y < -this.maxCameraOffset ){
-                    newPos.y = -this.maxCameraOffset;
-                } else if (newPos.y > maxOffset.y){
-                    newPos.y = maxOffset.y;
-                }
-    
+                const dragDistance = this.getDragDistance(pointer);
+                this.moveCamera(dragDistance);
                 this.pointerDownPosition.x = pointer.x;
                 this.pointerDownPosition.y = pointer.y;
-    
-                this.cam.scrollX = newPos.x;
-                this.cam.scrollY = newPos.y;
+
             } else {
                 // if not dragging 
                 const tile = this.getTileAtWorldXY(pointer);
@@ -107,12 +89,11 @@ export default class BattleInputController{
         });
         this.scene.input.on('pointerdown', (pointer) => {
             // screen drag start
-            // this.pointerDown = true;
+            this.pointerDown = true;
             this.pointerDownPosition = {
                 x: pointer.x,
                 y: pointer.y,
             };
-            this.pointerDownInitialPosition = {...this.pointerDownPosition};
         });
         this.scene.input.on('pointerup', (pointer) => {
             // curently drag feels like workaround and probably will need a rework
@@ -125,11 +106,6 @@ export default class BattleInputController{
                     'x': this.cam.scrollX,
                     'y': this.cam.scrollY
                 });
-
-                // if (this.pointerDownPosition.x !== this.pointerDownInitialPosition.x
-                //     || this.pointerDownPosition.y !== this.pointerDownInitialPosition.y) {
-                //     return;
-                // }
             }
         });
         // noinspection JSUnusedLocalSymbols
@@ -146,35 +122,16 @@ export default class BattleInputController{
     }
 
     checkBtns() {
-        const maxOffset = this.getMaxOffset();
-        // let updateDebugger = false;
-
         if (this.keys.A.isDown || this.cursors.left.isDown) {
-            this.cam.scrollX -= this.camSpeed;
-            if(this.cam.scrollX < maxOffset.min.x){
-                this.cam.scrollX = maxOffset.min.x;
-            }
-            // updateDebugger = true;
+            this.moveCamera(new Phaser.Math.Vector2(-this.camSpeed, 0));
         } else if (this.keys.D.isDown || this.cursors.right.isDown) {
-            this.cam.scrollX += this.camSpeed;
-            if(this.cam.scrollX > maxOffset.max.x){
-                this.cam.scrollX = maxOffset.max.x;
-            }
-            // updateDebugger = true;
+            this.moveCamera(new Phaser.Math.Vector2(this.camSpeed, 0));
         }
     
         if (this.keys.W.isDown || this.cursors.up.isDown) {
-            this.cam.scrollY -= this.camSpeed;
-            if(this.cam.scrollY < maxOffset.min.y){
-                this.cam.scrollY = maxOffset.min.y;
-            }
-            // updateDebugger = true;
+            this.moveCamera(new Phaser.Math.Vector2(0, -this.camSpeed));
         } else if (this.keys.S.isDown || this.cursors.down.isDown) {
-            this.cam.scrollY += this.camSpeed;
-            if(this.cam.scrollY > maxOffset.max.y){
-                this.cam.scrollY = maxOffset.max.y;
-            }
-            // updateDebugger = true;
+            this.moveCamera(new Phaser.Math.Vector2(0, this.camSpeed));
         }
 
         const debugWindow = this.scene.data.get('debugWindow');
@@ -235,5 +192,35 @@ export default class BattleInputController{
      */
     getDragDistance(pointer){
         return new Phaser.Math.Vector2(this.pointerDownPosition.x - pointer.x, this.pointerDownPosition.y - pointer.y);
+    }
+
+    /**
+     *
+     * @param {Phaser.Math.Vector2} distance
+     */
+    moveCamera(distance){
+        const newPos = {
+            x: this.cam.scrollX + distance.x,
+            y: this.cam.scrollY + distance.y,
+        };
+
+        const tilemap = this.scene.data.get('tilemap');
+        const tileGridLayer = tilemap.getLayer('battleGridLayer');
+        const maxOffset = this.getMaxOffset(tileGridLayer);
+
+        if(newPos.x < maxOffset.min.x ){
+            newPos.x = maxOffset.min.x;
+        } else if (newPos.x > maxOffset.max.x){
+            newPos.x = maxOffset.max.x;
+        }
+
+        if(newPos.y < maxOffset.min.y ){
+            newPos.y = maxOffset.min.y;
+        } else if (newPos.y > maxOffset.max.y){
+            newPos.y = maxOffset.max.y;
+        }
+
+        this.cam.scrollX = newPos.x;
+        this.cam.scrollY = newPos.y;
     }
 }
