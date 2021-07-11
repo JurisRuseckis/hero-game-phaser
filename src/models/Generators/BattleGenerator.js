@@ -28,7 +28,7 @@ const defaultActions = {
     walk:  new CombatAction({
         key: 'walk',
         tags: [actionTags.any],
-        range: 2,
+        range: 5,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
@@ -289,7 +289,7 @@ export default class BattleGenerator
      */
     static generate(){
         const teamCount = randomInt(3)+2;
-        const teamSize = randomInt(4)+2;
+        const teamSize = randomInt(4)+6;
         const bType = battleType.field;
         let teams = [];
 

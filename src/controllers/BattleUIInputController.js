@@ -25,7 +25,7 @@ export default class BattleInputController{
             // handle screen drag
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser
-            if (this.pointerDown) {
+            if (this.pointerDown && this.enableScroll) {
                 const dragDistance = this.getDragDistance(pointer);
                 battleLogWindow.scroll(Math.floor(dragDistance.y/2));
                 this.pointerDownPosition.x = pointer.x;

@@ -12,12 +12,12 @@ export default class BattleInputController{
 
         this.maxCameraOffset = this.getMaxOffset();
         // will need to make this work sometime
-        // this.cam.setBounds(
-        //     this.maxCameraOffset.min.x,
-        //     this.maxCameraOffset.min.y,
-        //     this.maxCameraOffset.max.x - this.maxCameraOffset.min.x,
-        //     this.maxCameraOffset.max.y - this.maxCameraOffset.min.y,
-        //     );
+        this.cam.setBounds(
+            this.maxCameraOffset.min.x,
+            this.maxCameraOffset.min.y,
+            this.maxCameraOffset.width,
+            this.maxCameraOffset.height,
+        );
 
         this.cam.scrollX = this.maxCameraOffset.min.x;
         this.cam.scrollY = this.maxCameraOffset.min.y;
@@ -45,7 +45,6 @@ export default class BattleInputController{
                 this.moveCamera(dragDistance);
                 this.pointerDownPosition.x = pointer.x;
                 this.pointerDownPosition.y = pointer.y;
-
             } else {
                 // if not dragging 
                 const tile = this.getTileAtWorldXY(pointer);
@@ -99,26 +98,27 @@ export default class BattleInputController{
             // curently drag feels like workaround and probably will need a rework
             if (this.pointerDown) {
                 this.pointerDown = false;
-
-                const debugWindow = this.scene.data.get('debugWindow');
-
-                debugWindow.displayJson({
-                    'x': this.cam.scrollX,
-                    'y': this.cam.scrollY
-                });
             }
         });
         // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
-            const cam = this.cameras.main;
-            let newZoom = cam.zoom - dy/1000;
-            if(newZoom < 0.6){
-                newZoom = 0.6;
+            let newZoom = this.cam.zoom - dy/1000;
+            if(newZoom < 0.8){
+                newZoom = 0.8;
             } else if(newZoom > 1.2){
                 newZoom = 1.2;
             }
-            cam.setZoom(newZoom);
-        });
+            this.cam.setZoom(newZoom);
+
+            this.maxCameraOffset = this.getMaxOffset();
+            // will need to make this work sometime
+            this.cam.setBounds(
+                this.maxCameraOffset.min.x,
+                this.maxCameraOffset.min.y,
+                this.maxCameraOffset.width,
+                this.maxCameraOffset.height,
+            );
+        },this);
     }
 
     checkBtns() {
@@ -144,7 +144,12 @@ export default class BattleInputController{
 
     getTileAtWorldXY(pointer){
         const tilemap = this.scene.data.get('tilemap');
-        return tilemap.getTileAtWorldXY(pointer.x + pointer.camera.scrollX, pointer.y + pointer.camera.scrollY, false, pointer.camera);
+        return tilemap.getTileAtWorldXY(
+            pointer.worldX,
+            pointer.worldY,
+            false,
+            pointer.camera
+        );
     }
 
     getTileAt(x,y){
@@ -158,8 +163,8 @@ export default class BattleInputController{
         const tileGridLayer = tilemap.getLayer('battleGridLayer');
 
         const defaultOffset = 200;
-        const width = tileGridLayer.widthInPixels + defaultOffset;
-        const height = tileGridLayer.heightInPixels + defaultOffset;
+        const width = (tileGridLayer.widthInPixels + defaultOffset * 2) * this.cam.zoomX;
+        const height = (tileGridLayer.heightInPixels + defaultOffset * 2) * this.cam.zoomY;
         const diff = new Phaser.Math.Vector2(width - this.scene.scale.width, height - this.scene.scale.height)
 
         let maxX;
@@ -182,6 +187,8 @@ export default class BattleInputController{
         return {
             min: new Phaser.Math.Vector2(minX, minY),
             max: new Phaser.Math.Vector2(maxX, maxY),
+            width: width,
+            height: height
         }
     }
 
@@ -199,28 +206,6 @@ export default class BattleInputController{
      * @param {Phaser.Math.Vector2} distance
      */
     moveCamera(distance){
-        const newPos = {
-            x: this.cam.scrollX + distance.x,
-            y: this.cam.scrollY + distance.y,
-        };
-
-        const tilemap = this.scene.data.get('tilemap');
-        const tileGridLayer = tilemap.getLayer('battleGridLayer');
-        const maxOffset = this.getMaxOffset(tileGridLayer);
-
-        if(newPos.x < maxOffset.min.x ){
-            newPos.x = maxOffset.min.x;
-        } else if (newPos.x > maxOffset.max.x){
-            newPos.x = maxOffset.max.x;
-        }
-
-        if(newPos.y < maxOffset.min.y ){
-            newPos.y = maxOffset.min.y;
-        } else if (newPos.y > maxOffset.max.y){
-            newPos.y = maxOffset.max.y;
-        }
-
-        this.cam.scrollX = newPos.x;
-        this.cam.scrollY = newPos.y;
+        this.cam.setScroll(this.cam.scrollX + distance.x, this.cam.scrollY + distance.y)
     }
 }

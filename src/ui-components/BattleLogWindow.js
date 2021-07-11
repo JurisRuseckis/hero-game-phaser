@@ -37,8 +37,8 @@ export default class BattleLogWindow
         }
 
         // if bottom left
-        this.x = this.margin;
-        this.y = this.scene.scale.height - this.height - this.margin;
+        this.x = this.margin / this.scene.scale.displayScale.x;
+        this.y = this.scene.scale.displaySize.height - (this.height + this.margin) / this.scene.scale.displayScale.y;
 
         // filter bar
         this.filterWidth = 50;
@@ -139,6 +139,7 @@ export default class BattleLogWindow
             startIndex = 0;
         } else if(startIndex > lastScrollableIndex){
             startIndex = lastScrollableIndex
+            this.fixedIndex = false;
         }
         this.startIndex = startIndex;
     }
