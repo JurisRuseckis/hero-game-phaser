@@ -289,7 +289,7 @@ export default class BattleGenerator
      */
     static generate(){
         const teamCount = 4;
-        const teamSize = 50;
+        const teamSize = 20;
         const bType = battleType.field;
         let teams = [];
 

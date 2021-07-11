@@ -28,7 +28,7 @@ export default class GridUnit
      * @param {Phaser.Math.Vector2} props.tileCoordinates
      * @param {Phaser.Math.Vector2} props.direction
      *
-     * @param {number} props.fill={styles.colors.btnBg}
+     * @param {number} props.fill={styles.colors.modernBtn}
      * @param {number} props.fillAlpha=1
      * @param {number} props.textStyle
      *
@@ -78,7 +78,7 @@ export default class GridUnit
         this.fillAlpha = props.fillAlpha || 1;
         this.border = props.border || {
             width: styles.borderWidth,
-            color: styles.colors.btnBorder
+            color: styles.colors.modernBorder
         };
         this.status = statusOption.default;
         this.textStyle = props.textStyle || {};

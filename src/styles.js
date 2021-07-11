@@ -1,27 +1,37 @@
+const isMobile = window.innerWidth <= 1024;
+console.log(isMobile, window.innerWidth);
+
 // TODO: rewrite to support mobile & desktop
 const misc = {
-    padding: 20,
-    borderWidth: 4,
+    padding: isMobile ? 20 : 10,
+    borderWidth: isMobile ? 4 : 2,
 }
 
 const viewPort = {
-    width: 960,
-    height: 1600
+    width: window.innerWidth * 2,
+    height: window.innerHeight * 2
 }
 
 const fontSize = {
-    default: 32,
-    title: 80,
-    large: 40,
+    default: isMobile ? 96 : 32,
+    title: isMobile ? 240 : 80,
+    large: isMobile ? 120 : 40,
 }
 
+const headerHeight = isMobile ? 450 : 140;
+
+
+const navBtnCount = 4;
 const panelLayout = {
-    navHeight: 140,
-    contentStart: 140 + misc.padding,
-    contentHeight: viewPort.height - (140 + misc.padding * 2) // nav height and padding before & after
+    navHeight: headerHeight,
+    navBtnWidth: (viewPort.width - misc.padding) / navBtnCount  - (misc.padding * navBtnCount),
+    contentStart: headerHeight + misc.padding,
+    contentHeight: viewPort.height - (headerHeight + misc.padding * 2) // nav height and padding before & after
 };
 
 export const styles = {
+    isMobile : isMobile,
+
     viewPort: {
         ...viewPort,
         centerX: viewPort.width/2,
@@ -29,20 +39,17 @@ export const styles = {
     },
 
     grid: {
-        window: viewPort.width - misc.padding * 2,
+        window: (isMobile ? viewPort.width : viewPort.width / 3) - misc.padding * 2,
     },
 
     panelLayout,
 
     colors: {
-        windowBg : 0xaf826b,
-        windowBorder: 0x574135,
-        btnBg: 0xb16551,
-        btnBorder:  0x462820,
         red: 0xff0000,
         blue: 0x0000ff,
         modernBg: 0x141414,
         modernBorder: 0x505050,
+        modernBtn: 0x3f3f3c,
         team1: 0x91a455,
         team2: 0x527db2,
         team3: 0xeaa51a,

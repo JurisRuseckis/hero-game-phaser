@@ -11,7 +11,7 @@ export default class Btn
      * @param {number} props.y=0
      * @param {number} props.width=128
      * @param {number} props.height=128
-     * @param {number} props.fill={styles.colors.btnBg}
+     * @param {number} props.fill={styles.colors.modernBtn}
      * @param {number} props.fillAlpha=1
      * @param {number} props.text=""
      * @param {number} props.textStyle
@@ -34,13 +34,13 @@ export default class Btn
         this.y = props.y || 0;
         this.width = props.width || 128;
         this.height = props.height || 128;
-        this.fill = props.fill || styles.colors.btnBg;
+        this.fill = props.fill || styles.colors.modernBtn;
         this.fillAlpha = props.fillAlpha || 1;
         this.text = props.text || "";
         this.textStyle = props.textStyle || {};
         this.border = props.border || {
             width: styles.borderWidth,
-            color: styles.colors.btnBorder
+            color: styles.colors.modernBorder
         };
 
         this.addBtn();
@@ -81,10 +81,10 @@ export default class Btn
     {
         this.btnObj.setInteractive();
         this.btnObj.on('pointerover', () => {
-            this.btnObj.setFillStyle(styles.colors.btnBorder);
+            this.btnObj.setFillStyle(styles.colors.modernBorder);
         }, this);
         this.btnObj.on('pointerout', () => {
-            this.btnObj.setFillStyle(styles.colors.btnBg);
+            this.btnObj.setFillStyle(styles.colors.modernBtn);
         }, this);
     }
 

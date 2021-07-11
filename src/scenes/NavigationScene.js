@@ -22,14 +22,14 @@ export class NavigationScene extends Phaser.Scene
         const menuItems = this.getMenuItems();
         const btnHeight = styles.panelLayout.navHeight - styles.padding * 2;
 
-        this.nav = this.add.rectangle(0,0, styles.viewPort.width, styles.panelLayout.navHeight, styles.colors.windowBg).setOrigin(0,0);
+        const nav = this.add.rectangle(0,0, styles.viewPort.width, styles.panelLayout.navHeight, styles.colors.modernBg).setOrigin(0,0);
 
-        this.buttons = menuItems.map((menuItem, index) => {
+        const buttons = menuItems.map((menuItem, index) => {
             const btn = new Btn({
                 scene: this,
-                x: styles.padding + index * (120 + styles.padding),
+                x: styles.padding + index * (styles.panelLayout.navBtnWidth + styles.padding),
                 y: styles.padding,
-                width: 120,
+                width: styles.panelLayout.navBtnWidth,
                 height: btnHeight,
                 text: menuItem.label,
                 textStyle: {fontSize: styles.fontSize.large}

@@ -23,9 +23,9 @@ export class InventoryScene extends Phaser.Scene
             styles.panelLayout.contentStart,
             styles.grid.window,
             styles.panelLayout.contentHeight,
-            styles.colors.windowBg
+            styles.colors.modernBg
         ).setOrigin(0.5,0);
-        this.boxContainer.setStrokeStyle(styles.borderWidth, styles.colors.windowBorder);
+        this.boxContainer.setStrokeStyle(styles.borderWidth, styles.colors.modernBorder);
 
         this.boxContainerBounds = this.boxContainer.getBounds();
         this.boxTitle = this.add.text(
@@ -58,16 +58,16 @@ export class InventoryScene extends Phaser.Scene
                     startY + i * step,
                     slotSize,
                     slotSize,
-                    styles.colors.btnBg
+                    styles.colors.modernBtn
                 );
-                this.boxContainer.setStrokeStyle(styles.borderWidth, styles.colors.btnBorder);
+                this.boxContainer.setStrokeStyle(styles.borderWidth, styles.colors.modernBorder);
 
                 slot.setInteractive();
                 slot.on('pointerover', () => {
-                    slot.setFillStyle(styles.colors.btnBorder);
+                    slot.setFillStyle(styles.colors.modernBorder);
                 }, this);
                 slot.on('pointerout', () => {
-                    slot.setFillStyle(styles.colors.btnBg);
+                    slot.setFillStyle(styles.colors.modernBtn);
                 }, this);
 
                 row.push(slot);
