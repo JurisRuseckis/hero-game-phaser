@@ -120,7 +120,7 @@ const characterRoster = {
             name: 'peon',
             race: race.Orc,
             baseHP: 10,
-            baseSpeed: 0.1,
+            baseSpeed: 0.35,
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
@@ -152,7 +152,7 @@ const characterRoster = {
             name: 'peasant',
             race: race.Human,
             baseHP: 8,
-            baseSpeed: 0.13,
+            baseSpeed: 0.4,
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
@@ -184,7 +184,7 @@ const characterRoster = {
             name: 'miner',
             race: race.Dwarf,
             baseHP: 9,
-            baseSpeed: 0.10,
+            baseSpeed: 0.35,
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
@@ -216,7 +216,7 @@ const characterRoster = {
             name: 'bowyer',
             race: race.Elf,
             baseHP: 6,
-            baseSpeed: 0.20,
+            baseSpeed: 0.6,
             atk: 2,
             isPlayable: false,
             combatActions: defaultActions,
@@ -248,7 +248,7 @@ const characterRoster = {
             name: 'mob',
             race: race.Goblin,
             baseHP: 3,
-            baseSpeed: 0.20,
+            baseSpeed: 0.4,
             atk: 1,
             isPlayable: false,
             combatActions: defaultActions,
@@ -288,16 +288,16 @@ export default class BattleGenerator
      * @returns 
      */
     static generate(){
-        const teamCount = randomInt(3)+2;
-        const teamSize = randomInt(4)+6;
+        const teamCount = 4;
+        const teamSize = 50;
         const bType = battleType.field;
         let teams = [];
 
         for(let i = 0; i<teamCount; i++){
-            teams.push(this.generateTeam(teamSize + randomInt(4)));
+            teams.push(this.generateTeam(teamSize));
         }
 
-        const arenaSize = teamSize*2 + 10;
+        const arenaSize = Math.max(...teams.map(r => r.length)) + 4;
         const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
 
         const teamStartPos = [

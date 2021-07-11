@@ -103,10 +103,10 @@ export default class BattleInputController{
         // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             let newZoom = this.cam.zoom - dy/1000;
-            if(newZoom < 0.8){
-                newZoom = 0.8;
-            } else if(newZoom > 1.2){
-                newZoom = 1.2;
+            if(newZoom < 0.2){
+                newZoom = 0.2;
+            } else if(newZoom > 2){
+                newZoom = 2;
             }
             this.cam.setZoom(newZoom);
 

@@ -7,6 +7,13 @@ export const statusOption = {
     selected : 3,
 };
 
+export const teamColors = {
+    1: styles.colors.team1,
+    2: styles.colors.team2,
+    3: styles.colors.team3,
+    4: styles.colors.team4,
+}
+
 export default class GridUnit
 {
     /**
@@ -67,7 +74,7 @@ export default class GridUnit
         this.direction = new Phaser.Math.Vector2(this.combatant.direction.x, this.combatant.direction.y);
         
         // fill & borders
-        this.fill = props.fill || styles.colors.btnBg;
+        this.fill = teamColors[this.combatant.team];
         this.fillAlpha = props.fillAlpha || 1;
         this.border = props.border || {
             width: styles.borderWidth,
@@ -154,13 +161,13 @@ export default class GridUnit
         
         this.btnObj.on('pointerover', () => {
             if(this.status === statusOption.default) {
-                this.btnObj.setFillStyle(styles.colors.btnBorder);
+                this.btnObj.setFillStyle(this.fill);
             }
             // this.fow.setVisible(true);
         }, this);
         this.btnObj.on('pointerout', () => {
             if(this.status === statusOption.default){
-                this.btnObj.setFillStyle(styles.colors.btnBg);
+                this.btnObj.setFillStyle(this.fill);
             }
 
             // this.fow.setVisible(false);
@@ -199,7 +206,7 @@ export default class GridUnit
 
         this.scene.tweens.add({
             targets: this.fow,
-            duration: 250,
+            duration: this.scene.turndelay,
             angle: this.getAngle(),
             delay: 0,
             repeat: 0,
@@ -207,7 +214,7 @@ export default class GridUnit
 
         this.scene.tweens.add({
             targets: this.container,
-            duration: distance * 100,
+            duration: distance * this.scene.turndelay,
             x: this.tileCoordinates.x * this.tileSize,
             y: this.tileCoordinates.y * this.tileSize,
             delay: 0,

@@ -43,6 +43,10 @@ export const styles = {
         blue: 0x0000ff,
         modernBg: 0x141414,
         modernBorder: 0x505050,
+        team1: 0x91a455,
+        team2: 0x527db2,
+        team3: 0xeaa51a,
+        team4: 0xd86244,
     },
 
     textColors: {
