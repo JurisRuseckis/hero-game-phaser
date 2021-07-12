@@ -84,7 +84,6 @@ export default class GridUnit
         this.textStyle = props.textStyle || {};
 
         this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize, this.tileCoordinates.y * this.tileSize);
-        this.container.setInteractive();
 
         this.addCircle();
         this.addTxt();

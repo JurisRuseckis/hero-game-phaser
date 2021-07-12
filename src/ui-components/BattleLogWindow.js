@@ -28,9 +28,10 @@ export default class BattleLogWindow
 
         // this.width = this.scene.scale.width / 3;
         // this.height = this.width * 1.2;
-        this.height = 600;
-        this.width = 1000;
-        this.margin = 10;
+
+        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width / 2;
+        this.height = this.width / 2.5;
+        this.margin = styles.padding;
 
         if(this.alignment !== battleLogAlignment.bottomLeft){
             throw "not implemented";
