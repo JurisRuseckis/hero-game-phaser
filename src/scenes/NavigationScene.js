@@ -61,6 +61,12 @@ export class NavigationScene extends Phaser.Scene
                     this.changeScene(cfg.scenes.battleGrid, true);
                 }
             },
+            {
+                label: "camp",
+                onClick: ()=>{
+                    this.changeScene(cfg.scenes.camp);
+                }
+            },
         ]
     }
 

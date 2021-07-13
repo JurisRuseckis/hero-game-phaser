@@ -7,6 +7,7 @@ import {styles} from "./styles";
 import {InventoryScene} from "./scenes/InventoryScene";
 import { BattleGridScene } from './scenes/BattleGridScene';
 import {BattleUIScene} from "./scenes/BattleUIScene";
+import {CampScene} from "./scenes/CampScene";
 
 const config = {
     scale: {
@@ -17,7 +18,8 @@ const config = {
         height: styles.viewPort.height
     },
     scene: [
-        //BattleGridScene,
+        // NavigationScene,
+        // BattleGridScene,
         MainMenuScene,
         CharacterScene,
         InventoryScene,
@@ -25,6 +27,7 @@ const config = {
         NavigationScene,
         BattleGridScene,
         BattleUIScene,
+        CampScene
     ]
 };
 

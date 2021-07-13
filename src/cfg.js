@@ -1,5 +1,6 @@
 export const cfg = {
     scenes: {
+        camp: "camp",
         character: "character",
         inventory: "inventory",
         loading: "loading",
