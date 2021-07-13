@@ -29,7 +29,7 @@ export default class BattleLogWindow
         // this.width = this.scene.scale.width / 3;
         // this.height = this.width * 1.2;
 
-        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width / 2;
+        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width / 1.5;
         this.height = this.width / 2.5;
         this.margin = styles.padding;
 
@@ -42,7 +42,7 @@ export default class BattleLogWindow
         this.y = this.scene.scale.displaySize.height - (this.height + this.margin) / this.scene.scale.displayScale.y;
 
         // filter bar
-        this.filterWidth = 50;
+        this.filterWidth = styles.isMobile ? this.width / 10 : this.width / 20;
 
 
         // bg for battleLogWindow
@@ -57,14 +57,14 @@ export default class BattleLogWindow
             fixedWidth: this.filterWidth,
             fixedHeight: this.filterWidth,
             align: 'center',
-            fontSize: 32,
+            fontSize: this.filterWidth - 18,
             backgroundColor: '#af826b',
             padding: {
                 y: 9
             }
         });
 
-        const textHeight = 16;
+        const textHeight = styles.fontSize.default;
 
         this.maxTexts = (this.height - this.margin * 2)/textHeight;
         const textContainer = this.scene.add.container(this.margin * 2 + this.filterWidth, this.margin);
