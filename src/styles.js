@@ -1,7 +1,5 @@
 const isMobile = window.innerWidth <= 1024;
-console.log(isMobile, window.innerWidth);
 
-// TODO: rewrite to support mobile & desktop
 const misc = {
     padding: isMobile ? 20 : 10,
     borderWidth: isMobile ? 4 : 2,
@@ -13,7 +11,7 @@ const viewPort = {
 }
 
 const fontSize = {
-    default: isMobile ? 96 : 32,
+    default: isMobile ? 80 : 32,
     title: isMobile ? 240 : 80,
     large: isMobile ? 120 : 40,
 }

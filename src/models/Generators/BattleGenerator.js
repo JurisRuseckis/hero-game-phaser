@@ -4,6 +4,7 @@ import {Combatant} from "../Combatant";
 import Arena from "../Arena";
 import Phaser from "phaser";
 import {characterRoster} from "./Characters";
+import BattleTeam from "../BattleTeam";
 
 /**
  * class generates random battles 
@@ -15,17 +16,19 @@ export default class BattleGenerator
     /**
      * @returns 
      */
-    static generate(preparedTeams){
+    static generate(props){
         const teamCount = 4;
-        const teamSize = 20;
+        const teamSize = 16;
         const bType = battleType.field;
-        let teams = [];
+        let teams = props.teams || [];
 
         for(let i = 0; i<teamCount; i++){
-            teams.push(this.generateTeam(teamSize));
+            if(!teams[i]){
+                teams.push(this.generateTeam(teamSize));
+            }
         }
 
-        const arenaSize = Math.max(...teams.map(r => r.length)) + 4;
+        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4;
         const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
 
         const teamStartPos = [
@@ -33,57 +36,67 @@ export default class BattleGenerator
             {
                 x: 1,
                 y: Math.ceil(arena.height/2) -1,
-                dir: new Phaser.Math.Vector2(1, 0)
+                // dir: new Phaser.Math.Vector2(1, 0)
+                dir: Phaser.Math.Vector2.RIGHT,
+                reverse: false
             },
             //right
             {
                 x: arena.width-2,
                 y: Math.ceil(arena.height/2) -1,
-                dir: Phaser.Math.Vector2.LEFT
+                dir: Phaser.Math.Vector2.LEFT,
+                reverse: true
             },
             //up
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: 1,
-                dir: Phaser.Math.Vector2.DOWN
+                dir: Phaser.Math.Vector2.DOWN,
+                reverse: false
             },
             //down
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: arena.height-2,
-                dir: Phaser.Math.Vector2.UP
+                dir: Phaser.Math.Vector2.UP,
+                reverse: true
             }
         ]
         
         const combatants = teams.map((team, teamIndex) => { 
             /**
-             * @type {{x: number, y: number, dir: Phaser.Math.Vector2}}
+             * @type {{x: number, y: number, dir: Phaser.Math.Vector2, reverse: boolean}}
              */
             const startPos = teamStartPos[teamIndex];
             const verticalDir = teamIndex < 2;
             /**
              * @type {integer}
              */
-            const posOffset = Math.floor(team.length/2);
-            let combatants = []
-            for (const [combatantIndex, value] of Object.entries(team)) {
-                const cIndex = parseInt(combatantIndex);
+            const posOffset = Math.floor(team.formation.length/2);
+            team.rotateFormation(startPos.dir);
+            if(verticalDir && startPos.reverse){
+                console.log(team)
+               startPos.x -= team.formation[0].length;
+            }
 
+            if(!verticalDir && startPos.reverse){
+                startPos.y -= team.formation.length;
+            }
+
+            return team.formation.map((r,yi) => r.map((combatant, xi) => {
                 let props = {
-                    character: value,
+                    character: combatant,
                     team: teamIndex+1,
                     direction: startPos.dir,
                 }
-
                 if(verticalDir){
-                    props.coordinates = new Phaser.Math.Vector2(startPos.x, startPos.y + cIndex - posOffset)
+                    props.coordinates = new Phaser.Math.Vector2(startPos.x + xi, startPos.y + yi - posOffset)
                 } else {
-                    props.coordinates = new Phaser.Math.Vector2(startPos.x + cIndex - posOffset,startPos.y)
+                    props.coordinates = new Phaser.Math.Vector2(startPos.x + xi - posOffset,startPos.y + yi)
                 }
 
-                combatants.push(new Combatant(props));
-            }
-            return combatants;
+                return new Combatant(props);
+            })).flat();
         }).flat();
 
         return new Battle({
@@ -111,16 +124,23 @@ export default class BattleGenerator
         let proportions = [0.75,0.25];
         let firstTier = Math.floor(available*proportions[0]);
         let secondTier = available - firstTier;
-        let team = [];
+        let chars = [];
         for(let i = 0; i<firstTier; i++){
-            team.push({...Object.values(rosterOptions)[0]});
+            chars.push({...Object.values(rosterOptions)[0]});
         }
         for(let i = 0; i<secondTier; i++){
-            team.push({...Object.values(rosterOptions)[1]});
+            chars.push({...Object.values(rosterOptions)[1]});
         }
-        team.push({...Object.values(rosterOptions)[2]});
+        chars.push({...Object.values(rosterOptions)[2]});
 
-        return team;
+        let formation = [];
+        while (chars.length) {
+            formation.push(chars.splice(0,4));
+        }
+
+        return new BattleTeam({
+            formation: formation
+        });
     }
 
     static generateArena(bType, width, height){

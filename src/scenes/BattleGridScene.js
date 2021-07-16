@@ -23,10 +23,18 @@ export class BattleGridScene extends Phaser.Scene
         this.unitSize = 32;
     }
 
+    init(data){
+        this.data.set('battle', data.battle);
+    }
+
     preload ()
     {
         this.load.image('battleTileset', tileSetImage);
-        const battle = BattleGenerator.generate();
+
+        let battle = this.data.get('battle');
+        if(!battle){
+            battle = BattleGenerator.generate({});
+        }
         this.data.set('battle', battle);
     }
 
