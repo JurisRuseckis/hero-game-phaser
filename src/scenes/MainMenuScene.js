@@ -34,7 +34,7 @@ export class MainMenuScene extends Phaser.Scene
         this.menuBox = this.add.rectangle(styles.viewPort.centerX, styles.viewPort.centerY, styles.grid.window, menuHeight, styles.colors.modernBg);
         this.menuBox.setStrokeStyle(styles.borderWidth, styles.colors.modernBorder);
         const menuBoxBounds = this.menuBox.getBounds();
-        const title = this.add.text(this.menuBox.x, menuBoxBounds.top + styles.padding, "Hero Game", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
+        const title = this.add.text(this.menuBox.x, menuBoxBounds.top + styles.padding, "army composer: stone age", {fontSize: styles.fontSize.title}).setOrigin(0.5,0);
 
         this.buttons = menuItems.map((menuItem, index) => {
             const btn = new Btn({

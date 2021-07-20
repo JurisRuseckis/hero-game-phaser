@@ -1,6 +1,6 @@
 {
-  "name": "hero-game",
-  "version": "1.1.2",
+  "name": "army-composer-stone-age",
+  "version": "0.0.0",
   "description": "some game",
   "main": "src/index.js",
   "scripts": {
