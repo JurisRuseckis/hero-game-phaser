@@ -87,7 +87,8 @@ export class BattleGridScene extends Phaser.Scene
         this.turnTimer += delta;
         // as sometimes we can lag a bit we do a loop 
         while (this.turnTimer > this.turndelay
-            && battle.status !== battleStatus.finished /*&& this.turnCount < 100*/) {
+            && battle.status !== battleStatus.finished
+            /*&& this.turnCount < 10*/) {
             this.turnCount++;
             const turnResults = battle.nextTurn();
             // if battle in progress then update scene

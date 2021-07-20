@@ -12,7 +12,7 @@ const viewPort = {
 
 const fontSize = {
     default: isMobile ? 80 : 32,
-    title: isMobile ? 240 : 80,
+    title: isMobile ? 80 : 80,
     large: isMobile ? 120 : 40,
 }
 

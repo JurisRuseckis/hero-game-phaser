@@ -5,6 +5,7 @@ import BattleTeam from "../models/BattleTeam";
 import Btn from "../ui-components/Btn";
 import {characterRoster} from "../models/Generators/Characters";
 import BattleGenerator from "../models/Generators/BattleGenerator";
+import {battleAI} from "../models/AI/BattleAIs";
 
 export class CampScene extends Phaser.Scene
 {
@@ -17,16 +18,32 @@ export class CampScene extends Phaser.Scene
 
     preload ()
     {
+        const defensiveDwarf = characterRoster.dwarf.warrior;
+        defensiveDwarf.battleAI = battleAI.defensive;
         const testTeam = new BattleTeam({
             formation: [
-                [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-                [characterRoster.dwarf.commander,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-                [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-                [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
+                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
             ],
+            // formation: [
+            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
+            //     [characterRoster.dwarf.commander,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
+            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
+            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
+            // ],
+            // formation: [
+            //     [0,0,0,0],
+            //     [characterRoster.dwarf.commander,0,0,0],
+            //     [0,0,0,0],
+            //     [0,0,0,0],
+            // ],
         });
         console.table(testTeam.printFormation());
         const testBattle = BattleGenerator.generate({
+            // teamCount: 2,
+            // teamSize: 2,
             teams: [testTeam]
         })
 

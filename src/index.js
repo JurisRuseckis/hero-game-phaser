@@ -12,7 +12,7 @@ import {CampScene} from "./scenes/CampScene";
 const config = {
     scale: {
         mode: Phaser.Scale.FIT,
-        parent: 'hero-game',
+        parent: 'army-composer-stone-age-stone-age',
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: styles.viewPort.width,
         height: styles.viewPort.height

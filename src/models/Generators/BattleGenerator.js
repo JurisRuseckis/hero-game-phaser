@@ -17,8 +17,8 @@ export default class BattleGenerator
      * @returns 
      */
     static generate(props){
-        const teamCount = 4;
-        const teamSize = 16;
+        const teamCount = props.teamCount || 4;
+        const teamSize = props.teamSize || 16;
         const bType = battleType.field;
         let teams = props.teams || [];
 
@@ -28,7 +28,7 @@ export default class BattleGenerator
             }
         }
 
-        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4;
+        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4 + 30;
         const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
 
         const teamStartPos = [
@@ -84,6 +84,8 @@ export default class BattleGenerator
             }
 
             return team.formation.map((r,yi) => r.map((combatant, xi) => {
+                if(combatant === 0) return 0;
+
                 let props = {
                     character: combatant,
                     team: teamIndex+1,
@@ -96,7 +98,7 @@ export default class BattleGenerator
                 }
 
                 return new Combatant(props);
-            })).flat();
+            })).flat().filter(c => c !== 0);
         }).flat();
 
         return new Battle({

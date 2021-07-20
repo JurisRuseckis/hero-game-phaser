@@ -1,5 +1,5 @@
 import Character, {race} from "../Character";
-import {battleAI} from "./BattleAIs";
+import {battleAI} from "../AI/BattleAIs";
 import {actionPool, defaultActions} from "./BattleActions";
 
 export const characterRoster = {
