@@ -18,7 +18,9 @@ export class CampScene extends Phaser.Scene
 
     preload ()
     {
-        const defensiveDwarf = characterRoster.dwarf.warrior;
+        const defensiveDwarf = {
+            ...characterRoster.dwarf.warrior
+        };
         defensiveDwarf.battleAI = battleAI.defensive;
         const testTeam = new BattleTeam({
             formation: [

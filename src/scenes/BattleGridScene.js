@@ -15,7 +15,7 @@ export class BattleGridScene extends Phaser.Scene
             key: cfg.scenes.battleGrid
         });
 
-        this.turndelay = 10;
+        this.turndelay = 50;
         this.turnTimer = 0;
         this.turnCount = 0;
 

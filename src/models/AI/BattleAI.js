@@ -93,13 +93,13 @@ export default class BattleAI
         let closedSet = [];
         // add start to be the first current
         start.properties[id] = []
-        start.properties[id]['hCost'] = BattleAI.getDistanceCost(start, target);
-        start.properties[id]['gCost'] = 0;
+        start.properties[id].hCost = BattleAI.getDistanceCost(start, target);
+        start.properties[id].gCost = 0;
         openSet.push(start);
 
         target.properties[id] = []
-        target.properties[id]['hCost'] = BattleAI.getDistanceCost(target, start);
-        target.properties[id]['gCost'] = 0;
+        target.properties[id].hCost = BattleAI.getDistanceCost(target, start);
+        target.properties[id].gCost = 0;
 
         while (openSet.length > 0){
             // sort by lowest fCost
@@ -108,9 +108,9 @@ export default class BattleAI
                 ? 1
                 : BattleAI.getFCost(a, id) < BattleAI.getFCost(b, id)
                     ? -1
-                    : a.properties[id]['hCost'] > b.properties[id]['hCost']
+                    : a.properties[id].hCost > b.properties[id].hCost
                         ? 1
-                        : a.properties[id]['hCost'] < b.properties[id]['hCost']
+                        : a.properties[id].hCost < b.properties[id].hCost
                             ? -1
                             : 0
             )
@@ -140,25 +140,25 @@ export default class BattleAI
                 // if neighbour in closed or not traversable then next
                 if( neighbour === currentNode
                     || neighbour.index === tileType.wall
-                    || (neighbour.properties['cmbId'] && neighbour.properties['cmbId'] !== target.properties['cmbId'])
+                    || (neighbour.properties.cmbId && neighbour.properties.cmbId !== target.properties.cmbId)
                     || closedSet.includes(neighbour)){
                     return;
                 }
 
                 // if neighbour not in open or path from current is shorter
-                const newMoveCost = currentNode.properties[id]['gCost'] + BattleAI.getDistanceCost(currentNode, neighbour);
-                const currentMoveCost = neighbour.properties[id] ? neighbour.properties[id]['gCost'] : Infinity;
+                const newMoveCost = currentNode.properties[id].gCost + BattleAI.getDistanceCost(currentNode, neighbour);
+                const currentMoveCost = neighbour.properties[id] ? neighbour.properties[id].gCost : Infinity;
                 if(!closedSet.includes(neighbour) || newMoveCost < currentMoveCost ){
                     // then set f_cost
                     if(!neighbour.properties[id]){
                         neighbour.properties[id] = [];
                     }
                     //set h
-                    neighbour.properties[id]['hCost'] = BattleAI.getDistanceCost(neighbour, target);
+                    neighbour.properties[id].hCost = BattleAI.getDistanceCost(neighbour, target);
                     //set g
-                    neighbour.properties[id]['gCost'] = newMoveCost;
+                    neighbour.properties[id].gCost = newMoveCost;
                     // set parent to current also
-                    neighbour.properties[id]['parentNode'] = currentNode;
+                    neighbour.properties[id].parentNode = currentNode;
 
                     //if node not in open then put it there
                     if(!openSet.includes(neighbour)){
@@ -170,6 +170,8 @@ export default class BattleAI
         }
 
         console.log('unreachable');
+        openSet.forEach(t => delete t.properties[id]);
+        closedSet.forEach(t => delete t.properties[id]);
         return [];
     }
 
@@ -199,7 +201,7 @@ export default class BattleAI
      * @return {number}
      */
     static getFCost (node, id) {
-        return node.properties[id]['gCost'] + node.properties[id]['hCost'];
+        return node.properties[id].gCost + node.properties[id].hCost;
     }
 
     /**
@@ -215,7 +217,7 @@ export default class BattleAI
 
         while (current !== start){
             path.push(current);
-            current = current.properties[id]['parentNode'];
+            current = current.properties[id].parentNode;
         }
 
         return path.reverse();

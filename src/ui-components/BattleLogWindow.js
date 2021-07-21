@@ -1,6 +1,6 @@
 import {styles} from "../styles";
 
-export const battleLogAlignment = {
+export const uiAlignment = {
     topLeft: 1,
     top: 2,
     topRight: 3,
@@ -29,11 +29,11 @@ export default class BattleLogWindow
         // this.width = this.scene.scale.width / 3;
         // this.height = this.width * 1.2;
 
-        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width / 1.5;
-        this.height = this.width / 2.5;
+        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.6;
+        this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
         this.margin = styles.padding;
 
-        if(this.alignment !== battleLogAlignment.bottomLeft){
+        if(this.alignment !== uiAlignment.bottomLeft){
             throw "not implemented";
         }
 
@@ -98,7 +98,7 @@ export default class BattleLogWindow
         })
     }
 
-    updateBattleLog(){
+    update(){
         let start;
         let end;
 
