@@ -1,11 +1,13 @@
 import CombatAction, {actionTags} from "../CombatAction";
 import Phaser from "phaser";
+import {tileType} from "../AI/BattleAI";
 
 /**
  * Default action that each characters will have
  * @type {Object}
  */
 export const defaultActions = {
+    // add charge so combatant can damage someone with moving
     wait: new CombatAction({
         key: 'wait',
         tags: [actionTags.any],
@@ -32,9 +34,9 @@ export const defaultActions = {
         },
         targetRules: (executor, target, arena) => {
             return !target.tile.properties['cmbId']
-                && target.tile.index !== 0
-                && target.tile.x !== executor.coordinates.x
-                && target.tile.y !== executor.coordinates.y
+                && target.tile.index !== tileType.wall
+                && !(target.tile.x === executor.coordinates.x
+                    && target.tile.y === executor.coordinates.y)
         }
     }),
     attack: new CombatAction({
