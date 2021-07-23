@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import tileSetImage from "../assets/tileset.png";
-import DebugWindow from "../models/DebugWindow";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../ui-components/GridUnit";
@@ -49,27 +48,15 @@ export class BattleGridScene extends Phaser.Scene
         battle.arena.tilemap = tilemap;
 
         this.data.set('tilemap', tilemap);
-
-        const debugWindow = new DebugWindow({
-            scene: this,
-        });
         
         const marker = this.createTileSelector();
 
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
-        // const battleLogWindow = new BattleLogWindow({
-        //     scene: this,
-        //     battleLog: battle.battleLog,
-        //     alignment: battleLogAlignment.bottomLeft
-        // });
-
-        this.scene.launch(cfg.scenes.battleUI, {
+        const ui = this.scene.launch(cfg.scenes.battleUI, {
             battle: battle
         });
 
-
-        this.data.set('debugWindow', debugWindow);
         this.data.set('marker', marker);
         this.data.set('gridUnits', gridUnits);
 
@@ -80,7 +67,6 @@ export class BattleGridScene extends Phaser.Scene
     }
 
     update(time, delta){
-        const debugWindow = this.data.get('debugWindow');
         const inputController = this.data.get('inputController');
         const battle = this.data.get('battle');
 
@@ -98,9 +84,6 @@ export class BattleGridScene extends Phaser.Scene
 
 
         inputController.checkBtns();
-        if(debugWindow.update){
-            debugWindow.redraw();
-        }
     }
 
      /**

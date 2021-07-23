@@ -134,11 +134,10 @@ export default class BattleInputController{
             this.moveCamera(new Phaser.Math.Vector2(0, this.camSpeed));
         }
 
-        const debugWindow = this.scene.data.get('debugWindow');
-        debugWindow.displayJson({
+        this.scene.registry.set('hoveredTile', this.hoveredTile);
+        this.scene.registry.set('camScroll', {
             'camScrollX': this.cam.scrollX,
             'camScrollY': this.cam.scrollY,
-            ...this.hoveredTile,
         });
     }
 

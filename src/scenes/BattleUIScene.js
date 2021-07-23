@@ -3,6 +3,7 @@ import {cfg} from "../cfg";
 import BattleUIInputController from "../controllers/BattleUIInputController";
 import BattleLogWindow, {uiAlignment} from "../ui-components/BattleLogWindow";
 import CharacterDetails from "../ui-components/CharacterDetails";
+import DebugWindow from "../models/DebugWindow";
 
 export class BattleUIScene extends Phaser.Scene
 {
@@ -39,11 +40,15 @@ export class BattleUIScene extends Phaser.Scene
             scene: this,
             alignment: uiAlignment.bottomRight
         });
+        const debugWindow = new DebugWindow({
+            scene: this,
+        });
 
 
         // this.data.set('debugWindow', debugWindow);
         this.data.set('battleLogWindow', battleLogWindow);
         this.data.set('characterDetails', characterDetails);
+        this.data.set('debugWindow', debugWindow);
 
         const inputController = new BattleUIInputController({
             scene: this,
@@ -54,8 +59,19 @@ export class BattleUIScene extends Phaser.Scene
     update(time, delta){
         const battleLogWindow = this.data.get('battleLogWindow');
         const characterDetails = this.data.get('characterDetails');
+        const debugWindow = this.data.get('debugWindow');
+
+        const hoveredTile = this.registry.get('hoveredTile');
+        const camScroll = this.registry.get('camScroll');
 
         battleLogWindow.update();
         characterDetails.update();
+        debugWindow.displayJson({
+            ...camScroll,
+            ...hoveredTile
+        });
+        if(debugWindow.update) {
+            debugWindow.redraw();
+        }
     }
 }

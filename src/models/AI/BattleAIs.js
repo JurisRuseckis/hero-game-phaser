@@ -9,6 +9,7 @@ export const battleAI = {
             let move = executor.combatAction.walk;
             const att = executor.combatAction.attack;
             if(closestEnemy.distance > att.range){
+                // todo rewrite ai, to determine best target and move into range not into target itself
                 let moveTargets = move.getAvailableTargets(executor, battle.combatants, battle.arena);
 
                 const shortestPathToEnemy = BattleAI.calculateShortestPath(
@@ -33,6 +34,7 @@ export const battleAI = {
                 // const closestTileToEnemy = BattleAI.getClosestAvailableTileToEnemy(moveTargets, closestEnemy.combatant.coordinates, att.range);
                 // console.log(closestTileToEnemy);
                 if(sortedTiles.length>0){
+                    // need to make so that unit moves along the path not just to target this would help to add weights and move costs to tile
                     const from = new Phaser.Math.Vector2(executor.coordinates.x, executor.coordinates.y);
                     const to = new Phaser.Math.Vector2(sortedTiles[0].x, sortedTiles[0].y);
                     const closestTileToEnemy = {

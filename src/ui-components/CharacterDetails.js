@@ -36,9 +36,12 @@ export default class CharacterDetails
         bgBox.setStrokeStyle(1, styles.colors.modernBorder);
         bgBox.setName('bgBox');
 
+        const txt = this.scene.add.text(0, 0,'test').setName('text');
+
         // main container
         this.container = this.scene.add.container(this.x, this.y, [
             bgBox,
+            txt
         ]);
 
 
@@ -53,5 +56,16 @@ export default class CharacterDetails
         // console.log(targetCoordinates);
         // apply to container
         this.container.setPosition(targetCoordinates.x, targetCoordinates.y);
+
+        const hoveredTile = this.scene.registry.get('hoveredTile');
+    }
+
+    setText(text){
+        /**
+         *
+         * @type {Phaser.GameObjects.Text}
+         */
+        const txt = this.container.getByName('text');
+        txt.setText(text);
     }
 }
