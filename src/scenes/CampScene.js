@@ -18,38 +18,6 @@ export class CampScene extends Phaser.Scene
 
     preload ()
     {
-        const defensiveDwarf = {
-            ...characterRoster.dwarf.warrior
-        };
-        defensiveDwarf.battleAI = battleAI.defensive;
-        const testTeam = new BattleTeam({
-            formation: [
-                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-            ],
-            // formation: [
-            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-            //     [characterRoster.dwarf.commander,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-            //     [characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior,characterRoster.dwarf.warrior],
-            // ],
-            // formation: [
-            //     [0,0,0,0],
-            //     [characterRoster.dwarf.commander,0,0,0],
-            //     [0,0,0,0],
-            //     [0,0,0,0],
-            // ],
-        });
-        console.table(testTeam.printFormation());
-        const testBattle = BattleGenerator.generate({
-            // teamCount: 2,
-            // teamSize: 2,
-            teams: [testTeam]
-        })
-
-        this.data.set('battle', testBattle);
         // let angles = [
         //     Phaser.Math.RadToDeg(Phaser.Math.Vector2.RIGHT.angle() - Phaser.Math.Vector2.RIGHT.angle()),
         //     Phaser.Math.RadToDeg(Phaser.Math.Vector2.RIGHT.angle() - Phaser.Math.Vector2.LEFT.angle()),
@@ -116,14 +84,83 @@ export class CampScene extends Phaser.Scene
     {
         return [
             {
-                label: "Start Battle",
+                label: "Random Battle",
                 onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+
                     // this.scene.start(cfg.scenes.navigation);
                     this.scene.start(cfg.scenes.loading, {
                         sceneKey: cfg.scenes.battleGrid,
-                        battle: this.data.get('battle'),
+                        battle: testBattle,
                     });
-                    this.registry.set('test', 'register is alive');
+                }
+            },
+            {
+                label: "Defensive Battle",
+                onClick: ()=>{
+                    const defensiveDwarf = {
+                        ...characterRoster.dwarf.warrior
+                    };
+                    defensiveDwarf.battleAI = battleAI.defensive;
+                    const testTeam = new BattleTeam({
+                        formation: [
+                            [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                            [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                            [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                            [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
+                        ],
+                    });
+                    console.table(testTeam.printFormation());
+                    const testBattle = BattleGenerator.generate({
+                        // teamCount: 2,
+                        // teamSize: 2,
+                        teams: [testTeam]
+                    })
+
+                    // this.scene.start(cfg.scenes.navigation);
+                    this.scene.start(cfg.scenes.loading, {
+                        sceneKey: cfg.scenes.battleGrid,
+                        battle: testBattle,
+                    });
+                }
+            },
+            {
+                label: "1 on 1",
+                onClick: ()=>{
+                    const testTeam = new BattleTeam({
+                        formation: [
+                            [characterRoster.elf.lord],
+                            [characterRoster.elf.lord],
+                        ],
+                    });
+                    console.table(testTeam.printFormation());
+                    const testBattle = BattleGenerator.generate({
+                        teamCount: 2,
+                        // teamSize: 2,
+                        arenaTiles: [
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,1,1,0,1,1,1,1,1,0,1,1,0],
+                            [0,1,1,0,1,0,0,0,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,1,0,1,1,0,1,1,0,1,1,0],
+                            [0,1,0,0,0,1,0,1,0,0,0,1,0],
+                            [0,1,1,1,1,1,0,1,1,1,1,1,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                        ],
+                        teams: [testTeam, testTeam]
+                    })
+
+                    // this.scene.start(cfg.scenes.navigation);
+                    this.scene.start(cfg.scenes.loading, {
+                        sceneKey: cfg.scenes.battleGrid,
+                        battle: testBattle,
+                    });
                 }
             },
         ]

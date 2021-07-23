@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 
-const tileType = {
+export const tileType = {
     wall: 0,
     dirt: 1
 }
