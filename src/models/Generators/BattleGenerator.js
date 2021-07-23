@@ -5,6 +5,7 @@ import Arena from "../Arena";
 import Phaser from "phaser";
 import {characterRoster} from "./Characters";
 import BattleTeam from "../BattleTeam";
+import {tileType} from "../AI/BattleAI";
 
 /**
  * class generates random battles 
@@ -28,8 +29,16 @@ export default class BattleGenerator
             }
         }
 
-        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4 + 30;
-        const arena = new Arena(this.generateArena(bType,arenaSize,arenaSize));
+        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4 + 10;
+        let arenaprops = props.arenaTiles
+            ? {
+                battletype: bType,
+                width: props.arenaTiles[0].length,
+                height: props.arenaTiles.length,
+                tiles: props.arenaTiles,
+            }
+            : this.generateArena(bType,arenaSize,arenaSize);
+        const arena = new Arena(arenaprops);
 
         const teamStartPos = [
             //left
@@ -146,14 +155,22 @@ export default class BattleGenerator
     }
 
     static generateArena(bType, width, height){
+        const centerRadius = 6
+
         let tiles = [];
         for(let i = 0; i < height; i++){
             let row = [];
             for(let j = 0; j< width; j++){
-                if(i===0||j===0||i===(height-1)||j===(width-1)){
-                    row.push(0);
+                if(i===0
+                    ||j===0
+                    ||i===(height-1)
+                    ||j===(width-1)
+                    // ||i > Math.round((height-1)/2) - centerRadius && i < Math.round((height-1)/2) + centerRadius
+                    // &&j > Math.round((width-1)/2) - centerRadius && j < Math.round((width-1)/2) + centerRadius
+                ){
+                    row.push(tileType.wall);
                 } else {
-                    row.push(1);
+                    row.push(tileType.dirt);
                 }
             }
             tiles.push(row);
