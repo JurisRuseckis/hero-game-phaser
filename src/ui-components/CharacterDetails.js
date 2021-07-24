@@ -56,8 +56,6 @@ export default class CharacterDetails
         // console.log(targetCoordinates);
         // apply to container
         this.container.setPosition(targetCoordinates.x, targetCoordinates.y);
-
-        const hoveredTile = this.scene.registry.get('hoveredTile');
     }
 
     setText(text){

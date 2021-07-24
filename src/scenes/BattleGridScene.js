@@ -53,7 +53,7 @@ export class BattleGridScene extends Phaser.Scene
 
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
-        const ui = this.scene.launch(cfg.scenes.battleUI, {
+        this.scene.launch(cfg.scenes.battleUI, {
             battle: battle
         });
 
@@ -81,6 +81,7 @@ export class BattleGridScene extends Phaser.Scene
             this.updateBattleScene(battle, turnResults.executor, turnResults.action);
             this.turnTimer -= this.turndelay;
         }
+        this.registry.set('battleStatus', battle.status);
 
 
         inputController.checkBtns();
