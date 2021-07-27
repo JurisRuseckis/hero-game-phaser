@@ -95,7 +95,11 @@ export class BattleGridScene extends Phaser.Scene
         }
         this.registry.set('battleStatus', battle.status);
         if(battle.status === battleStatus.finished){
-            this.scene.pause();
+            this.turnTimer = 0;
+            if(this.turnTimer > this.turndelay * 2){
+                this.scene.pause();
+            }
+
             // this.scene.start(cfg.scenes.navigation);
         }
 

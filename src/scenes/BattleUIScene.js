@@ -28,7 +28,7 @@ export class BattleUIScene extends Phaser.Scene
 
     create ()
     {
-
+        this.data.set('resultWindowTriggered', false);
         // const debugWindow = new DebugWindow({
         //     scene: this,
         // });
@@ -73,6 +73,7 @@ export class BattleUIScene extends Phaser.Scene
         const characterDetails = this.data.get('characterDetails');
         const debugWindow = this.data.get('debugWindow');
         const resultWindow = this.data.get('resultWindow');
+        const resultWindowTriggered = this.data.get('resultWindowTriggered');
 
         const hoveredTile = this.registry.get('hoveredTile');
         const camScroll = this.registry.get('camScroll');
@@ -89,10 +90,11 @@ export class BattleUIScene extends Phaser.Scene
         if(debugWindow.update) {
             debugWindow.redraw();
         }
-        if(bStatus === battleStatus.finished){
+        if(bStatus === battleStatus.finished && !resultWindowTriggered){
             const resultWindow = this.data.get('resultWindow');
             resultWindow.setText("someone Won!");
             resultWindow.container.setVisible(true);
+            this.data.set('resultWindowTriggered', true);
         }
     }
 }

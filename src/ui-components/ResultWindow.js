@@ -114,6 +114,13 @@ export default class ResultWindow
                     });
                 }
             },
+            {
+                label: "Inspect BattleGround",
+                onClick: ()=> {
+                    console.log(this.container);
+                    this.container.setVisible(false);
+                }
+            },
         ]
     }
 
