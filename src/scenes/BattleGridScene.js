@@ -23,6 +23,17 @@ export class BattleGridScene extends Phaser.Scene
     }
 
     init(data){
+        if(this.turnCount > 0 ){
+            this.turnTimer = 0;
+            this.turnCount = 0;
+            this.target = null;
+            this.executorId = null;
+
+            Object.keys(this.data.getAll()).forEach(i => this.data.remove(i))
+
+            this.scene.restart({'battle' : data.battle});
+        }
+
         this.data.set('battle', data.battle);
     }
 
@@ -34,6 +45,7 @@ export class BattleGridScene extends Phaser.Scene
         if(!battle){
             battle = BattleGenerator.generate({});
         }
+
         this.data.set('battle', battle);
     }
 
@@ -48,7 +60,7 @@ export class BattleGridScene extends Phaser.Scene
         battle.arena.tilemap = tilemap;
 
         this.data.set('tilemap', tilemap);
-        
+
         const marker = this.createTileSelector();
 
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
@@ -82,6 +94,10 @@ export class BattleGridScene extends Phaser.Scene
             this.turnTimer -= this.turndelay;
         }
         this.registry.set('battleStatus', battle.status);
+        if(battle.status === battleStatus.finished){
+            this.scene.pause();
+            // this.scene.start(cfg.scenes.navigation);
+        }
 
 
         inputController.checkBtns();

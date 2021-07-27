@@ -46,25 +46,19 @@ export class NavigationScene extends Phaser.Scene
             {
                 label: "ch",
                 onClick: ()=>{
-                    this.changeScene(cfg.scenes.character);
+                    this.changeScene(cfg.scenes.character, {});
                 }
             },
             {
                 label: "inv",
                 onClick: ()=>{
-                    this.changeScene(cfg.scenes.inventory);
-                }
-            },
-            {
-                label: "grid",
-                onClick: ()=>{
-                    this.changeScene(cfg.scenes.battleGrid, true);
+                    this.changeScene(cfg.scenes.inventory, {});
                 }
             },
             {
                 label: "camp",
                 onClick: ()=>{
-                    this.changeScene(cfg.scenes.camp);
+                    this.changeScene(cfg.scenes.camp, {});
                 }
             },
         ]
@@ -72,28 +66,42 @@ export class NavigationScene extends Phaser.Scene
 
     /**
      *
-     * @param {string} targetscene
+     * @param {string} targetScene
+     * @param {Object} data
      * @param {boolean} changeLayout
      */
-    changeScene(targetscene, changeLayout = false)
+    changeScene(targetScene,data, changeLayout = false)
     {
         const currentScene = this.registry.get('currentScene');
-        if(currentScene === targetscene) return;
+
+        if(currentScene === targetScene) return;
 
         if(changeLayout){
-            this.scene.start(targetscene);
+            this.scene.setVisible(!this.scene.isVisible(cfg.scenes.navigation), cfg.scenes.navigation);
         }
 
         if(currentScene){
             const currentSceneObj = this.scene.get(currentScene)
             currentSceneObj.scene.transition({
-                target: targetscene,
-                duration: 50
+                target: targetScene,
+                duration: 50,
+                data:data,
             });
         } else{
-            this.scene.launch(targetscene);
+            this.scene.launch(targetScene, data);
         }
 
-        this.registry.set('currentScene', targetscene);
+        this.registry.set('currentScene', targetScene);
+    }
+
+    update(time, delta){
+        const transition = this.registry.get('transition');
+        if(transition){
+            this.registry.remove('transition');
+            if(transition.beforeTransition){
+                transition.beforeTransition(this.scene);
+            }
+            this.changeScene(transition.target, transition.data, transition.changeLayout);
+        }
     }
 }

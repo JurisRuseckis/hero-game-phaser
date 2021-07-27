@@ -84,7 +84,6 @@ export default class BattleGenerator
             const posOffset = Math.floor(team.formation.length/2);
             team.rotateFormation(startPos.dir);
             if(verticalDir && startPos.reverse){
-                console.log(team)
                startPos.x -= team.formation[0].length;
             }
 

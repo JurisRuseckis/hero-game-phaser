@@ -18,16 +18,17 @@ const config = {
         height: styles.viewPort.height
     },
     scene: [
+        // CampScene,
         // NavigationScene,
         // BattleGridScene,
         MainMenuScene,
+        BattleGridScene,
+        BattleUIScene,
+        CampScene,
         CharacterScene,
         InventoryScene,
         LoadingScene,
         NavigationScene,
-        BattleGridScene,
-        BattleUIScene,
-        CampScene
     ]
 };
 

@@ -87,12 +87,7 @@ export class CampScene extends Phaser.Scene
                 label: "Random Battle",
                 onClick: ()=>{
                     const testBattle = BattleGenerator.generate({})
-
-                    // this.scene.start(cfg.scenes.navigation);
-                    this.scene.start(cfg.scenes.loading, {
-                        sceneKey: cfg.scenes.battleGrid,
-                        battle: testBattle,
-                    });
+                    this.startBattle(testBattle);
                 }
             },
             {
@@ -110,18 +105,13 @@ export class CampScene extends Phaser.Scene
                             [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
                         ],
                     });
-                    console.table(testTeam.printFormation());
                     const testBattle = BattleGenerator.generate({
                         // teamCount: 2,
                         // teamSize: 2,
                         teams: [testTeam]
                     })
 
-                    // this.scene.start(cfg.scenes.navigation);
-                    this.scene.start(cfg.scenes.loading, {
-                        sceneKey: cfg.scenes.battleGrid,
-                        battle: testBattle,
-                    });
+                    this.startBattle(testBattle);
                 }
             },
             {
@@ -130,10 +120,8 @@ export class CampScene extends Phaser.Scene
                     const testTeam = new BattleTeam({
                         formation: [
                             [characterRoster.elf.lord],
-                            [characterRoster.elf.lord],
                         ],
                     });
-                    console.table(testTeam.printFormation());
                     const testBattle = BattleGenerator.generate({
                         teamCount: 2,
                         // teamSize: 2,
@@ -155,14 +143,19 @@ export class CampScene extends Phaser.Scene
                         ],
                         teams: [testTeam, testTeam]
                     })
-
-                    // this.scene.start(cfg.scenes.navigation);
-                    this.scene.start(cfg.scenes.loading, {
-                        sceneKey: cfg.scenes.battleGrid,
-                        battle: testBattle,
-                    });
+                    this.startBattle(testBattle);
                 }
             },
         ]
+    }
+
+    startBattle(testBattle){
+        this.registry.set('transition', {
+            target: cfg.scenes.battleGrid,
+            data: {
+                battle: testBattle,
+            },
+            changeLayout: true,
+        });
     }
 }

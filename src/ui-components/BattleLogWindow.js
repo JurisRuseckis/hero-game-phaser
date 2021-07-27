@@ -93,9 +93,16 @@ export default class BattleLogWindow
     setTxtItems(txtItems){
         // all items in list should be texts :)
         // only first txtItems that fit in in this contaier will be shown
-        this.container.getByName('textContainer').list.map((txt, i) => {
-            txt.text = txtItems[i] || '';
-        })
+        /**
+         *
+         * @type {Phaser.GameObjects.Container}
+         */
+        const textContainer = this.container.getByName('textContainer')
+        // if(textContainer){
+            textContainer.list.map((txt, i) => {
+                txt.text = txtItems[i] || '';
+            })
+        // }
     }
 
     update(){

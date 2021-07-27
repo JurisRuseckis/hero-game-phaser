@@ -63,7 +63,7 @@ export default class ResultWindow
                 textStyle: {fontSize: styles.fontSize.default}
             })
             btn.addDefaultEvents();
-            btn.btnObj.on('pointerdown', menuItem.onClick);
+            btn.btnObj.on('pointerdown', menuItem.onClick, this);
             this.container.add(btn.container);
             return btn;
         });
@@ -79,7 +79,9 @@ export default class ResultWindow
          * @type {Phaser.GameObjects.Text}
          */
         const txt = this.container.getByName('text');
-        txt.setText(text);
+        // if(txt){
+            txt.setText(text);
+        // }
     }
 
     update(){
@@ -100,14 +102,15 @@ export default class ResultWindow
     {
         return [
             {
-                label: "Random Battle",
-                onClick: ()=>{
-                    const testBattle = BattleGenerator.generate({})
-
-                    // this.scene.start(cfg.scenes.navigation);
-                    this.scene.start(cfg.scenes.loading, {
-                        sceneKey: cfg.scenes.battleGrid,
-                        battle: testBattle,
+                label: "Return to Menu",
+                onClick: ()=> {
+                    this.scene.registry.set('transition', {
+                        target: null,
+                        changeLayout: true,
+                        beforeTransition: (scene) => {
+                            scene.stop(cfg.scenes.battleUI);
+                            scene.stop(cfg.scenes.battleGrid);
+                        }
                     });
                 }
             },

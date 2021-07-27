@@ -27,7 +27,6 @@ export default class CharacterDetails
         // if bottom right
         this.x = this.scene.scale.displaySize.width - (this.width + this.margin) / this.scene.scale.displayScale.x;
         this.y = this.scene.scale.displaySize.height - (this.height + this.margin) / this.scene.scale.displayScale.y;
-        console.log(this.scene.scale.displaySize);
 
 
         // bg for battleLogWindow
@@ -64,6 +63,8 @@ export default class CharacterDetails
          * @type {Phaser.GameObjects.Text}
          */
         const txt = this.container.getByName('text');
-        txt.setText(text);
+        // if(txt){
+            txt.setText(text);
+        // }
     }
 }
