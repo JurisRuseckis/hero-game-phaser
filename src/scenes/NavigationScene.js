@@ -77,6 +77,7 @@ export class NavigationScene extends Phaser.Scene
         if(currentScene === targetScene) return;
 
         if(changeLayout){
+            // todo: clasify which targetScenes should trigger which visibilities
             this.scene.setVisible(!this.scene.isVisible(cfg.scenes.navigation), cfg.scenes.navigation);
         }
 

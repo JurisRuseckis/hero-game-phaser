@@ -40,6 +40,7 @@ export default class BattleInputController{
             // handle screen drag
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser
+            const marker = this.scene.data.get('marker');
             if (this.pointerDown) {
                 const dragDistance = this.getDragDistance(pointer);
                 this.moveCamera(dragDistance);
@@ -50,7 +51,7 @@ export default class BattleInputController{
                 const tile = this.getTileAtWorldXY(pointer);
                 const battle = this.scene.data.get('battle');
                 if (tile) {
-                    const marker = this.scene.data.get('marker');
+
 
                     this.hoveredTile = {
                         'tileIndex': tile.index,
@@ -80,8 +81,11 @@ export default class BattleInputController{
                     }
 
 
+                    marker.setVisible(true);
                     marker.x = tile.x * this.scene.tileSize;
                     marker.y = tile.y * this.scene.tileSize;
+                } else {
+                    marker.setVisible(false);
                 }
             }           
            
@@ -157,7 +161,7 @@ export default class BattleInputController{
     }
 
     getMaxOffset(){
-
+        //todo: implement offeset for ui
         const tilemap = this.scene.data.get('tilemap');
         const tileGridLayer = tilemap.getLayer('battleGridLayer');
 
