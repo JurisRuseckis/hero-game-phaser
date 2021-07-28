@@ -7,6 +7,7 @@ import DebugWindow from "../models/DebugWindow";
 import ResultWindow from "../ui-components/ResultWindow";
 import {styles} from "../styles";
 import {battleStatus} from "../models/Battle";
+import QuickMenu from "../ui-components/QuickMenu";
 
 export class BattleUIScene extends Phaser.Scene
 {
@@ -54,6 +55,10 @@ export class BattleUIScene extends Phaser.Scene
             alignment: uiAlignment.middle
         });
         resultWindow.container.setVisible(false);
+        const quickMenu = new QuickMenu({
+            scene: this,
+            alignment: uiAlignment.topRight
+        });
 
 
         // this.data.set('debugWindow', debugWindow);
@@ -61,6 +66,7 @@ export class BattleUIScene extends Phaser.Scene
         this.data.set('characterDetails', characterDetails);
         this.data.set('debugWindow', debugWindow);
         this.data.set('resultWindow', resultWindow);
+        this.data.set('quickMenu', quickMenu);
 
         const inputController = new BattleUIInputController({
             scene: this,
@@ -73,6 +79,7 @@ export class BattleUIScene extends Phaser.Scene
         const characterDetails = this.data.get('characterDetails');
         const debugWindow = this.data.get('debugWindow');
         const resultWindow = this.data.get('resultWindow');
+        const quickMenu = this.data.get('quickMenu');
         const resultWindowTriggered = this.data.get('resultWindowTriggered');
 
         const hoveredTile = this.registry.get('hoveredTile');
@@ -80,6 +87,7 @@ export class BattleUIScene extends Phaser.Scene
         const bStatus = this.registry.get('battleStatus');
 
         resultWindow.update();
+        quickMenu.update();
         battleLogWindow.update();
         characterDetails.update();
         characterDetails.setText(JSON.stringify(hoveredTile, null, '\t'));
