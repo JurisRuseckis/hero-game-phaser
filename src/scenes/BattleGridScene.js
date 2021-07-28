@@ -14,7 +14,7 @@ export class BattleGridScene extends Phaser.Scene
             key: cfg.scenes.battleGrid
         });
 
-        this.turndelay = 50;
+        this.turndelay = 10;
         this.turnTimer = 0;
         this.turnCount = 0;
 
@@ -29,7 +29,8 @@ export class BattleGridScene extends Phaser.Scene
             this.target = null;
             this.executorId = null;
 
-            Object.keys(this.data.getAll()).forEach(i => this.data.remove(i))
+            Object.keys(this.data.getAll()).forEach(i => this.data.remove(i));
+            this.registry.set('battleStatus', battleStatus.started);
 
             this.scene.restart({'battle' : data.battle});
         }

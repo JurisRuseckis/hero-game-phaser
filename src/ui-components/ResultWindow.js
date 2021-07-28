@@ -1,7 +1,6 @@
 import {styles} from "../styles";
 import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
-import BattleGenerator from "../models/Generators/BattleGenerator";
 import {cfg} from "../cfg";
 
 export default class ResultWindow
@@ -39,7 +38,7 @@ export default class ResultWindow
         bgBox.setName('bgBox');
         const bgBoxBounds = bgBox.getBounds();
 
-        const txt = this.scene.add.text(this.margin, this.margin,'test').setName('text').setOrigin(0);
+        const txt = this.scene.add.text(this.margin, this.margin,'test', {fontSize: styles.fontSize.large}).setName('text').setOrigin(0);
 
 
 
@@ -63,7 +62,7 @@ export default class ResultWindow
                 textStyle: {fontSize: styles.fontSize.default}
             })
             btn.addDefaultEvents();
-            btn.btnObj.on('pointerdown', menuItem.onClick, this);
+            btn.btnObj.on('pointerdown', menuItem.onClick);
             this.container.add(btn.container);
             return btn;
         });
@@ -104,20 +103,13 @@ export default class ResultWindow
             {
                 label: "Return to Menu",
                 onClick: ()=> {
-                    this.scene.registry.set('transition', {
-                        target: null,
-                        changeLayout: true,
-                        beforeTransition: (scene) => {
-                            scene.stop(cfg.scenes.battleUI);
-                            scene.stop(cfg.scenes.battleGrid);
-                        }
-                    });
+                    this.scene.scene.stop(cfg.scenes.battleGrid);
+                    this.scene.scene.start(cfg.scenes.navigation);
                 }
             },
             {
                 label: "Inspect BattleGround",
                 onClick: ()=> {
-                    console.log(this.container);
                     this.container.setVisible(false);
                 }
             },

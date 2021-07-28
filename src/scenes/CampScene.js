@@ -117,11 +117,6 @@ export class CampScene extends Phaser.Scene
             {
                 label: "1 on 1",
                 onClick: ()=>{
-                    const testTeam = new BattleTeam({
-                        formation: [
-                            [characterRoster.elf.lord],
-                        ],
-                    });
                     const testBattle = BattleGenerator.generate({
                         teamCount: 2,
                         // teamSize: 2,
@@ -141,7 +136,15 @@ export class CampScene extends Phaser.Scene
                             [0,1,1,1,1,1,0,1,1,1,1,1,0],
                             [0,0,0,0,0,0,0,0,0,0,0,0,0],
                         ],
-                        teams: [testTeam, testTeam]
+                        teams: [new BattleTeam({
+                            formation: [
+                                [characterRoster.elf.lord],
+                            ],
+                        }), new BattleTeam({
+                            formation: [
+                                [characterRoster.dwarf.commander],
+                            ],
+                        })]
                     })
                     this.startBattle(testBattle);
                 }
