@@ -105,12 +105,12 @@ export default class BattleInputController{
             const hoverMarker = this.scene.data.get('hoverMarker');
             const selectMarker = this.scene.data.get('selectMarker');
             if(this.hoveredTile){
-                console.log(this.hoveredTile);
                 this.selectedTile = this.hoveredTile;
                 selectMarker.x = hoverMarker.x;
                 selectMarker.y = hoverMarker.y;
                 selectMarker.setVisible(true);
             } else {
+                this.selectedTile = null;
                 selectMarker.setVisible(false);
             }
 

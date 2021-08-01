@@ -29,7 +29,6 @@ export default class QuickMenu {
         this.x = this.scene.scale.displaySize.width - (this.width + this.margin) / this.scene.scale.displayScale.x;
 
         this.y = this.margin / this.scene.scale.displayScale.y;
-        console.log([this.width, this.x]);
 
 
         // bg for battleLogWindow

@@ -79,7 +79,7 @@ export default class BattleAI
     }
 
     /**
-     *
+     * A* pathfinding
      * @param {Arena} arena
      * @param {Combatant} executor
      * @param {Phaser.Tilemaps.Tile} start

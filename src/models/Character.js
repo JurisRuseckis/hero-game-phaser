@@ -1,5 +1,3 @@
-import CombatAction from "./CombatAction"
-
 export const race = {
     Human: 'human',
     Orc: 'orc',
@@ -18,6 +16,7 @@ export default class Character
      * @param {string} props.name
      * @param {string} props.img
      * @param {number} props.atk
+     * @param {string} props.race
      * @param {boolean} props.isPlayable
      * @param {Object} props.combatActions
      * @param {BattleAI} props.battleAI
