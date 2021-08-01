@@ -6,6 +6,17 @@ import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../ui-components/GridUnit";
 import { battleStatus } from "../models/Battle";
 
+const markerType = {
+    'hover' : {
+        'key' : 'hover',
+        'color' : 0xffffff
+    },
+    'select' : {
+        'key' : 'select',
+        'color' : 0xff0000
+    },
+}
+
 export class BattleGridScene extends Phaser.Scene
 {
     constructor ()
@@ -62,7 +73,8 @@ export class BattleGridScene extends Phaser.Scene
 
         this.data.set('tilemap', tilemap);
 
-        const marker = this.createTileSelector();
+        const hoverMarker = this.createTileSelector(markerType.hover);
+        const selectMarker = this.createTileSelector(markerType.select);
 
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
@@ -70,7 +82,8 @@ export class BattleGridScene extends Phaser.Scene
             battle: battle
         });
 
-        this.data.set('marker', marker);
+        this.data.set('hoverMarker', hoverMarker);
+        this.data.set('selectMarker', selectMarker);
         this.data.set('gridUnits', gridUnits);
 
         const inputController = new BattleInputController({
@@ -191,11 +204,12 @@ export class BattleGridScene extends Phaser.Scene
         }).flat();
       }
 
-      createTileSelector() {
+      createTileSelector(type) {
         //  Our painting marker
         let marker = this.add.graphics();
-        marker.lineStyle(2, 0xffffff, 1.0);
+        marker.lineStyle(2, type.color, 1.0);
         marker.strokeRect(0, 0, this.tileSize, this.tileSize);
+        marker.setVisible(false);
         return marker;
     }
     

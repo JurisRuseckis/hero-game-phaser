@@ -26,11 +26,8 @@ export default class BattleInputController{
         this.cursors = this.scene.input.keyboard.createCursorKeys();
         this.keys = this.scene.input.keyboard.addKeys('W,A,S,D');
         
-        this.hoveredTile = {
-            "tileIndex": '',
-            "tileX": '',
-            "tileY": '',
-        };
+        this.hoveredTile = null;
+        this.selectedTile = null;
 
         this.addEvents();
     }
@@ -40,7 +37,7 @@ export default class BattleInputController{
             // handle screen drag
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser
-            const marker = this.scene.data.get('marker');
+            const hoverMarker = this.scene.data.get('hoverMarker');
             if (this.pointerDown) {
                 const dragDistance = this.getDragDistance(pointer);
                 this.moveCamera(dragDistance);
@@ -81,11 +78,12 @@ export default class BattleInputController{
                     }
 
 
-                    marker.setVisible(true);
-                    marker.x = tile.x * this.scene.tileSize;
-                    marker.y = tile.y * this.scene.tileSize;
+                    hoverMarker.setVisible(true);
+                    hoverMarker.x = tile.x * this.scene.tileSize;
+                    hoverMarker.y = tile.y * this.scene.tileSize;
                 } else {
-                    marker.setVisible(false);
+                    hoverMarker.setVisible(false);
+                    this.hoveredTile = null;
                 }
             }           
            
@@ -103,6 +101,19 @@ export default class BattleInputController{
             if (this.pointerDown) {
                 this.pointerDown = false;
             }
+
+            const hoverMarker = this.scene.data.get('hoverMarker');
+            const selectMarker = this.scene.data.get('selectMarker');
+            if(this.hoveredTile){
+                console.log(this.hoveredTile);
+                this.selectedTile = this.hoveredTile;
+                selectMarker.x = hoverMarker.x;
+                selectMarker.y = hoverMarker.y;
+                selectMarker.setVisible(true);
+            } else {
+                selectMarker.setVisible(false);
+            }
+
         });
         // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
@@ -139,6 +150,7 @@ export default class BattleInputController{
         }
 
         this.scene.registry.set('hoveredTile', this.hoveredTile);
+        this.scene.registry.set('selectedTile', this.selectedTile);
         this.scene.registry.set('camScroll', {
             'camScrollX': this.cam.scrollX,
             'camScrollY': this.cam.scrollY,

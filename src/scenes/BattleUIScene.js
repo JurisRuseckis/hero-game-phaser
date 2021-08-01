@@ -3,7 +3,7 @@ import {cfg} from "../cfg";
 import BattleUIInputController from "../controllers/BattleUIInputController";
 import BattleLogWindow, {uiAlignment} from "../ui-components/BattleLogWindow";
 import CharacterDetails from "../ui-components/CharacterDetails";
-import DebugWindow from "../models/DebugWindow";
+import DebugWindow from "../ui-components/DebugWindow";
 import ResultWindow from "../ui-components/ResultWindow";
 import {styles} from "../styles";
 import {battleStatus} from "../models/Battle";
@@ -82,18 +82,16 @@ export class BattleUIScene extends Phaser.Scene
         const quickMenu = this.data.get('quickMenu');
         const resultWindowTriggered = this.data.get('resultWindowTriggered');
 
-        const hoveredTile = this.registry.get('hoveredTile');
-        const camScroll = this.registry.get('camScroll');
+        const selectedTile = this.registry.get('selectedTile');
         const bStatus = this.registry.get('battleStatus');
 
         resultWindow.update();
         quickMenu.update();
         battleLogWindow.update();
         characterDetails.update();
-        characterDetails.setText(JSON.stringify(hoveredTile, null, '\t'));
+        characterDetails.setText(JSON.stringify(selectedTile, null, '\t'));
         debugWindow.displayJson({
-            ...camScroll,
-            ...hoveredTile
+            'registry' : this.registry.getAll(),
         });
         if(debugWindow.update) {
             debugWindow.redraw();

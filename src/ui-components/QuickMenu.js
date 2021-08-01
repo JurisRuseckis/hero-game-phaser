@@ -26,9 +26,7 @@ export default class QuickMenu {
         this.height = btnSize + this.margin * 2;
 
         // if topRight
-        this.x = styles.isMobile
-            ? this.margin
-            : this.scene.scale.displaySize.width / 2 - this.width / (this.scene.scale.displayScale.x * 2);
+        this.x = this.scene.scale.displaySize.width - (this.width + this.margin) / this.scene.scale.displayScale.x;
 
         this.y = this.margin / this.scene.scale.displayScale.y;
         console.log([this.width, this.x]);
@@ -54,7 +52,7 @@ export default class QuickMenu {
                 height: btnSize,
                 text: menuItem.label,
                 textStyle: {fontSize: styles.fontSize.default}
-            })
+            });
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', menuItem.onClick, this);
             this.container.add(btn.container);
