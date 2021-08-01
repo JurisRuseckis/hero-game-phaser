@@ -1,7 +1,7 @@
 import {styles} from "../styles";
 import {uiAlignment} from "./BattleLogWindow";
 
-export default class CharacterDetails
+export default class TileInfo
 {
     /**
      * 

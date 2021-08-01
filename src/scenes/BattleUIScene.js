@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import {cfg} from "../cfg";
 import BattleUIInputController from "../controllers/BattleUIInputController";
 import BattleLogWindow, {uiAlignment} from "../ui-components/BattleLogWindow";
-import CharacterDetails from "../ui-components/CharacterDetails";
+import TileInfo from "../ui-components/TileInfo";
 import DebugWindow from "../ui-components/DebugWindow";
 import ResultWindow from "../ui-components/ResultWindow";
 import {styles} from "../styles";
@@ -40,12 +40,12 @@ export class BattleUIScene extends Phaser.Scene
             battleLog: battle.battleLog,
             alignment: uiAlignment.bottomLeft
         });
-        const characterDetails = new CharacterDetails({
+        const tileInfo = new TileInfo({
             scene: this,
             alignment: uiAlignment.bottomRight
         });
         if(styles.isMobile){
-            characterDetails.container.setVisible(false);
+            tileInfo.container.setVisible(false);
         }
         const debugWindow = new DebugWindow({
             scene: this,
@@ -63,7 +63,7 @@ export class BattleUIScene extends Phaser.Scene
 
         // this.data.set('debugWindow', debugWindow);
         this.data.set('battleLogWindow', battleLogWindow);
-        this.data.set('characterDetails', characterDetails);
+        this.data.set('tileInfo', tileInfo);
         this.data.set('debugWindow', debugWindow);
         this.data.set('resultWindow', resultWindow);
         this.data.set('quickMenu', quickMenu);
@@ -76,7 +76,7 @@ export class BattleUIScene extends Phaser.Scene
 
     update(time, delta){
         const battleLogWindow = this.data.get('battleLogWindow');
-        const characterDetails = this.data.get('characterDetails');
+        const tileInfo = this.data.get('tileInfo');
         const debugWindow = this.data.get('debugWindow');
         const resultWindow = this.data.get('resultWindow');
         const quickMenu = this.data.get('quickMenu');
@@ -88,8 +88,8 @@ export class BattleUIScene extends Phaser.Scene
         resultWindow.update();
         quickMenu.update();
         battleLogWindow.update();
-        characterDetails.update();
-        characterDetails.setText(JSON.stringify(selectedTile, null, '\t'));
+        tileInfo.update();
+        tileInfo.setText(JSON.stringify(selectedTile, null, '\t'));
         debugWindow.displayJson({
             'registry' : this.registry.getAll(),
         });
