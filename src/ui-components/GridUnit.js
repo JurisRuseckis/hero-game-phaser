@@ -199,7 +199,7 @@ export default class GridUnit
 
     moveToCoords(tilePosition){
         this.direction.set(tilePosition.x - this.tileCoordinates.x,tilePosition.y - this.tileCoordinates.y);
-        const distance = this.direction.length();
+        // const distance = this.direction.length();
         this.direction.normalize();
         this.tileCoordinates.set(tilePosition.x,tilePosition.y);
 
@@ -213,7 +213,7 @@ export default class GridUnit
 
         this.scene.tweens.add({
             targets: this.container,
-            duration: distance * this.scene.turndelay,
+            duration: this.scene.turndelay,
             x: this.tileCoordinates.x * this.tileSize,
             y: this.tileCoordinates.y * this.tileSize,
             delay: 0,
