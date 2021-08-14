@@ -89,7 +89,7 @@ export class BattleUIScene extends Phaser.Scene
         quickMenu.update();
         battleLogWindow.update();
         tileInfo.update();
-        // tileInfo.setText(JSON.stringify(selectedTile, null, '\t'));
+        tileInfo.setTile(selectedTile);
         debugWindow.displayJson({
             'registry' : this.registry.getAll(),
         });

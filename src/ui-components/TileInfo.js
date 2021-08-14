@@ -1,6 +1,7 @@
 import {styles} from "../styles";
 import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
+import {tileLabel} from "../models/AI/BattleAI";
 
 export default class TileInfo
 {
@@ -45,12 +46,12 @@ export default class TileInfo
         ]);
 
         this.createTileObjects();
-        this.createCombatantObjects();
-
+        this.createCombatantObjects(bgBox);
 
         // scroll factor fucks up pointerOver for childrem without scrollFactor 0
         this.container.setScrollFactor(0, 0, true);
         this.container.setDepth(1);
+        console.log(this.container);
     }
 
     update() {
@@ -61,11 +62,7 @@ export default class TileInfo
         this.container.setPosition(targetCoordinates.x, targetCoordinates.y);
     }
 
-    setTile(tile){
-
-    }
-
-    createCombatantObjects(){
+    createCombatantObjects(bgBox){
         const title = this.scene.add.text(this.margin, this.margin, 'combatant title', {
             fontSize: styles.fontSize.large
         }).setOrigin(0).setName('cmbTitle');
@@ -78,29 +75,48 @@ export default class TileInfo
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbTurnMeter');
 
-        const abilities = this.scene.add.text(this.margin, turnMeter.getBottomCenter().y, 'ability (cooldown)', {
+        const abilitiesTitle = this.scene.add.text(this.margin, turnMeter.getBottomCenter().y, 'ability (cooldown)', {
             fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbAbilities');
+        }).setOrigin(0).setName('cmbAbilitiesTitle');
 
-        const turns = this.scene.add.text(this.margin, abilities.getBottomCenter().y, 'turns where executor or target', {
+        const turns = this.scene.add.text(this.margin, abilitiesTitle.getBottomCenter().y, 'turns where executor or target', {
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbTurns');
+
+
+        const btnSize = styles.viewPort.width * 0.02;
+        const closeBtn = new Btn({
+            scene: this.scene,
+            x: bgBox.getBottomRight().x - (this.margin + btnSize),
+            y: this.margin,
+            width: btnSize,
+            height: btnSize,
+            text: 'x',
+            textStyle: {fontSize: styles.fontSize.default}
+        });
+        closeBtn.addDefaultEvents();
+        closeBtn.btnObj.on('pointerdown', () => {
+            this.container.getByName('combatantPropContainer').setVisible(false);
+            this.container.getByName('tilePropContainer').setVisible(true);
+        }, this);
 
         this.container.add(this.scene.add.container(0, 0, [
             title,
             hp,
             turnMeter,
-            abilities,
+            abilitiesTitle,
             turns,
+            closeBtn.container
         ]).setName('combatantPropContainer').setVisible(false));
     }
 
     createTileObjects(){
         const title = this.scene.add.text(this.margin, this.margin, 'title (x,y)', {
             fontSize: styles.fontSize.large
-        }).setOrigin(0);
+        }).setOrigin(0).setName('tileTitle');
 
         const combatant = new Btn({
+            key: 'tileCombatant',
             scene: this.scene,
             x: this.margin,
             y: this.margin + title.getBottomCenter().y,
@@ -116,20 +132,90 @@ export default class TileInfo
             this.container.getByName('tilePropContainer').setVisible(false);
         }, this);
 
+        const corpses = new Btn({
+            key: 'tileCorpse1',
+            scene: this.scene,
+            x: this.margin,
+            y: this.margin * 3 + combatant.container.height + title.height,
+            width: 300,
+            height: 36,
+            text: 'corpses1 label',
+            textStyle: {fontSize: styles.fontSize.default}
+        });
+
+        corpses.addDefaultEvents();
+        corpses.btnObj.on('pointerdown', () => {
+            this.container.getByName('combatantPropContainer').setVisible(true);
+            this.container.getByName('tilePropContainer').setVisible(false);
+        }, this);
+
+        this.tileCombatants = [
+            combatant,
+            corpses
+        ];
+
         this.container.add(this.scene.add.container(0, 0, [
             title,
-            combatant.container
+            combatant.container,
+            corpses.container
         ]).setName('tilePropContainer'));
     }
 
-    setText(text){
-        /**
-         *
-         * @type {Phaser.GameObjects.Text}
-         */
-        const txt = this.container.getByName('text');
-        // if(txt){
-            txt.setText(text);
-        // }
+    setTile(tile){
+        if(!tile){
+            this.clearcombatantBtns();
+            return;
+        }
+        const tileContainer = this.container.getByName('tilePropContainer')
+        const title = tileContainer.getByName('tileTitle').setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY}) `);
+        this.setCombatantBtns(tile, tileContainer);
     }
+
+    clearcombatantBtns(){
+        this.tileCombatants.forEach((x) => {
+            x.destroy();
+        })
+        this.tileCombatants = [];
+    }
+
+    setCombatantBtns(tile, tileContainer){
+
+        this.clearcombatantBtns();
+        const title = tileContainer.getByName('tileTitle');
+
+        let cmbList = [];
+        if(tile.combatant){
+            cmbList.push(tile.combatant);
+        }
+
+        if(tile.corpses){
+            tile.corpses.forEach((corpse) => {
+                cmbList.push(corpse);
+            })
+        }
+
+        this.tileCombatants = cmbList.map((combatant, key) => {
+            const btn = new Btn({
+                key: 'tileCombatant',
+                scene: this.scene,
+                x: this.margin,
+                y: title.height + this.margin * 2 + (40 + this.margin) * key,
+                width: 300,
+                height: 36,
+                text: combatant.label,
+                textStyle: {fontSize: styles.fontSize.default}
+            });
+
+            btn.addDefaultEvents();
+            btn.btnObj.on('pointerdown', () => {
+                this.container.getByName('combatantPropContainer').setVisible(true);
+                this.container.getByName('tilePropContainer').setVisible(false);
+            }, this);
+
+            tileContainer.add(btn.container)
+
+            return btn;
+        })
+    }
+
 }

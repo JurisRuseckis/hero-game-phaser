@@ -6,6 +6,11 @@ export const tileType = {
     dirt: 1
 }
 
+export const tileLabel = {
+    0 : 'wall',
+    1 : 'dirt'
+}
+
 export default class BattleAI
 {
     /**

@@ -1,4 +1,5 @@
 import {styles} from "../styles";
+import { v4 as uuidv4 } from 'uuid';
 
 export default class Btn
 {
@@ -29,6 +30,7 @@ export default class Btn
             throw 'ArgumentException: missing scene';
         }
 
+        this.key = props.key || uuidv4();
         this.scene = props.scene;
         this.x = props.x || 0;
         this.y = props.y || 0;
@@ -49,7 +51,7 @@ export default class Btn
         this.container = this.scene.add.container(this.x, this.y, [
             this.btnObj,
             this.txtObj,
-        ]);
+        ]).setSize(this.btnObj.width,this.btnObj.height).setName('btn');
     }
 
     addBtn()
@@ -61,9 +63,10 @@ export default class Btn
             this.height,
             this.fill,
             this.fillAlpha
-        ).setOrigin(0);
-
-        this.btnObj.setStrokeStyle(this.border.width, this.border.color);
+        )
+            .setOrigin(0)
+            .setStrokeStyle(this.border.width, this.border.color)
+            .setName(`btn-${this.key}`);
     }
 
     addTxt()
