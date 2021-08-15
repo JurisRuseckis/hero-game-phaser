@@ -109,6 +109,7 @@ export default class BattleInputController{
                 selectMarker.x = hoverMarker.x;
                 selectMarker.y = hoverMarker.y;
                 selectMarker.setVisible(true);
+                this.selectedTile.update = true;
             } else {
                 this.selectedTile = null;
                 selectMarker.setVisible(false);

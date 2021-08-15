@@ -37,9 +37,6 @@ export default class TileInfo
         bgBox.setStrokeStyle(1, styles.colors.modernBorder);
         bgBox.setName('bgBox');
 
-        //1st tile info
-        //2nd combatant/corpse info
-
         // main container
         this.container = this.scene.add.container(this.x, this.y, [
             bgBox,
@@ -167,7 +164,7 @@ export default class TileInfo
             return;
         }
         const tileContainer = this.container.getByName('tilePropContainer')
-        const title = tileContainer.getByName('tileTitle').setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY}) `);
+        tileContainer.getByName('tileTitle').setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY}) `);
         this.setCombatantBtns(tile, tileContainer);
     }
 
