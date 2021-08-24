@@ -42,8 +42,12 @@ export default class TileInfo
             bgBox,
         ]);
 
-        this.createTileObjects();
-        this.createCombatantObjects(bgBox);
+        this.tileCombatants = [];
+        this.combatantAbilities = [];
+        this.combatantTurns = [];
+
+        this.createTileProps();
+        this.createCombatantProps(bgBox);
 
         // scroll factor fucks up pointerOver for childrem without scrollFactor 0
         this.container.setScrollFactor(0, 0, true);
@@ -59,7 +63,7 @@ export default class TileInfo
         this.container.setPosition(targetCoordinates.x, targetCoordinates.y);
     }
 
-    createCombatantObjects(bgBox){
+    createCombatantProps(bgBox){
         const title = this.scene.add.text(this.margin, this.margin, 'combatant title', {
             fontSize: styles.fontSize.large
         }).setOrigin(0).setName('cmbTitle');
@@ -72,13 +76,21 @@ export default class TileInfo
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbTurnMeter');
 
-        const abilitiesTitle = this.scene.add.text(this.margin, turnMeter.getBottomCenter().y, 'ability (cooldown)', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbAbilitiesTitle');
 
-        const turns = this.scene.add.text(this.margin, abilitiesTitle.getBottomCenter().y, 'turns where executor or target', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbTurns');
+        // will need to destroy and rebuild
+        this.combatantAbilities = [
+            this.scene.add.text(this.margin, turnMeter.getBottomCenter().y, 'ability (cooldown)', {
+                fontSize: styles.fontSize.default
+            }).setOrigin(0).setName('cmbAbilitiesTitle')
+        ];
+
+        // will need to destroy and rebuild
+        this.combatantTurns = [
+            this.scene.add.text(this.margin, this.combatantAbilities[0].getBottomCenter().y, 'turns where executor or target', {
+                fontSize: styles.fontSize.default
+            }).setOrigin(0).setName('cmbTurns')
+        ];
+
 
 
         const btnSize = styles.viewPort.width * 0.02;
@@ -101,84 +113,46 @@ export default class TileInfo
             title,
             hp,
             turnMeter,
-            abilitiesTitle,
-            turns,
+                ...this.combatantAbilities,
+                ...this.combatantTurns,
             closeBtn.container
         ]).setName('combatantPropContainer').setVisible(false));
     }
 
-    createTileObjects(){
+    createTileProps(){
         const title = this.scene.add.text(this.margin, this.margin, 'title (x,y)', {
             fontSize: styles.fontSize.large
         }).setOrigin(0).setName('tileTitle');
 
-        const combatant = new Btn({
-            key: 'tileCombatant',
-            scene: this.scene,
-            x: this.margin,
-            y: this.margin + title.getBottomCenter().y,
-            width: 300,
-            height: 36,
-            text: 'combatant label',
-            textStyle: {fontSize: styles.fontSize.default}
-        });
-
-        combatant.addDefaultEvents();
-        combatant.btnObj.on('pointerdown', () => {
-            this.container.getByName('combatantPropContainer').setVisible(true);
-            this.container.getByName('tilePropContainer').setVisible(false);
-        }, this);
-
-        const corpses = new Btn({
-            key: 'tileCorpse1',
-            scene: this.scene,
-            x: this.margin,
-            y: this.margin * 3 + combatant.container.height + title.height,
-            width: 300,
-            height: 36,
-            text: 'corpses1 label',
-            textStyle: {fontSize: styles.fontSize.default}
-        });
-
-        corpses.addDefaultEvents();
-        corpses.btnObj.on('pointerdown', () => {
-            this.container.getByName('combatantPropContainer').setVisible(true);
-            this.container.getByName('tilePropContainer').setVisible(false);
-        }, this);
-
-        this.tileCombatants = [
-            combatant,
-            corpses
-        ];
-
         this.container.add(this.scene.add.container(0, 0, [
             title,
-            combatant.container,
-            corpses.container
         ]).setName('tilePropContainer'));
     }
 
     setTile(tile){
         if(!tile){
-            this.clearcombatantBtns();
+            this.clearTileProps();
             return;
         }
         const tileContainer = this.container.getByName('tilePropContainer')
         tileContainer.getByName('tileTitle').setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY}) `);
-        this.setCombatantBtns(tile, tileContainer);
+        this.setTileProps(tile, tileContainer);
     }
 
-    clearcombatantBtns(){
+    clearTileProps(){
         this.tileCombatants.forEach((x) => {
             x.destroy();
         })
         this.tileCombatants = [];
+        this.container.getByName('combatantPropContainer').setVisible(false);
+        this.container.getByName('tilePropContainer').setVisible(true);
     }
 
-    setCombatantBtns(tile, tileContainer){
+    setTileProps(tile, tileContainer){
 
-        this.clearcombatantBtns();
+        this.clearTileProps();
         const title = tileContainer.getByName('tileTitle');
+        const bgBox = this.container.getByName('bgBox');
 
         let cmbList = [];
         if(tile.combatant){
@@ -192,19 +166,27 @@ export default class TileInfo
         }
 
         this.tileCombatants = cmbList.map((combatant, key) => {
+
+            let label = combatant.label;
+            if(combatant.hp <= 0){
+                label = `${combatant.label} (dead)`;
+            }
+
+
             const btn = new Btn({
                 key: 'tileCombatant',
                 scene: this.scene,
                 x: this.margin,
-                y: title.height + this.margin * 2 + (40 + this.margin) * key,
-                width: 300,
+                y: title.height + this.margin * 2 + (styles.fontSize.large + this.margin) * key,
+                width: bgBox.width - this.margin * 2,
                 height: 36,
-                text: combatant.label,
+                text: label,
                 textStyle: {fontSize: styles.fontSize.default}
             });
 
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', () => {
+                this.setCombatantProps(combatant);
                 this.container.getByName('combatantPropContainer').setVisible(true);
                 this.container.getByName('tilePropContainer').setVisible(false);
             }, this);
@@ -213,6 +195,51 @@ export default class TileInfo
 
             return btn;
         })
+    }
+
+    clearCombatantProps(){
+        this.combatantAbilities.forEach((x) => {
+            x.destroy();
+        });
+        this.combatantAbilities = [];
+        this.combatantTurns.forEach((x) => {
+            x.destroy();
+        });
+        this.combatantTurns = [];
+    }
+
+    /**
+     *
+     * @param combatant {Combatant}
+     */
+    setCombatantProps(combatant){
+        this.clearCombatantProps();
+        const tileContainer = this.container.getByName('combatantPropContainer');
+
+        let label = combatant.label;
+        if(combatant.hp <= 0){
+            label = `${combatant.label} (dead)`;
+        }
+
+        tileContainer.getByName('cmbTitle').setText(label);
+        tileContainer.getByName('cmbHp').setText(`HP: ${combatant.hp}/${combatant.maxHp}`);
+        const turnMeterLabel = tileContainer.getByName('cmbTurnMeter');
+        turnMeterLabel.setText(`TurnMeter: ${combatant.turnMeter}/1`);
+        let line = turnMeterLabel.getBottomCenter().y;
+
+        this.combatantAbilities = Object.entries(combatant.combatActions).map((combatAction, index)=>{
+            const txt =this.scene.add.text(
+                this.margin + (160 + this.margin)*index,
+                line + this.margin,
+                `${combatAction[0]}(${combatAction[1].cooldown})`,
+                {
+                    fontSize: styles.fontSize.default
+                }).setOrigin(0)
+                tileContainer.add(txt);
+            return txt;
+        });
+        // here comes turns
+        
     }
 
 }
