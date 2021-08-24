@@ -6,8 +6,8 @@ export const battleAI = {
         key: 'basic',
         battleAI: (battle, executor) => {
             const closestEnemy = BattleAI.getClosestEnemy(executor, battle.getCombatants())
-            let move = executor.combatAction.walk;
-            const att = executor.combatAction.attack;
+            let move = executor.combatActions.walk;
+            const att = executor.combatActions.attack;
             if(closestEnemy.distance > att.range){
                 // todo rewrite ai, to determine best target and move into range not into target itself
                 let moveTargets = move.getAvailableTargets(executor, battle.combatants, battle.arena);
@@ -61,14 +61,14 @@ export const battleAI = {
                 }
             }
 
-            return executor.combatAction.wait;
+            return executor.combatActions.wait;
         }
     }),
     defensive: new BattleAI({
         key: 'defensive',
         battleAI: (battle, executor) => {
             const closestEnemy = BattleAI.getClosestEnemy(executor, battle.getCombatants())
-            const att = executor.combatAction.attack;
+            const att = executor.combatActions.attack;
             if(closestEnemy.distance <= att.range){
                 let targetTile = battle.arena.tilemap.getTileAt(closestEnemy.combatant.coordinates.x, closestEnemy.combatant.coordinates.y)
                 if(att.pickTarget(executor, {
@@ -79,7 +79,7 @@ export const battleAI = {
                 }
             }
 
-            return executor.combatAction.wait;
+            return executor.combatActions.wait;
         }
     }),
 }

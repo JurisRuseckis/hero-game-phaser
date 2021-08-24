@@ -56,7 +56,7 @@ export class Combatant {
         /**
          * @type {Object}
          */
-        this.combatAction = props.character.combatActions;
+        this.combatActions = props.character.combatActions;
         /**
          * @type {BattleAI}
          */
@@ -93,7 +93,8 @@ export class Combatant {
          return {
              'id': this.id,
              'label': this.label,
-             'hp': `${this.hp}/${this.maxHp}`,
+             'hpLabel': `${this.hp}/${this.maxHp}`,
+             'hp': this.hp,
              'turnMeter': this.turnMeter,
              'currentSpd': this.currentSpd,
              'team': this.team,
