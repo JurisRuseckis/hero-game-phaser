@@ -1,3 +1,5 @@
+import {stringify} from "../helpers/stringify";
+
 export default class DebugWindow
 {
     /**
@@ -27,7 +29,7 @@ export default class DebugWindow
 
     displayJson(json) {
         json = json ? json : 'undefined';
-        this.text = 'Debug Text: ' + JSON.stringify(json, null, '\t');
+        this.text = 'Debug Text: ' + stringify(json, null, ' ', 4);
         this.update = true;
     }
 
