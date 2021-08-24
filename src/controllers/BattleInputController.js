@@ -60,7 +60,7 @@ export default class BattleInputController{
                     if(tile.properties['cmbId']){
                         const cmbObj = battle.getCombatants().find(c => c.id === tile.properties['cmbId']);
                         if(cmbObj){
-                            this.hoveredTile.combatant = cmbObj.print();
+                            this.hoveredTile.combatant = cmbObj;
                         } else {
                             this.hoveredTile.combatant = 'probably MIA!';
                         }
@@ -70,7 +70,7 @@ export default class BattleInputController{
                         this.hoveredTile.corpses = tile.properties['corpses'].map((combatantCorpse) => {
                             const cmbObj = battle.corpses.find(c => c.id === combatantCorpse);
                             if(cmbObj){
-                                return cmbObj.print();
+                                return cmbObj;
                             } else {
                                 return 'probably MIA! wtf?';
                             }
