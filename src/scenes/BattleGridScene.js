@@ -3,7 +3,7 @@ import {cfg} from "../cfg";
 import tileSetImage from "../assets/tileset.png";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
-import GridUnit, { statusOption } from "../ui-components/GridUnit";
+import GridUnit, { statusOption } from "../battle-grid-components/GridUnit";
 import { battleStatus } from "../models/Battle";
 
 const markerType = {
@@ -31,6 +31,9 @@ export class BattleGridScene extends Phaser.Scene
 
         this.tileSize = 48;
         this.unitSize = 32;
+
+        this.shownTurnCount = 25;
+        this.shownTurns = []
     }
 
     init(data){
@@ -39,6 +42,7 @@ export class BattleGridScene extends Phaser.Scene
             this.turnCount = 0;
             this.target = null;
             this.executorId = null;
+            this.shownTurns = [];
 
             Object.keys(this.data.getAll()).forEach(i => this.data.remove(i));
             this.registry.set('battleStatus', battleStatus.started);
@@ -104,7 +108,7 @@ export class BattleGridScene extends Phaser.Scene
             this.turnCount++;
             const turnResults = battle.nextTurn();
             // if battle in progress then update scene
-            this.updateBattleScene(battle, turnResults.executor, turnResults.action);
+            this.updateBattleScene(battle, turnResults);
             this.turnTimer -= this.turndelay;
         }
         this.registry.set('battleStatus', battle.status);
@@ -124,10 +128,9 @@ export class BattleGridScene extends Phaser.Scene
      /**
      * i need turn update not per time
      * @param {Battle} battle
-     * @param {Combatant} executor
-     * @param {CombatAction} action
+     * @param {BattleLogItem} battleLogItem
      */
-    updateBattleScene(battle, executor, action)
+    updateBattleScene(battle, battleLogItem)
     {
         const gridUnits = this.data.get('gridUnits');
         if(this.target && this.target.combatant){
@@ -137,8 +140,8 @@ export class BattleGridScene extends Phaser.Scene
             gridUnits.find(c => c.combatant.id === this.executorId).setStyle(statusOption.default);
         }
 
-        this.target = action.target ? action.target : null;
-        this.executorId = executor.id;
+        this.target = battleLogItem.action.target ? battleLogItem.action.target : null;
+        this.executorId = battleLogItem.executor.id;
 
 
         if(this.target && this.target.combatant){
@@ -159,15 +162,44 @@ export class BattleGridScene extends Phaser.Scene
         }
 
 
-        const gridUnit =gridUnits.find(c => c.combatant.id === this.executorId);
+        const gridUnit = gridUnits.find(c => c.combatant.id === this.executorId);
         gridUnit.setStyle(statusOption.executor);
-        if(action.key === 'walk'){
-            const originTile = battle.arena.tilemap.getTileAt(gridUnit.tileCoordinates.x,gridUnit.tileCoordinates.y);
-            this.target.tile.properties['cmbId'] = originTile.properties['cmbId'];
-            gridUnit.moveToCoords(executor.coordinates);
-            originTile.properties['cmbId'] = null;
+
+        if(this.shownTurns.length >= this.shownTurnCount){
+            this.shownTurns.pop().destroy();
+        }
+        let turn = null;
+        switch (battleLogItem.action.key) {
+            case 'walk':
+                turn = this.add.graphics();
+                turn.lineStyle(this.unitSize/4, 0x00ff00, 1);
+                console.log([
+                    gridUnit.container.x,gridUnit.container.y,battleLogItem.executor.coordinates.x,battleLogItem.executor.coordinates.y
+                ])
+                turn.lineBetween(gridUnit.container.x + this.tileSize/2,gridUnit.container.y + this.tileSize/2,battleLogItem.executor.coordinates.x * this.tileSize + this.tileSize/2,battleLogItem.executor.coordinates.y * this.tileSize + this.tileSize/2);
+                turn.setDepth(1);
+
+                const originTile = battle.arena.tilemap.getTileAt(gridUnit.tileCoordinates.x,gridUnit.tileCoordinates.y);
+                this.target.tile.properties['cmbId'] = originTile.properties['cmbId'];
+                gridUnit.moveToCoords(battleLogItem.executor.coordinates);
+                originTile.properties['cmbId'] = null;
+                break;
+            case 'attack':
+                turn = this.add.graphics();
+                turn.lineStyle(this.unitSize/4, 0xff0000, 1);
+                turn.lineBetween(gridUnit.container.x + this.tileSize/2,gridUnit.container.y + this.tileSize/2,this.target.combatant.coordinates.x * this.tileSize + this.tileSize/2,this.target.combatant.coordinates.y * this.tileSize + this.tileSize/2);
+                turn.setDepth(1);
+                break;
+            case 'wait':
+                turn = this.add.circle(battleLogItem.executor.x, battleLogItem.executor.y, this.unitSize/4, 0xaaaaaa);
+                break;
+            default:
+                console.log('none');
+                break;
         }
 
+        this.shownTurns.unshift(turn);
+        console.log(battleLogItem);
     }
  
      /**

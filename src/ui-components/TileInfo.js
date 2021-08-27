@@ -52,7 +52,6 @@ export default class TileInfo
         // scroll factor fucks up pointerOver for childrem without scrollFactor 0
         this.container.setScrollFactor(0, 0, true);
         this.container.setDepth(1);
-        console.log(this.container);
     }
 
     update() {
