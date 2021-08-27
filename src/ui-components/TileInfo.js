@@ -72,24 +72,13 @@ export default class TileInfo
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbHp');
 
-        const turnMeter = this.scene.add.text(this.margin, hp.getBottomCenter().y, 'turnMeter', {
+        const speed = this.scene.add.text(this.margin, hp.getBottomCenter().y, 'speed', {
+            fontSize: styles.fontSize.default
+        }).setOrigin(0).setName('cmbSpeed');
+
+        const turnMeter = this.scene.add.text(this.margin, speed.getBottomCenter().y, 'turnMeter', {
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbTurnMeter');
-
-
-        // will need to destroy and rebuild
-        this.combatantAbilities = [
-            this.scene.add.text(this.margin, turnMeter.getBottomCenter().y, 'ability (cooldown)', {
-                fontSize: styles.fontSize.default
-            }).setOrigin(0).setName('cmbAbilitiesTitle')
-        ];
-
-        // will need to destroy and rebuild
-        this.combatantTurns = [
-            this.scene.add.text(this.margin, this.combatantAbilities[0].getBottomCenter().y, 'turns where executor or target', {
-                fontSize: styles.fontSize.default
-            }).setOrigin(0).setName('cmbTurns')
-        ];
 
 
 
@@ -112,9 +101,8 @@ export default class TileInfo
         this.container.add(this.scene.add.container(0, 0, [
             title,
             hp,
+            speed,
             turnMeter,
-                ...this.combatantAbilities,
-                ...this.combatantTurns,
             closeBtn.container
         ]).setName('combatantPropContainer').setVisible(false));
     }
@@ -167,9 +155,9 @@ export default class TileInfo
 
         this.tileCombatants = cmbList.map((combatant, key) => {
 
-            let label = combatant.label;
+            let label = `${combatant.label} team ${combatant.team}`;
             if(combatant.hp <= 0){
-                label = `${combatant.label} (dead)`;
+                label = `${combatant.label} team ${combatant.team} (dead)`;
             }
 
 
@@ -216,13 +204,14 @@ export default class TileInfo
         this.clearCombatantProps();
         const tileContainer = this.container.getByName('combatantPropContainer');
 
-        let label = combatant.label;
+        let label = `${combatant.label} team ${combatant.team}`;
         if(combatant.hp <= 0){
-            label = `${combatant.label} (dead)`;
+            label = `${combatant.label} team ${combatant.team} (dead)`;
         }
 
         tileContainer.getByName('cmbTitle').setText(label);
         tileContainer.getByName('cmbHp').setText(`HP: ${combatant.hp}/${combatant.maxHp}`);
+        tileContainer.getByName('cmbSpeed').setText(`Speed: ${combatant.currentSpd}`);
         const turnMeterLabel = tileContainer.getByName('cmbTurnMeter');
         turnMeterLabel.setText(`TurnMeter: ${combatant.turnMeter}/1`);
         let line = turnMeterLabel.getBottomCenter().y;
