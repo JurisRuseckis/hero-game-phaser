@@ -172,7 +172,51 @@ export class CampScene extends Phaser.Scene
                             ],
                         }), new BattleTeam({
                             formation: [
-                                [defensiveDwarf],
+                                [characterRoster.elf.lord],
+                                // [characterRoster.dwarf.warrior],
+                            ],
+                        })]
+                    })
+                    this.startBattle(testBattle);
+                }
+            },
+            {
+                label: "custom shit",
+                onClick: ()=>{
+                    const defensiveDwarf = {
+                        ...characterRoster.dwarf.warrior
+                    };
+                    defensiveDwarf.battleAI = battleAI.defensive;
+                    const testBattle = BattleGenerator.generate({
+                        teamCount: 2,
+                        // teamSize: 2,
+                        arenaTiles: [
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                        ],
+                        teams: [new BattleTeam({
+                            formation: [
+                                [characterRoster.elf.lord],
+                                [characterRoster.elf.lord],
+                                [characterRoster.elf.lord],
+                            ],
+                        }), new BattleTeam({
+                            formation: [
+                                [characterRoster.dwarf.warrior],
+                                [characterRoster.dwarf.warrior],
+                                [characterRoster.dwarf.warrior],
                             ],
                         })]
                     })
