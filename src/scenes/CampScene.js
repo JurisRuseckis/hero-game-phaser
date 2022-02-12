@@ -143,6 +143,10 @@ export class CampScene extends Phaser.Scene
             {
                 label: "1 on 1 labyrinth",
                 onClick: ()=>{
+                    const defensiveDwarf = {
+                        ...characterRoster.dwarf.warrior
+                    };
+                    defensiveDwarf.battleAI = battleAI.defensive;
                     const testBattle = BattleGenerator.generate({
                         teamCount: 2,
                         // teamSize: 2,
@@ -168,7 +172,7 @@ export class CampScene extends Phaser.Scene
                             ],
                         }), new BattleTeam({
                             formation: [
-                                [characterRoster.dwarf.commander],
+                                [defensiveDwarf],
                             ],
                         })]
                     })
