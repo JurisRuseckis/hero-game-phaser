@@ -43,6 +43,7 @@ export const styles = {
     panelLayout,
 
     colors: {
+        black: 0xffffff,
         red: 0xff0000,
         blue: 0x0000ff,
         modernBg: 0x141414,

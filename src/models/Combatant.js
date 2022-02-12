@@ -70,6 +70,16 @@ export class Combatant {
          * @type {Phaser.Math.Vector2}
          */
         this.direction = props.direction || Phaser.Math.Vector2.ZERO;
+        /**
+         * current A* path to enemy
+         * @type {*[]}
+         */
+        this.currentPath = [];
+        /**
+         * current A* available tiles to move
+         * @type {*[]}
+         */
+        this.moveTargets = [];
     }
 
     calculateHP() {

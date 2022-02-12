@@ -42,6 +42,7 @@ export default class BattleAI
      * @return {{combatant: Combatant, distance: number}}
      */
     static getClosestEnemy(executor, combatants){
+        //todo: rewrite to calculate all paths and choose closes, not just raw dist
         return combatants.filter(c => c.team !== executor.team).map((combatant)=>{
             const executorCoords = new Phaser.Math.Vector2(executor.coordinates.x, executor.coordinates.y);
             const combatantCoords = new Phaser.Math.Vector2(combatant.coordinates.x, combatant.coordinates.y);
@@ -118,7 +119,7 @@ export default class BattleAI
                         : a.properties[id].hCost < b.properties[id].hCost
                             ? -1
                             : 0
-            )
+            );
             // pick node(current) in open list with lowest fCost
             // which is first in list now sp we can remove and receive with shift
             const currentNode = openSet.shift();
@@ -158,9 +159,9 @@ export default class BattleAI
                     if(!neighbour.properties[id]){
                         neighbour.properties[id] = [];
                     }
-                    //set h
+                    //set h - distance from tile to target
                     neighbour.properties[id].hCost = BattleAI.getDistanceCost(neighbour, target);
-                    //set g
+                    //set g - distance from executor to tile
                     neighbour.properties[id].gCost = newMoveCost;
                     // set parent to current also
                     neighbour.properties[id].parentNode = currentNode;
@@ -225,6 +226,7 @@ export default class BattleAI
             current = current.properties[id].parentNode;
         }
 
+        path.forEach(tile => delete tile.properties[id].parentNode);
         return path.reverse();
     }
 }
