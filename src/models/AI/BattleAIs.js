@@ -9,7 +9,7 @@ export const battleAI = {
             let move = executor.combatActions.walk;
             const att = executor.combatActions.attack;
             if(closestEnemy.distance > att.range){
-                console.group(executor.label)
+                // console.group(executor.label)
                 // todo rewrite ai, to determine best target and move into range not into target itself
                 let moveTargets = move.getAvailableTargets(executor, battle.combatants, battle.arena);
                 executor.moveTargets = moveTargets;
@@ -20,7 +20,7 @@ export const battleAI = {
                     executor,
                     battle.arena.tilemap.getTileAt(executor.coordinates.x, executor.coordinates.y),
                     battle.arena.tilemap.getTileAt(closestEnemy.combatant.coordinates.x, closestEnemy.combatant.coordinates.y));
-                console.log(`shortest path: ${shortestPathToEnemy.map(tile => `[${tile.x},${tile.y}]`).join(',')}`);
+                // console.log(`shortest path: ${shortestPathToEnemy.map(tile => `[${tile.x},${tile.y}]`).join(',')}`);
 
                 const availableTilesToTarget = shortestPathToEnemy.filter(x => moveTargets.filter(y => y.tile === x).length === 1 && !x.properties['cmbid']).filter(targetTile => {
                     // as we currently can only attack 1 sq apart we can surely skip tiles that are deadends
@@ -51,7 +51,7 @@ export const battleAI = {
                                     ? -1
                                     : 0
                     );
-                console.log(`sorted tiles: ${sortedTiles.map(tile => `[${tile.x},${tile.y}]`).join(',')}`);
+                // console.log(`sorted tiles: ${sortedTiles.map(tile => `[${tile.x},${tile.y}]`).join(',')}`);
                 // const closestTileToEnemy = BattleAI.getClosestAvailableTileToEnemy(moveTargets, closestEnemy.combatant.coordinates, att.range);
                 // console.log(closestTileToEnemy);
                 if(sortedTiles.length>0){
@@ -67,13 +67,14 @@ export const battleAI = {
                     };
 
                     if(closestTileToEnemy && move.pickTarget(executor,closestTileToEnemy.target,battle.arena)) {
-                        console.log(`chosen path : ${shortestPathToEnemy.slice(0, shortestPathToEnemy.indexOf(sortedTiles[0])).map(tile => `[${tile.x},${tile.y}]`).join(',')}`)
+                        // console.log(`chosen target : [${closestTileToEnemy.target.tile.x},${closestTileToEnemy.target.tile.y}]`)
+                        // console.log(`${executor.label} chosen path : ${shortestPathToEnemy.slice(0, shortestPathToEnemy.indexOf(closestTileToEnemy.target.tile)+1).map(tile => `[${tile.x},${tile.y}]`).join(',')}`)
                         executor.currentPath = shortestPathToEnemy;
-                        console.groupEnd();
+                        // console.groupEnd();
                         return move;
                     }
                 }
-                console.groupEnd();
+                // console.groupEnd();
 
             } else {
                 let targetTile = battle.arena.tilemap.getTileAt(closestEnemy.combatant.coordinates.x, closestEnemy.combatant.coordinates.y)

@@ -33,13 +33,28 @@ export const defaultActions = {
             return `${executor.label} from team ${executor.team} walks from tile at [${init.x},${init.y}] to tile at [${target.tile.x},${target.tile.y}]`;
         },
         targetRules: (executor, target, arena) => {
+            // todo: make it possible to move more than 2 tiles
             // const shortestPathToEnemy = BattleAI.calculateShortestPath(
             //     arena,
             //     executor,
             //     arena.tilemap.getTileAt(executor.coordinates.x, executor.coordinates.y),
             //     arena.tilemap.getTileAt(target.tile.x, target.tile.y));
-            // const dX = Math.abs(executor.coordinates.x - target.tile.x);
-            // const dY = Math.abs(executor.coordinates.y - target.tile.y);
+
+            // calculate 
+            const dX = executor.coordinates.x - target.tile.x;
+            const dY = executor.coordinates.y - target.tile.y;
+            // curently max == 2 so no diagonals and only 1 tile to check 
+            let middleTile = false;
+            if(Math.abs(dX) > 1){
+                middleTile = arena.tilemap.getTileAt(target.tile.x+dX/2,target.tile.y);
+            } else if (Math.abs(dY) > 1){
+                middleTile = arena.tilemap.getTileAt(target.tile.x,target.tile.y+dY/2);
+            }
+
+            if(middleTile && middleTile.index == tileType.wall){
+                return false;
+            }
+
             return !target.tile.properties['cmbId']
                 && target.tile.index !== tileType.wall
                 && !(target.tile.x === executor.coordinates.x
