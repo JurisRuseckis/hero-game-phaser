@@ -119,7 +119,7 @@ export default class BattleAI
                         : a.properties[id].hCost < b.properties[id].hCost
                             ? -1
                             : 0
-            )
+            );
             // pick node(current) in open list with lowest fCost
             // which is first in list now sp we can remove and receive with shift
             const currentNode = openSet.shift();
@@ -220,7 +220,6 @@ export default class BattleAI
     static retrace(id, start, target){
         let path = []
         let current = target;
-        console.log(start);
 
         while (current !== start){
             path.push(current);
@@ -228,44 +227,6 @@ export default class BattleAI
         }
 
         path.forEach(tile => delete tile.properties[id].parentNode);
-        return BattleAI.prunePath(path.reverse(), start);
-    }
-
-    static prunePath(path, start){
-        let steps = []
-        // we can start at second elem as first will always be near start
-        for(let i = 1; i < path.length; i++){
-            //exception for first elem as i-2 will be out of scope
-            const from = i === 1 ? start : path[i-2];
-            const champion = path[i-1];
-            const challenger = path[i];
-
-            // first check if [i] is next to [i-2]
-            // [-1,-1],[-1,0],[-1,1],
-            // [0,-1],[0,0],[0,1],
-            // [1,-1],[1,0],[1,1]
-            const dstFromTargetX = Math.abs(from.x - challenger.x);
-            const dstFromTargetY = Math.abs(from.y - challenger.y);
-            if(dstFromTargetX > 1 || dstFromTargetX < 0 || dstFromTargetY > 1 || dstFromTargetY < 1){
-                //if not neighbour then skip
-                continue;
-            }
-
-            // if is next then check if it is faster
-            // 14,10,14,
-            // 10,00,10,
-            // 14,10,14
-            const costChampion = BattleAI.getDistanceCost(from, champion) + BattleAI.getDistanceCost(champion, challenger);
-            const costChallenger = BattleAI.getDistanceCost(from, challenger);
-            if(costChallenger <= costChampion){
-                // remove excess step from array
-                path.splice(i-1,1);
-                // adjust i to new array
-                i--;
-            }
-            //todo: push steps
-        }
-
-        return path;
+        return path.reverse();
     }
 }
