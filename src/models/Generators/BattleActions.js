@@ -1,6 +1,6 @@
 import CombatAction, {actionTags} from "../CombatAction";
 import Phaser from "phaser";
-import {tileType} from "../AI/BattleAI";
+import BattleAI, {tileType} from "../AI/BattleAI";
 
 /**
  * Default action that each characters will have
@@ -24,7 +24,7 @@ export const defaultActions = {
     walk:  new CombatAction({
         key: 'walk',
         tags: [actionTags.any],
-        range: 5,
+        range: 2,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
@@ -33,6 +33,13 @@ export const defaultActions = {
             return `${executor.label} from team ${executor.team} walks from tile at [${init.x},${init.y}] to tile at [${target.tile.x},${target.tile.y}]`;
         },
         targetRules: (executor, target, arena) => {
+            // const shortestPathToEnemy = BattleAI.calculateShortestPath(
+            //     arena,
+            //     executor,
+            //     arena.tilemap.getTileAt(executor.coordinates.x, executor.coordinates.y),
+            //     arena.tilemap.getTileAt(target.tile.x, target.tile.y));
+            // const dX = Math.abs(executor.coordinates.x - target.tile.x);
+            // const dY = Math.abs(executor.coordinates.y - target.tile.y);
             return !target.tile.properties['cmbId']
                 && target.tile.index !== tileType.wall
                 && !(target.tile.x === executor.coordinates.x
