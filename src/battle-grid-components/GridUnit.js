@@ -205,7 +205,7 @@ export default class GridUnit
 
         this.scene.tweens.add({
             targets: this.fow,
-            duration: this.scene.turndelay,
+            duration: this.scene.turndelay - 1,
             angle: this.getAngle(),
             delay: 0,
             repeat: 0,
@@ -213,7 +213,7 @@ export default class GridUnit
 
         this.scene.tweens.add({
             targets: this.container,
-            duration: this.scene.turndelay,
+            duration: this.scene.turndelay - 1,
             x: this.tileCoordinates.x * this.tileSize,
             y: this.tileCoordinates.y * this.tileSize,
             delay: 0,
