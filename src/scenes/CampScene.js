@@ -192,15 +192,15 @@ export class CampScene extends Phaser.Scene
                         // teamSize: 2,
                         arenaTiles: [
                             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0],
                             [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0],
                             [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                            [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+                            [0,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0],
                             [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
                             [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
                             [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
@@ -208,15 +208,17 @@ export class CampScene extends Phaser.Scene
                         ],
                         teams: [new BattleTeam({
                             formation: [
-                                [characterRoster.elf.lord],
-                                [characterRoster.elf.lord],
-                                [characterRoster.elf.lord],
+                                [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
+                                [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
+                                [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
+                                [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
                             ],
                         }), new BattleTeam({
                             formation: [
-                                [characterRoster.dwarf.warrior],
-                                [characterRoster.dwarf.warrior],
-                                [characterRoster.dwarf.warrior],
+                                [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
+                                [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
+                                [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
+                                [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
                             ],
                         })]
                     })
