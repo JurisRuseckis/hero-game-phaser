@@ -20,8 +20,10 @@ import BattleLog, {battleLogType} from "./BattleLog";
  */
 
 export const battleStatus = {
+    undefined: -1,
     started: 0,
     finished: 1,
+    paused: 2
 }
 
 export const battleType = {
@@ -199,5 +201,13 @@ export default class Battle{
         }
 
         return this.combatants;
+    }
+
+    togglePause(){
+        if ( this.status !== battleStatus.finished){
+            this.status = this.status === battleStatus.started 
+            ? battleStatus.paused 
+            : battleStatus.started 
+        }
     }
 }
