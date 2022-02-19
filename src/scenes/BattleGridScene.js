@@ -26,7 +26,7 @@ export class BattleGridScene extends Phaser.Scene
             key: cfg.scenes.battleGrid
         });
 
-        this.debugMode = true;
+        this.debugMode = false;
 
         this.turndelay = 200;
         this.turnTimer = 0;
@@ -49,7 +49,6 @@ export class BattleGridScene extends Phaser.Scene
             this.shownTurns = [];
 
             Object.keys(this.data.getAll()).forEach(i => this.data.remove(i));
-            this.registry.set('battleStatus', battleStatus.started);
 
             this.scene.restart({'battle' : data.battle});
         }
@@ -102,10 +101,14 @@ export class BattleGridScene extends Phaser.Scene
         const inputController = this.data.get('inputController');
         const battle = this.data.get('battle');
 
-        this.turnTimer += delta;
+        if(battle.status === battleStatus.started){
+            // if battle is ongoing then count time 
+            this.turnTimer += delta;
+        }
+        
         // as sometimes we can lag a bit we do a loop 
         while (this.turnTimer > this.turndelay
-            && battle.status !== battleStatus.finished
+            && battle.status === battleStatus.started
             /*&& this.turnCount < 1*/) {
             this.turnCount++;
             const turnResults = battle.nextTurn();
@@ -113,7 +116,6 @@ export class BattleGridScene extends Phaser.Scene
             this.updateBattleScene(battle, turnResults);
             this.turnTimer -= this.turndelay;
         }
-        this.registry.set('battleStatus', battle.status);
         if(battle.status === battleStatus.finished){
             this.turnTimer = 0;
             if(this.turnTimer > this.turndelay * 2){

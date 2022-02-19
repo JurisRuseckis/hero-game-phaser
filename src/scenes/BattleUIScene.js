@@ -83,7 +83,9 @@ export class BattleUIScene extends Phaser.Scene
         const resultWindowTriggered = this.data.get('resultWindowTriggered');
 
         const selectedTile = this.registry.get('selectedTile');
-        const bStatus = this.registry.get('battleStatus');
+        const battle = this.data.get('battle');
+
+        const bStatus = battle ? battle.status : battleStatus.undefined;
 
         resultWindow.update();
         quickMenu.update();
