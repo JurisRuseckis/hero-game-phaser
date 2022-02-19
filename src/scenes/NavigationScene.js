@@ -43,18 +43,18 @@ export class NavigationScene extends Phaser.Scene
     getMenuItems ()
     {
         return [
-            {
-                label: "ch",
-                onClick: ()=>{
-                    this.changeScene(cfg.scenes.character, {});
-                }
-            },
-            {
-                label: "inv",
-                onClick: ()=>{
-                    this.changeScene(cfg.scenes.inventory, {});
-                }
-            },
+            // {
+            //     label: "ch",
+            //     onClick: ()=>{
+            //         this.changeScene(cfg.scenes.character, {});
+            //     }
+            // },
+            // {
+            //     label: "inv",
+            //     onClick: ()=>{
+            //         this.changeScene(cfg.scenes.inventory, {});
+            //     }
+            // },
             {
                 label: "camp",
                 onClick: ()=>{
