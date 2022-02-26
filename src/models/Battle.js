@@ -51,6 +51,7 @@ export default class Battle{
         this.turnCount = 0;
         this.arena = props.arena;
         this.battleType = props.battleType;
+        this.debugMode = props.debugMode;
     }
 
     getFastestTurnTime()
@@ -117,10 +118,12 @@ export default class Battle{
             // move to scene 
             // this.scene.showResults({});
             this.battleLog.addText(`Battle ended. Team ${this.combatants[0].team} has won`)
-            console.log('survivors');
-            console.table(this.combatants);
-            console.log('corpses');
-            console.table(this.corpses);
+            if(this.debugMode){
+                console.log('survivors');
+                console.table(this.combatants);
+                console.log('corpses');
+                console.table(this.corpses);
+            }
             // move to scene
             // this.scene.updateActionBtns([]);
             return;

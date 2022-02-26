@@ -113,6 +113,8 @@ export default class BattleGenerator
             combatants: combatants,
             arena: arena,
             battleType: bType,
+            // todo: implement debug somewhere in root
+            debugMode: false
         });
     }
 
