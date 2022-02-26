@@ -24,6 +24,7 @@ export default class BattleLogWindow
     constructor(props) {
         this.scene = props.scene;
         this.battleLog = props.battleLog;
+        this.logCount = 0;
         this.alignment = props.alignment;
 
         // this.width = this.scene.scale.width / 3;
@@ -65,17 +66,21 @@ export default class BattleLogWindow
         });
 
         const textHeight = styles.fontSize.default;
+        const textWidth = this.width - (this.filterWidth + this.margin * 3);
 
-        this.maxTexts = (this.height - this.margin * 2)/textHeight;
+        this.allowedTextHeight = this.height - this.margin * 2;
+        this.maxTexts = this.shownTexts = this.allowedTextHeight/textHeight;
         const textContainer = this.scene.add.container(this.margin * 2 + this.filterWidth, this.margin);
         textContainer.setName('textContainer');
         for(let i = 0 ; i < this.maxTexts; i++){
-            const txt = this.scene.add.text(0, i * textHeight,' ', {fontSize: textHeight - 4});
+            const ogPos = {x: 0, y: i * textHeight};
+            const txt = this.scene.add.text(ogPos.x, ogPos.y,' ', {fontSize: textHeight - 4, wordWrap: { width: textWidth }});
             textContainer.add(txt);
         }
 
         this.fixedIndex = false;
         this.startIndex = 0;
+        this.lastPageOffset = 1;
 
         // main container
         this.container = this.scene.add.container(this.x, this.y, [
@@ -91,6 +96,8 @@ export default class BattleLogWindow
     }
 
     setTxtItems(txtItems){
+        let curTxtHeight = 0;
+        let shownTexts = 0;
         // all items in list should be texts :)
         // only first txtItems that fit in in this contaier will be shown
         /**
@@ -99,26 +106,39 @@ export default class BattleLogWindow
          */
         const textContainer = this.container.getByName('textContainer')
         // if(textContainer){
-            textContainer.list.map((txt, i) => {
+            textContainer.list.forEach((txt, i, arr) => {
                 txt.text = txtItems[i] || '';
+                curTxtHeight += txt.height;
+
+                if(i > 0){
+                    txt.setY(arr[i-1].y + txt.height);
+                    if(curTxtHeight < this.allowedTextHeight) shownTexts++;
+                }
             })
         // }
+        this.shownTexts = shownTexts;
     }
 
     update(){
         let start;
         let end;
 
-        if(this.fixedIndex){
+        const newLogCount = this.battleLog.logs.length;
+        if(this.fixedIndex || this.logCount >= newLogCount){
             start = this.startIndex;
             end = this.startIndex + this.maxTexts;
         } else {
-            if(this.battleLog.logs.length <= this.maxTexts){
-                this.startIndex = start = 0;
-                end = this.maxTexts;
-            } else {
-                end = this.battleLog.logs.length;
-                this.startIndex = start = end - this.maxTexts
+            if(this.logCount < newLogCount){
+                this.logCount = newLogCount;
+                const shownTexts = Math.min(this.maxTexts, this.shownTexts);
+                console.log(this.maxTexts,this.shownTexts,shownTexts, this.battleLog.logs.length);
+                if(this.battleLog.logs.length <= shownTexts){
+                    this.startIndex = start = 0;
+                    end = shownTexts;
+                } else {
+                    end = this.battleLog.logs.length;
+                    this.startIndex = start = end - this.lastPageOffset;
+                }
             }
         }
 
@@ -141,14 +161,16 @@ export default class BattleLogWindow
 
     scroll(distance){
         this.fixedIndex = true;
-        const lastScrollableIndex = this.battleLog.logs.length - this.maxTexts
+        const lastScrollableIndex = this.battleLog.logs.length - this.lastPageOffset;//- this.maxTexts;
+
         let startIndex = this.startIndex += distance;
         if(startIndex < 0 ){
             startIndex = 0;
-        } else if(startIndex > lastScrollableIndex){
+        } else if(startIndex >= lastScrollableIndex){
             startIndex = lastScrollableIndex
             this.fixedIndex = false;
         }
         this.startIndex = startIndex;
+        console.log(this.startIndex);
     }
 }
