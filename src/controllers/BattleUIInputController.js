@@ -27,7 +27,7 @@ export default class BattleInputController{
             // there must be a way to handle this in phaser
             if (this.pointerDown && this.enableScroll) {
                 const dragDistance = this.getDragDistance(pointer);
-                battleLogWindow.scroll(Math.floor(dragDistance.y/2));
+                battleLogWindow.scroll(Math.floor(Math.round(dragDistance.y/20)));
                 this.pointerDownPosition.x = pointer.x;
                 this.pointerDownPosition.y = pointer.y;
 
@@ -51,7 +51,7 @@ export default class BattleInputController{
 
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             if(this.enableScroll){
-                battleLogWindow.scroll(dy/10);
+                battleLogWindow.scroll(Math.round(dy/100));
             }
         }, this);
     }
