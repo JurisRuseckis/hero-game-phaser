@@ -81,13 +81,6 @@ export default class QuickMenu {
     {
         return [
             {
-                label: "◀",
-                onClick: ()=> {
-                    this.scene.scene.stop(cfg.scenes.battleGrid);
-                    this.scene.scene.start(cfg.scenes.navigation);
-                }
-            },
-            {
                 label: "⏯",
                 onClick: ()=> {
                     const battle = this.scene.data.get('battle'); 
@@ -95,6 +88,13 @@ export default class QuickMenu {
                         console.log("toggling pause")
                         battle.togglePause();
                     }
+                }
+            },
+            {
+                label: "X",
+                onClick: ()=> {
+                    this.scene.scene.stop(cfg.scenes.battleGrid);
+                    this.scene.scene.start(cfg.scenes.navigation);
                 }
             }
         ]
