@@ -111,7 +111,7 @@ export default class BattleLogWindow
                 curTxtHeight += txt.height;
 
                 if(i > 0){
-                    txt.setY(arr[i-1].y + txt.height);
+                    txt.setY(arr[i-1].y + arr[i-1].height);
                     if(curTxtHeight < this.allowedTextHeight) shownTexts++;
                 }
             })
@@ -123,21 +123,22 @@ export default class BattleLogWindow
         let start;
         let end;
 
-        const newLogCount = this.battleLog.logs.length;
-        if(this.fixedIndex || this.logCount >= newLogCount){
+        const newLogCount = this.battleLog.logs.length - this.logCount;
+        const shownTexts = Math.min(this.maxTexts, this.shownTexts);
+        if(this.fixedIndex || newLogCount <= 0){
             start = this.startIndex;
-            end = this.startIndex + this.maxTexts;
+            end = this.startIndex + shownTexts;
         } else {
-            if(this.logCount < newLogCount){
-                this.logCount = newLogCount;
-                const shownTexts = Math.min(this.maxTexts, this.shownTexts);
+            if(newLogCount > 0){
+                this.logCount = this.battleLog.logs.length;
                 console.log(this.maxTexts,this.shownTexts,shownTexts, this.battleLog.logs.length);
                 if(this.battleLog.logs.length <= shownTexts){
                     this.startIndex = start = 0;
                     end = shownTexts;
                 } else {
                     end = this.battleLog.logs.length;
-                    this.startIndex = start = end - this.lastPageOffset;
+                    const calculatedStart = end - shownTexts;
+                    this.startIndex = start = calculatedStart;
                 }
             }
         }
@@ -161,7 +162,8 @@ export default class BattleLogWindow
 
     scroll(distance){
         this.fixedIndex = true;
-        const lastScrollableIndex = this.battleLog.logs.length - this.lastPageOffset;//- this.maxTexts;
+        const shownTexts = Math.min(this.maxTexts, this.shownTexts);
+        const lastScrollableIndex = this.battleLog.logs.length - shownTexts;//- this.maxTexts;
 
         let startIndex = this.startIndex += distance;
         if(startIndex < 0 ){
