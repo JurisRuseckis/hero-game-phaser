@@ -80,7 +80,7 @@ export default class BattleLogWindow
 
         this.fixedIndex = false;
         this.startIndex = 0;
-        this.lastPageOffset = 1;
+        this.prevStartIndex = 0;
 
         // main container
         this.container = this.scene.add.container(this.x, this.y, [
@@ -131,7 +131,7 @@ export default class BattleLogWindow
         } else {
             if(newLogCount > 0){
                 this.logCount = this.battleLog.logs.length;
-                console.log(this.maxTexts,this.shownTexts,shownTexts, this.battleLog.logs.length);
+                // console.log(this.maxTexts,this.shownTexts,shownTexts, this.battleLog.logs.length);
                 if(this.battleLog.logs.length <= shownTexts){
                     this.startIndex = start = 0;
                     end = shownTexts;
@@ -142,10 +142,14 @@ export default class BattleLogWindow
                 }
             }
         }
-
-        this.setTxtItems(this.battleLog.logs.slice(start, end).map((battleLogItem) => {
-            return `[${battleLogItem.timestamp.format('HH:mm:ss')}] ${battleLogItem.text}`;
-        }));
+        
+        if(this.prevStartIndex !== this.startIndex) {
+            this.setTxtItems(this.battleLog.logs.slice(start, end).map((battleLogItem) => {
+                return `[${battleLogItem.timestamp.format('HH:mm:ss')}] ${battleLogItem.text}`;
+            }));
+            this.prevStartIndex = this.startIndex;
+        }
+        
 
         // transform viewport coordinates to game coordinates.
         const targetCoordinates  = new Phaser.Math.Vector2(this.scene.scale.transformX(this.x), this.scene.scale.transformY(this.y));
@@ -173,6 +177,6 @@ export default class BattleLogWindow
             this.fixedIndex = false;
         }
         this.startIndex = startIndex;
-        console.log(this.startIndex);
+        // console.log(this.startIndex);
     }
 }
