@@ -18,6 +18,12 @@ const markerType = {
     },
 }
 
+const playSpeed = {
+    fast : 10,
+    normal : 100,
+    slow : 1000,
+}
+
 export class BattleGridScene extends Phaser.Scene
 {
     constructor ()
@@ -28,7 +34,7 @@ export class BattleGridScene extends Phaser.Scene
 
         this.debugMode = false;
 
-        this.turndelay = 10;
+        this.turndelay = playSpeed.normal;
         this.turnTimer = 0;
         this.turnCount = 0;
 
@@ -42,6 +48,7 @@ export class BattleGridScene extends Phaser.Scene
 
     init(data){
         if(this.turnCount > 0 ){
+            this.turndelay = playSpeed.normal;
             this.turnTimer = 0;
             this.turnCount = 0;
             this.target = null;
@@ -316,6 +323,11 @@ export class BattleGridScene extends Phaser.Scene
                 text : text,
             });
         }
+    }
+
+    setSpeed(speed) {
+        this.turndelay = speed;
+        this.turnTimer = 0;
     }
     
 }
