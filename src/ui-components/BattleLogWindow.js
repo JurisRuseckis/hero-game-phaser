@@ -1,4 +1,5 @@
 import {styles} from "../styles";
+import {teamTextColors} from "../battle-grid-components/GridUnit";
 
 export const uiAlignment = {
     topLeft: 1,
@@ -70,11 +71,12 @@ export default class BattleLogWindow
 
         this.allowedTextHeight = this.height - this.margin * 2;
         this.maxTexts = this.shownTexts = this.allowedTextHeight/textHeight;
+        this.textColor = styles.textColors.white;
         const textContainer = this.scene.add.container(this.margin * 2 + this.filterWidth, this.margin);
         textContainer.setName('textContainer');
         for(let i = 0 ; i < this.maxTexts; i++){
             const ogPos = {x: 0, y: i * textHeight};
-            const txt = this.scene.add.text(ogPos.x, ogPos.y,' ', {fontSize: textHeight - 4, wordWrap: { width: textWidth }});
+            const txt = this.scene.add.text(ogPos.x, ogPos.y,' ', {fontSize: textHeight, wordWrap: { width: textWidth }, color: this.textColor});
             textContainer.add(txt);
         }
 
@@ -107,7 +109,14 @@ export default class BattleLogWindow
         const textContainer = this.container.getByName('textContainer')
         // if(textContainer){
             textContainer.list.forEach((txt, i, arr) => {
-                txt.text = txtItems[i] || '';
+                if(txtItems[i]){
+                    txt.text = txtItems[i].text || '';
+                    txt.setColor(txtItems[i].color);
+                } else {
+                    txt.text = '';
+                    txt.setColor(this.textColor);
+                }
+
                 curTxtHeight += txt.height;
 
                 if(i > 0){
@@ -143,9 +152,12 @@ export default class BattleLogWindow
             }
         }
         
-        if(this.prevStartIndex !== this.startIndex) {
+        if(this.prevStartIndex !== this.startIndex || newLogCount > 0 && this.logCount < shownTexts ) {
             this.setTxtItems(this.battleLog.logs.slice(start, end).map((battleLogItem) => {
-                return `[${battleLogItem.timestamp.format('HH:mm:ss')}] ${battleLogItem.text}`;
+                return {
+                    text : `[${battleLogItem.timestamp.format('HH:mm:ss')}] ${battleLogItem.text}`,
+                    color : battleLogItem.executor ? teamTextColors[battleLogItem.executor.team] : this.textColor
+                };
             }));
             this.prevStartIndex = this.startIndex;
         }

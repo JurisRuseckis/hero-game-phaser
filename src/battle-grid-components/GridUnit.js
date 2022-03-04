@@ -14,6 +14,13 @@ export const teamColors = {
     4: styles.colors.team4,
 }
 
+export const teamTextColors = {
+    1: styles.textColors.team1,
+    2: styles.textColors.team2,
+    3: styles.textColors.team3,
+    4: styles.textColors.team4,
+}
+
 export default class GridUnit
 {
     /**

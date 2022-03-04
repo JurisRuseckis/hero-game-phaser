@@ -43,7 +43,8 @@ export const styles = {
     panelLayout,
 
     colors: {
-        black: 0xffffff,
+        black: 0x000000,
+        white: 0xffffff,
         red: 0xff0000,
         blue: 0x0000ff,
         modernBg: 0x141414,
@@ -56,7 +57,13 @@ export const styles = {
     },
 
     textColors: {
-        red: "#f00"
+        red: "#f00",
+        black: "#000",
+        white: "#fff",
+        team1: "#91a455",
+        team2: "#527db2",
+        team3: "#eaa51a",
+        team4: "#d86244"
     },
 
     fontSize,

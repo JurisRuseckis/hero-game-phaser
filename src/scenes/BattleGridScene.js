@@ -28,7 +28,7 @@ export class BattleGridScene extends Phaser.Scene
 
         this.debugMode = false;
 
-        this.turndelay = 200;
+        this.turndelay = 10;
         this.turnTimer = 0;
         this.turnCount = 0;
 
@@ -308,7 +308,7 @@ export class BattleGridScene extends Phaser.Scene
         }
         if(this.debugMode){
             // const arrowTriangle = this.add.triangle()
-            const text = this.add.text(gridUnit.container.x + this.tileSize/2,gridUnit.container.y + this.tileSize/2,this.turnCount).setBackgroundColor(styles.colors.black);
+            const text = this.add.text(gridUnit.container.x + this.tileSize/2,gridUnit.container.y + this.tileSize/2,this.turnCount).setBackgroundColor(styles.textColors.white);
             text.setDepth(1);
 
             this.shownTurns.unshift({
