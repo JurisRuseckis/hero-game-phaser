@@ -91,6 +91,36 @@ export default class QuickMenu {
                 }
             },
             {
+                label: "-▶️",
+                onClick: ()=> {
+                    const battle = this.scene.data.get('battle'); 
+                    if(battle){
+                        console.log("toggling pause")
+                        battle.togglePause();
+                    }
+                }
+            },
+            {
+                label: "▶️",
+                onClick: ()=> {
+                    const battle = this.scene.data.get('battle'); 
+                    if(battle){
+                        console.log("toggling pause")
+                        battle.togglePause();
+                    }
+                }
+            },
+            {
+                label: "⏩",
+                onClick: ()=> {
+                    const battle = this.scene.data.get('battle'); 
+                    if(battle){
+                        console.log("toggling pause")
+                        battle.togglePause();
+                    }
+                }
+            },
+            {
                 label: "X",
                 onClick: ()=> {
                     this.scene.scene.stop(cfg.scenes.battleGrid);
