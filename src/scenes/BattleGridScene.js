@@ -183,20 +183,6 @@ export class BattleGridScene extends Phaser.Scene {
 
     }
 
-    /**
-     * @param props
-     */
-    showResults(props) {
-        console.log('result window');
-    }
-
-    /**
-     * @param {CombatAction[]} actions
-     */
-    updateActionBtns(actions) {
-
-    }
-
     drawCombatants(combatants) {
         const tilemap = this.data.get('tilemap');
 
