@@ -18,7 +18,7 @@ const markerType = {
     },
 }
 
-const playSpeed = {
+export const playSpeed = {
     fast: 10,
     normal: 100,
     slow: 1000,
@@ -57,7 +57,7 @@ export class BattleGridScene extends Phaser.Scene {
 
             this.scene.restart({ 'battle': data.battle });
         }
-
+        this.registry.set('playSpeed', this.turndelay);
         this.data.set('battle', data.battle);
     }
 
@@ -128,6 +128,11 @@ export class BattleGridScene extends Phaser.Scene {
             }
 
             // this.scene.start(cfg.scenes.navigation);
+        }
+
+        const registryPlaySpeed = this.registry.get('playSpeed');
+        if(this.turndelay !== registryPlaySpeed){
+            this.setPlaySpeed(registryPlaySpeed);
         }
 
 
@@ -307,4 +312,8 @@ export class BattleGridScene extends Phaser.Scene {
         }
     }
 
+    setPlaySpeed(delay) {
+        this.turndelay = delay;
+        this.turnTimer = 0;
+    }
 }
