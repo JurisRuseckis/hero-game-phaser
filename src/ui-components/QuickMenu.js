@@ -2,6 +2,7 @@ import {styles} from "../styles";
 import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
 import {cfg} from "../cfg";
+import {playSpeed} from "../scenes/BattleGridScene";
 
 export default class QuickMenu {
     /**
@@ -91,33 +92,21 @@ export default class QuickMenu {
                 }
             },
             {
-                label: "-▶️",
+                label: "▶",
                 onClick: ()=> {
-                    const battle = this.scene.data.get('battle'); 
-                    if(battle){
-                        console.log("toggling pause")
-                        battle.togglePause();
-                    }
+                   this.scene.registry.set('playSpeed', playSpeed.slow);
                 }
             },
             {
-                label: "▶️",
+                label: "▶",
                 onClick: ()=> {
-                    const battle = this.scene.data.get('battle'); 
-                    if(battle){
-                        console.log("toggling pause")
-                        battle.togglePause();
-                    }
+                    this.scene.registry.set('playSpeed', playSpeed.normal);
                 }
             },
             {
                 label: "⏩",
                 onClick: ()=> {
-                    const battle = this.scene.data.get('battle'); 
-                    if(battle){
-                        console.log("toggling pause")
-                        battle.togglePause();
-                    }
+                    this.scene.registry.set('playSpeed', playSpeed.fast);
                 }
             },
             {

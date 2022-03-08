@@ -33,7 +33,7 @@ export const battleType = {
     field: 1
 }
 
-export default class Battle{
+export default class Battle {
 
     /**
      *
@@ -42,8 +42,7 @@ export default class Battle{
      * @param {Arena} props.arena
      * @param {integer} props.battleType
      */
-    constructor(props)
-    {
+    constructor(props) {
         this.combatants = props.combatants;
         this.corpses = [];
         this.status = battleStatus.started;
@@ -54,25 +53,23 @@ export default class Battle{
         this.debugMode = props.debugMode;
     }
 
-    getFastestTurnTime()
-    {
+    getFastestTurnTime() {
         /**
          * @type {number[]}
          */
         const turnTimes = this.combatants.map((combatant) => {
             const totalSpd = this.calculateTotalSpd(combatant);
             combatant.currentSpd = totalSpd;
-            return (1 - combatant.turnMeter) /  totalSpd;
+            return (1 - combatant.turnMeter) / totalSpd;
         });
 
         return Math.min(...turnTimes);
     }
 
-    advanceTurnMeters()
-    {
+    advanceTurnMeters() {
         const fastestTurnTime = this.getFastestTurnTime();
 
-        if(fastestTurnTime === 0){
+        if (fastestTurnTime === 0) {
             // Someone already has full turnmeter from previous turn, skipping calculating rest.
             // also we do not need to resort them as killed should be removed and otherwise it should be sorted
             // console.table('Someone already has full turnmeter from previous turn, skipping calculating rest.');
@@ -80,10 +77,10 @@ export default class Battle{
             return;
         }
         // fastest will be at top
-        this.combatants = this.combatants.map((combatant)=>{
+        this.combatants = this.combatants.map((combatant) => {
             combatant.turnMeter += fastestTurnTime * combatant.currentSpd;
             return combatant;
-        }).sort((a,b) => (
+        }).sort((a, b) => (
             a.turnMeter < b.turnMeter)
             ? 1
             : (a.turnMeter > b.turnMeter)
@@ -95,10 +92,9 @@ export default class Battle{
     /**
      * @param {CombatAction} action
      */
-    handleTurn(action)
-    {
+    handleTurn(action) {
         // if no action is passed then return
-        if(!action) return false;
+        if (!action) return false;
 
         // todo: pass in target from somewhere else and handle multiple targets
         const executor = this.combatants[0];
@@ -113,12 +109,12 @@ export default class Battle{
         this.updateCombatantList();
         const teams = groupArrByKey(this.combatants, 'team');
         // check how many teams are left
-        if(Object.keys(teams).length < 2){
+        if (Object.keys(teams).length < 2) {
             this.status = battleStatus.finished;
             // move to scene 
             // this.scene.showResults({});
             this.battleLog.addText(`Battle ended. Team ${this.combatants[0].team} has won`)
-            if(this.debugMode){
+            if (this.debugMode) {
                 console.log('survivors');
                 console.table(this.combatants);
                 console.log('corpses');
@@ -132,11 +128,10 @@ export default class Battle{
         this.turnCount++;
     }
 
-    updateCombatantList()
-    {
+    updateCombatantList() {
         this.combatants = this.combatants.filter((c) => {
             const alive = c.hp > 0;
-            if(!alive){
+            if (!alive) {
                 const msg = `${c.label} from team ${c.team} died!`;
                 this.battleLog.addText(msg);
                 // console.log(msg);
@@ -152,24 +147,22 @@ export default class Battle{
      * speed needs to be recalculated each turn
      * @return {number}
      */
-    calculateTotalSpd(combatant)
-    {
+    calculateTotalSpd(combatant) {
         return combatant.character.baseSpeed;
     }
 
     /**
      * advance to next turn
      */
-    nextTurn()
-    {
+    nextTurn() {
         // console.table(this.combatants);
         // check if battle can advance to next turn
-        if(this.status === battleStatus.finished) return;
+        if (this.status === battleStatus.finished) return;
 
         // getting current turn
         this.advanceTurnMeters();
 
-        if(this.combatants[0].isPlayable){
+        if (this.combatants[0].isPlayable) {
             // if users is playable 
 
             // if action is passed then do it,
@@ -185,32 +178,23 @@ export default class Battle{
     }
 
     /**
-     * battles first phase
-     */
-    init()
-    {
-        
-    }
-
-    
-    /**
-     * 
+     *
      * @param {boolean} inTeams
      * @returns {Array}
      */
-    getCombatants(inTeams = false){
-        if(inTeams){
+    getCombatants(inTeams = false) {
+        if (inTeams) {
             return groupArrByKey(this.combatants, 'team');
         }
 
         return this.combatants;
     }
 
-    togglePause(){
-        if ( this.status !== battleStatus.finished){
-            this.status = this.status === battleStatus.started 
-            ? battleStatus.paused 
-            : battleStatus.started 
+    togglePause() {
+        if (this.status !== battleStatus.finished) {
+            this.status = this.status === battleStatus.started
+                ? battleStatus.paused
+                : battleStatus.started
         }
     }
 }
