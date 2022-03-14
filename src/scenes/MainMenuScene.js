@@ -19,6 +19,7 @@ export class MainMenuScene extends Phaser.Scene
 
     create ()
     {
+        this.registry.set("completedLevels", [])
         // will need to load save here
         const menuItems = this.getMenuItems();
         // precalculate to get box height by aspect ratio

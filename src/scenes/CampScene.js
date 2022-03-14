@@ -63,34 +63,59 @@ export class CampScene extends Phaser.Scene
             {fontSize: styles.fontSize.title}
         ).setOrigin(0.5,0);
 
+        const slotsInRow = 6;
+        // width - container padding - space between slots, divided by slots wanted
+        const slotSize = (boxContainer.width - styles.padding * (1 + slotsInRow)) / slotsInRow;
+        // prob will use in future to add scrollbar to see each lvl
+        const rows = Math.floor((boxContainer.height - boxTitle.height - styles.padding * 2 - slotSize/2 ) / (slotSize+styles.padding));
+
+        const startX = boxContainerBounds.left + styles.padding;
+        const startY =  boxContainerBounds.top + boxTitle.height + styles.padding * 2;
+        // as it is square...
+        const step = slotSize + styles.padding;
+        let row = 0;
+        let column = 0;
+
         const buttons = menuItems.map((menuItem, index) => {
+        
             const btn = new Btn({
                 scene: this,
-                x: boxContainer.x - btnWidth/2,
-                y: boxContainerBounds.top + boxTitle.height + styles.padding * 2 + index * (menuItemHeight + styles.padding),
-                width: btnWidth,
-                height: menuItemHeight,
-                text: menuItem.label,
-                textStyle: {fontSize: styles.fontSize.default}
-            })
+                x: startX + column * step,
+                y: startY + row * step,
+                width: slotSize,
+                height: slotSize,
+                text: index+1,
+                textStyle: {fontSize: styles.fontSize.large},
+                ornament: menuItem.completed ? "✓" : undefined
+            });
+
+            if(column+1 >= slotsInRow){
+                column=0;
+                row++;
+            } else {
+                column++;
+            }
+
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', menuItem.onClick);
+
             return btn;
         })
 
     }
 
-    getMenuItems ()
-    {
+    loadLevels () {
         return [
             {
+                id: 0,
                 label: "Random Battle",
                 onClick: ()=>{
                     const testBattle = BattleGenerator.generate({})
-                    this.startBattle(testBattle);
+                    this.startBattle(testBattle,0);
                 }
             },
             {
+                id: 1,
                 label: "Defensive Battle",
                 onClick: ()=>{
                     const defensiveDwarf = {
@@ -111,10 +136,11 @@ export class CampScene extends Phaser.Scene
                         teams: [testTeam]
                     })
 
-                    this.startBattle(testBattle);
+                    this.startBattle(testBattle,1);
                 }
             },
             {
+                id: 2,
                 label: "1 on 1",
                 onClick: ()=>{
                     const testBattle = BattleGenerator.generate({
@@ -137,10 +163,11 @@ export class CampScene extends Phaser.Scene
                             ],
                         })]
                     })
-                    this.startBattle(testBattle);
+                    this.startBattle(testBattle,2);
                 }
             },
             {
+                id: 3,
                 label: "1 on 1 labyrinth",
                 onClick: ()=>{
                     const defensiveDwarf = {
@@ -177,10 +204,11 @@ export class CampScene extends Phaser.Scene
                             ],
                         })]
                     })
-                    this.startBattle(testBattle);
+                    this.startBattle(testBattle,3);
                 }
             },
             {
+                id: 4,
                 label: "custom shit",
                 onClick: ()=>{
                     const defensiveDwarf = {
@@ -222,17 +250,29 @@ export class CampScene extends Phaser.Scene
                             ],
                         })]
                     })
-                    this.startBattle(testBattle);
+                    this.startBattle(testBattle,4);
                 }
             }
         ]
     }
 
-    startBattle(testBattle){
+    getMenuItems ()
+    {
+        const completedLevels = this.registry.get("completedLevels");
+        const levels = this.loadLevels().map((level, index) => {
+            level.completed = completedLevels.includes(level.id);
+            return level;
+        })
+        return levels;
+    }
+
+    startBattle(testBattle, scenarioId){
+        this.registry.set('scenarioId', scenarioId);
         this.registry.set('transition', {
             target: cfg.scenes.battleGrid,
             data: {
                 battle: testBattle,
+                scenarioId: scenarioId
             },
             changeLayout: true,
         });

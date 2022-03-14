@@ -55,6 +55,7 @@ export class BattleGridScene extends Phaser.Scene {
 
             Object.keys(this.data.getAll()).forEach(i => this.data.remove(i));
 
+            this.data.set('resultTriggered', false);
             this.scene.restart({ 'battle': data.battle });
         }
         this.registry.set('playSpeed', this.turndelay);
@@ -123,6 +124,21 @@ export class BattleGridScene extends Phaser.Scene {
         }
         if (battle.status === battleStatus.finished) {
             this.turnTimer = 0;
+
+            const resultTriggered = this.data.get('resultTriggered');
+            let completedLevels = this.registry.get('completedLevels');
+            const scenarioId = this.registry.get('scenarioId');
+            // console.log(scenarioId, completedLevels, resultTriggered);
+            if(Number.isInteger(scenarioId) && !resultTriggered){
+                console.log(
+                    scenarioId,
+                    completedLevels
+                );
+                completedLevels.push(scenarioId);
+                this.registry.set('completedLevels',completedLevels);
+                this.data.set('resultTriggered', true);
+            }
+
             if (this.turnTimer > this.turndelay * 2) {
                 this.scene.pause();
             }
