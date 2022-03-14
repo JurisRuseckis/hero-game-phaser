@@ -104,7 +104,13 @@ export class BattleUIScene extends Phaser.Scene
         }
         if(bStatus === battleStatus.finished && !resultWindowTriggered){
             const resultWindow = this.data.get('resultWindow');
-            resultWindow.setText("someone Won!");
+            const winner = battle.getWinnerTeam();
+            if(winner === 1) {
+                resultWindow.setText(`You won!`);
+            } else {
+                resultWindow.setText(`You Lost! Team ${winner} has won!`);
+            }
+            
             resultWindow.container.setVisible(true);
             this.data.set('resultWindowTriggered', true);
         }
