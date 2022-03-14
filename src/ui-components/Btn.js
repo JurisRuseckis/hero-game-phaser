@@ -1,8 +1,7 @@
 import {styles} from "../styles";
 import { v4 as uuidv4 } from 'uuid';
 
-export default class Btn
-{
+export default class Btn {
     /**
      * Currently adding some defaults cause lazy
      *
@@ -24,8 +23,7 @@ export default class Btn
      * @param {number} props.border.alpha
      *
      */
-    constructor(props)
-    {
+    constructor(props) {
         if(!props.scene) {
             throw 'ArgumentException: missing scene';
         }
@@ -44,18 +42,20 @@ export default class Btn
             width: styles.borderWidth,
             color: styles.colors.modernBorder
         };
+        this.elems = [];
 
         this.addBtn();
         this.addTxt();
+        if(props.ornament){
+            this.addOrnament(props.ornament);
+        }
 
-        this.container = this.scene.add.container(this.x, this.y, [
-            this.btnObj,
-            this.txtObj,
-        ]).setSize(this.btnObj.width,this.btnObj.height).setName('btn');
+        this.container = this.scene.add.container(this.x, this.y, this.elems)
+            .setSize(this.btnObj.width,this.btnObj.height)
+            .setName('btn');
     }
 
-    addBtn()
-    {
+    addBtn() {
         this.btnObj = this.scene.add.rectangle(
             0,
             0,
@@ -67,10 +67,10 @@ export default class Btn
             .setOrigin(0)
             .setStrokeStyle(this.border.width, this.border.color)
             .setName(`btn-${this.key}`);
+        this.elems.push(this.btnObj);
     }
 
-    addTxt()
-    {
+    addTxt() {
         const btnCenter = this.btnObj.getCenter();
         this.txtObj = this.scene.add.text(
             btnCenter.x,
@@ -78,10 +78,21 @@ export default class Btn
             this.text,
             this.textStyle
         ).setOrigin(0.5);
+        this.elems.push(this.txtObj);
     }
 
-    addDefaultEvents()
-    {
+    addOrnament(text) {
+        const btnCenter = this.btnObj.getCenter();
+        this.ornament = this.scene.add.text(
+            btnCenter.x,
+            btnCenter.y,
+            text,
+            {fontSize: styles.fontSize.large, color: styles.textColors.green}
+        );
+        this.elems.push(this.ornament);
+    }
+
+    addDefaultEvents() {
         this.btnObj.setInteractive();
         this.btnObj.on('pointerover', () => {
             this.btnObj.setFillStyle(styles.colors.modernBorder);
@@ -91,8 +102,7 @@ export default class Btn
         }, this);
     }
 
-    destroy()
-    {
+    destroy() {
         this.container.destroy();
     }
 
