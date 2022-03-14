@@ -197,4 +197,12 @@ export default class Battle {
                 : battleStatus.started
         }
     }
+
+    getWinnerTeam() {
+        if (this.status !== battleStatus.finished){
+            return null;
+        }
+
+        return this.combatants[0].team;
+    }
 }
