@@ -58,6 +58,7 @@ export const styles = {
 
     textColors: {
         red: "#f00",
+        green: "#0f0",
         black: "#000",
         white: "#fff",
         team1: "#91a455",
