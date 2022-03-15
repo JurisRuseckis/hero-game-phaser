@@ -51,7 +51,7 @@ export default class QuickMenu {
                 width: btnSize,
                 height: btnSize,
                 text: menuItem.label,
-                textStyle: {fontSize: styles.fontSize.default}
+                textStyle: {fontSize: styles.fontSize.default - (menuItem.label.length - 1) * 8}
             });
             btn.addDefaultEvents();
             btn.btnObj.on('pointerdown', menuItem.onClick, this);
@@ -86,7 +86,6 @@ export default class QuickMenu {
                 onClick: ()=> {
                     const battle = this.scene.data.get('battle'); 
                     if(battle){
-                        console.log("toggling pause")
                         battle.togglePause();
                     }
                 }
@@ -98,13 +97,13 @@ export default class QuickMenu {
                 }
             },
             {
-                label: "▶",
+                label: "▶▶",
                 onClick: ()=> {
                     this.scene.registry.set('playSpeed', playSpeed.normal);
                 }
             },
             {
-                label: "⏩",
+                label: "▶▶▶",
                 onClick: ()=> {
                     this.scene.registry.set('playSpeed', playSpeed.fast);
                 }
