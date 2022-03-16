@@ -179,14 +179,27 @@ export default class BattleInputController{
         const tileGridLayer = tilemap.getLayer('battleGridLayer');
 
         const defaultOffset = 200;
+        /**
+         * @description tile grid width in pixels translated to viewport
+         * @type {number}
+         */
         const width = (tileGridLayer.widthInPixels + defaultOffset * 2) * this.cam.zoomX;
+        /**
+         * @description tile grid height in pixels translated to viewport
+         * @type {number}
+         */
         const height = (tileGridLayer.heightInPixels + defaultOffset * 2) * this.cam.zoomY;
+        /**
+         * @description if diff > 0 then grid is larger than viewport
+         * @type {Phaser.Math.Vector2}
+         */
         const diff = new Phaser.Math.Vector2(width - this.scene.scale.width, height - this.scene.scale.height)
 
         let maxX;
         let minX;
         if(diff.x < 0){
-            minX = maxX = diff.x/2;
+            minX = diff.x/2;
+            maxX = -diff.x/2;
         } else {
             minX = -defaultOffset;
             maxX = diff.x;
