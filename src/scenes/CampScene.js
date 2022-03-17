@@ -252,7 +252,48 @@ export class CampScene extends Phaser.Scene
                     })
                     this.startBattle(testBattle,4);
                 }
-            }
+            },
+            {
+                id: 5,
+                label: "custom deployment",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({
+                        teamCount: 2,
+                        // teamSize: 2,
+                        arenaTiles: [
+                            [0,0,0,0,0,0,0,0,0,0,0],
+                            [0,1,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,1,0],
+                            [0,1,1,1,1,1,1,1,1,1,0],
+                            [0,0,0,0,0,0,0,0,0,0,0],
+                        ],
+                        teams: [new BattleTeam({
+                            singleUnits: [
+                                {
+                                    character: characterRoster.dwarf.commander,
+                                    coordinates: new Phaser.Math.Vector2(1,1)
+                                },
+                                {
+                                    character: characterRoster.dwarf.commander,
+                                    coordinates: new Phaser.Math.Vector2(1,3)
+                                },
+                            ]
+                        }), new BattleTeam({
+                            singleUnits: [
+                                {
+                                    character: characterRoster.human.peasant,
+                                    coordinates: new Phaser.Math.Vector2(3,1)
+                                },
+                                {
+                                    character: characterRoster.human.peasant,
+                                    coordinates: new Phaser.Math.Vector2(3,3)
+                                },
+                            ]
+                        })]
+                    })
+                    this.startBattle(testBattle,5);
+                }
+            },
         ]
     }
 
