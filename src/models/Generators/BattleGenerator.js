@@ -29,15 +29,19 @@ export default class BattleGenerator
             }
         }
 
-        const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4 + 10;
-        let arenaprops = props.arenaTiles
-            ? {
+        let arenaprops;
+        if(props.arenaTiles){
+            arenaprops = {
                 battletype: bType,
                 width: props.arenaTiles[0].length,
                 height: props.arenaTiles.length,
                 tiles: props.arenaTiles,
-            }
-            : this.generateArena(bType,arenaSize,arenaSize);
+            };
+        } else {
+            const arenaSize = Math.max(...teams.map(r => r.formation.length)) * 4 + 10;
+            arenaprops = this.generateArena(bType,arenaSize,arenaSize);
+        }
+
         const arena = new Arena(arenaprops);
 
         const teamStartPos = [
@@ -78,35 +82,47 @@ export default class BattleGenerator
              */
             const startPos = teamStartPos[teamIndex];
             const verticalDir = teamIndex < 2;
-            /**
-             * @type {integer}
-             */
-            const posOffset = Math.floor(team.formation.length/2);
-            team.rotateFormation(startPos.dir);
-            if(verticalDir && startPos.reverse){
-               startPos.x -= team.formation[0].length;
-            }
 
-            if(!verticalDir && startPos.reverse){
-                startPos.y -= team.formation.length;
-            }
-
-            return team.formation.map((r,yi) => r.map((combatant, xi) => {
-                if(combatant === 0) return 0;
-
-                let props = {
-                    character: combatant,
-                    team: teamIndex+1,
-                    direction: startPos.dir,
-                }
-                if(verticalDir){
-                    props.coordinates = new Phaser.Math.Vector2(startPos.x + xi, startPos.y + yi - posOffset)
-                } else {
-                    props.coordinates = new Phaser.Math.Vector2(startPos.x + xi - posOffset,startPos.y + yi)
+            if (team.singleUnits.length > 0){
+                return team.singleUnits.map((unit) => {
+                    return new Combatant({
+                        character: unit.character,
+                        team: teamIndex+1,
+                        direction: startPos.dir,
+                        coordinates: unit.coordinates
+                    })
+                })
+            } else {
+                /**
+                 * @type {integer}
+                 */
+                const posOffset = Math.floor(team.formation.length/2);
+                team.rotateFormation(startPos.dir);
+                if(verticalDir && startPos.reverse){
+                    startPos.x -= team.formation[0].length;
                 }
 
-                return new Combatant(props);
-            })).flat().filter(c => c !== 0);
+                if(!verticalDir && startPos.reverse){
+                    startPos.y -= team.formation.length;
+                }
+
+                return team.formation.map((r,yi) => r.map((combatant, xi) => {
+                    if(combatant === 0) return 0;
+
+                    let props = {
+                        character: combatant,
+                        team: teamIndex+1,
+                        direction: startPos.dir,
+                    }
+                    if(verticalDir){
+                        props.coordinates = new Phaser.Math.Vector2(startPos.x + xi, startPos.y + yi - posOffset)
+                    } else {
+                        props.coordinates = new Phaser.Math.Vector2(startPos.x + xi - posOffset,startPos.y + yi)
+                    }
+
+                    return new Combatant(props);
+                })).flat().filter(c => c !== 0);
+            }
         }).flat();
 
         return new Battle({
