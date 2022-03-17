@@ -8,6 +8,7 @@ import ResultWindow from "../ui-components/ResultWindow";
 import {styles} from "../styles";
 import {battleStatus} from "../models/Battle";
 import QuickMenu from "../ui-components/QuickMenu";
+import DeployConfirmation from "../ui-components/DeployConfirmation";
 
 export class BattleUIScene extends Phaser.Scene
 {
@@ -59,6 +60,10 @@ export class BattleUIScene extends Phaser.Scene
             scene: this,
             alignment: uiAlignment.topRight
         });
+        const deployConfirmation = new DeployConfirmation({
+            scene: this,
+            alignment: uiAlignment.top
+        });
 
 
         // this.data.set('debugWindow', debugWindow);
@@ -67,6 +72,7 @@ export class BattleUIScene extends Phaser.Scene
         this.data.set('debugWindow', debugWindow);
         this.data.set('resultWindow', resultWindow);
         this.data.set('quickMenu', quickMenu);
+        this.data.set('deployConfirmation', deployConfirmation);
 
         const inputController = new BattleUIInputController({
             scene: this,
@@ -80,6 +86,7 @@ export class BattleUIScene extends Phaser.Scene
         const debugWindow = this.data.get('debugWindow');
         const resultWindow = this.data.get('resultWindow');
         const quickMenu = this.data.get('quickMenu');
+        const deployConfirmation = this.data.get('deployConfirmation');
         const resultWindowTriggered = this.data.get('resultWindowTriggered');
 
         const selectedTile = this.registry.get('selectedTile');
@@ -89,6 +96,7 @@ export class BattleUIScene extends Phaser.Scene
 
         resultWindow.update();
         quickMenu.update();
+        deployConfirmation.update();
         battleLogWindow.update();
         tileInfo.update();
         if(selectedTile && selectedTile.update){
