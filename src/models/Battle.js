@@ -23,7 +23,8 @@ export const battleStatus = {
     undefined: -1,
     started: 0,
     finished: 1,
-    paused: 2
+    paused: 2,
+    deploy: 3
 }
 
 export const battleType = {
@@ -45,7 +46,7 @@ export default class Battle {
     constructor(props) {
         this.combatants = props.combatants;
         this.corpses = [];
-        this.status = battleStatus.started;
+        this.status = battleStatus.deploy;
         this.battleLog = new BattleLog();
         this.turnCount = 0;
         this.arena = props.arena;
@@ -196,6 +197,10 @@ export default class Battle {
                 ? battleStatus.paused
                 : battleStatus.started
         }
+    }
+
+    finishDeployment(){
+        this.status = battleStatus.started;
     }
 
     getWinnerTeam() {

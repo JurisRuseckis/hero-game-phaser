@@ -43,7 +43,13 @@ export default class DeployConfirmation {
         });
 
         btn.addDefaultEvents();
-        btn.btnObj.on('pointerdown', () => {}, this);
+        btn.btnObj.on('pointerdown', () => {
+            const battle = this.scene.data.get('battle');
+            if(battle){
+                battle.finishDeployment();
+            }
+            this.container.setVisible(false);
+        }, this);
 
         this.width = this.margin * 3 + btn.btnObj.width + txtBounds.width;
         bgBox.setSize(this.width, this.height);

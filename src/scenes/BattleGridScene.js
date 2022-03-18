@@ -122,6 +122,7 @@ export class BattleGridScene extends Phaser.Scene {
             this.updateBattleScene(battle, turnResults);
             this.turnTimer -= this.turndelay;
         }
+
         if (battle.status === battleStatus.finished) {
             this.turnTimer = 0;
 
