@@ -89,6 +89,11 @@ export default class GridUnit
 
         // center of tile
         this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize + this.tileSize * 0.5, this.tileCoordinates.y * this.tileSize + this.tileSize * 0.5);
+        this.initialCoords = {
+            x:this.container.x,
+            y:this.container.y
+        };
+        this.initialTile = null;
 
         this.addCircle();
         this.addTxt();
@@ -176,6 +181,53 @@ export default class GridUnit
                 this.btnObj.setFillStyle(this.fill);
             }
             // this.fow.setVisible(false);
+        }, this);
+        this.container.on('dragstart', function (pointer, dragX, dragY) {
+            const deploymentTiles = this.scene.data.get('deploymentTiles');
+            deploymentTiles.forEach((deploymentTile) => {
+                deploymentTile.tint = 0x00ff00;
+            });
+
+            const inputController = this.scene.data.get('inputController');
+            this.initialTile = inputController.hoveredTile;
+            this.initialCoords = {
+                x:this.container.x,
+                y:this.container.y
+            };
+            this.scene.data.set('unitDrag', true);
+        }, this);
+        this.container.on('drag', function (pointer, dragX, dragY) {
+            this.container.x = dragX;
+            this.container.y = dragY;
+        }, this);
+        this.container.on('dragend', function (pointer, dragX, dragY) {
+            this.scene.data.set('unitDrag', false);
+            const deploymentTiles = this.scene.data.get('deploymentTiles');
+            const inputController = this.scene.data.get('inputController');
+            const hoveredTile = inputController.hoveredTile;
+            if(hoveredTile
+                && !hoveredTile.combatant
+                && hoveredTile.tileIndex === 1
+                && deploymentTiles.some(tile => tile.x === hoveredTile.tileX && tile.y === hoveredTile.tileY)
+            ){
+                // TODO: optimize this combatant move bullshit through methods and reduce places where coordinates are saved
+                this.container.x = hoveredTile.tileX * this.tileSize + this.tileSize * 0.5;
+                this.container.y = hoveredTile.tileY * this.tileSize + this.tileSize * 0.5;
+                this.combatant.coordinates.x = hoveredTile.tileX;
+                this.combatant.coordinates.y = hoveredTile.tileY;
+                // move tile property cmbId to new tile
+                const tilemap = this.scene.data.get('tilemap');
+                const initialTile = tilemap.getTileAt(this.initialTile.tileX,this.initialTile.tileY);
+                const targetTile = tilemap.getTileAt(hoveredTile.tileX,hoveredTile.tileY);
+                targetTile.properties.cmbId = initialTile.properties.cmbId;
+                initialTile.properties.cmbId = null;
+            } else {
+                this.container.x = this.initialCoords.x;
+                this.container.y = this.initialCoords.y;
+            }
+            deploymentTiles.forEach((deploymentTile) => {
+                deploymentTile.tint = 16777215;
+            });
         }, this);
     }
 

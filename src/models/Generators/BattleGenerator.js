@@ -7,6 +7,11 @@ import {characterRoster} from "./Characters";
 import BattleTeam from "../BattleTeam";
 import {tileType} from "../AI/BattleAI";
 
+const deploymentOrientations = {
+    horizontal: 0,
+    vertical: 1
+}
+
 /**
  * class generates random battles 
  * todo: implement power for team and units to randomize some more
@@ -51,34 +56,40 @@ export default class BattleGenerator
                 y: Math.ceil(arena.height/2) -1,
                 // dir: new Phaser.Math.Vector2(1, 0)
                 dir: Phaser.Math.Vector2.RIGHT,
-                reverse: false
+                reverse: false,
+                deploymentOrientation: deploymentOrientations.vertical
             },
             //right
             {
                 x: arena.width-2,
                 y: Math.ceil(arena.height/2) -1,
                 dir: Phaser.Math.Vector2.LEFT,
-                reverse: true
+                reverse: true,
+                deploymentOrientation: deploymentOrientations.vertical
             },
             //up
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: 1,
                 dir: Phaser.Math.Vector2.DOWN,
-                reverse: false
+                reverse: false,
+                deploymentOrientation: deploymentOrientations.horizontal
             },
             //down
             {
                 x: Math.ceil(arena.width/2) -1,
                 y: arena.height-2,
                 dir: Phaser.Math.Vector2.UP,
-                reverse: true
+                reverse: true,
+                deploymentOrientation: deploymentOrientations.horizontal
             }
-        ]
-        
+        ];
+
+
+        let deploymentTiles = [];
         const combatants = teams.map((team, teamIndex) => { 
             /**
-             * @type {{x: number, y: number, dir: Phaser.Math.Vector2, reverse: boolean}}
+             * @type {{x: number, y: number, dir: Phaser.Math.Vector2, reverse: boolean, deploymentOrientation: deploymentOrientations}}
              */
             const startPos = teamStartPos[teamIndex];
             const verticalDir = teamIndex < 2;
@@ -106,6 +117,19 @@ export default class BattleGenerator
                     startPos.y -= team.formation.length;
                 }
 
+                if(teamIndex === 0){
+                    const secondDimensionLength = startPos.deploymentOrientation === deploymentOrientations.vertical
+                        ? arena.height - 1
+                        : arena.width - 1;
+                    for (let i = 1; i < 7; i++){
+                        for(let j = 1; j < secondDimensionLength; j++){
+                            deploymentTiles.push(startPos.deploymentOrientation === deploymentOrientations.vertical
+                                ? new Phaser.Math.Vector2(i,j)
+                                : new Phaser.Math.Vector2(j,i))
+                        }
+                    }
+                }
+
                 return team.formation.map((r,yi) => r.map((combatant, xi) => {
                     if(combatant === 0) return 0;
 
@@ -129,8 +153,9 @@ export default class BattleGenerator
             combatants: combatants,
             arena: arena,
             battleType: bType,
+            deploymentTiles: deploymentTiles,
             // todo: implement debug somewhere in root
-            debugMode: false
+            debugMode: false,
         });
     }
 

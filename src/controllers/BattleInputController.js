@@ -34,22 +34,22 @@ export default class BattleInputController{
 
     addEvents() {
         this.scene.input.on('pointermove', (pointer) => {
+            const isDraggingUnit = this.scene.data.get('unitDrag');
             // handle screen drag
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser
+
             const hoverMarker = this.scene.data.get('hoverMarker');
-            if (this.pointerDown) {
+            if (this.pointerDown && !isDraggingUnit) {
                 const dragDistance = this.getDragDistance(pointer);
                 this.moveCamera(dragDistance);
                 this.pointerDownPosition.x = pointer.x;
                 this.pointerDownPosition.y = pointer.y;
             } else {
-                // if not dragging 
+                // if not dragging
                 const tile = this.getTileAtWorldXY(pointer);
                 const battle = this.scene.data.get('battle');
                 if (tile) {
-
-
                     this.hoveredTile = {
                         'tileIndex': tile.index,
                         'tileX': tile.x,
@@ -85,8 +85,8 @@ export default class BattleInputController{
                     hoverMarker.setVisible(false);
                     this.hoveredTile = null;
                 }
-            }           
-           
+            }
+
         });
         this.scene.input.on('pointerdown', (pointer) => {
             // screen drag start
@@ -115,10 +115,6 @@ export default class BattleInputController{
                 selectMarker.setVisible(false);
             }
 
-        });
-        this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-            gameObject.x = dragX;
-            gameObject.y = dragY;
         });
         // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
