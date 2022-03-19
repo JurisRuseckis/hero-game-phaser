@@ -66,9 +66,6 @@ export default class GridUnit
         this.tileSize = props.tileSize || 0;
         this.unitSize = props.unitSize || 0;
         this.radius = this.unitSize/2
-
-        //position
-        this.center = this.tileSize/2;
         /**
          *
          * @type {Phaser.Math.Vector2}
@@ -90,27 +87,30 @@ export default class GridUnit
         this.status = statusOption.default;
         this.textStyle = props.textStyle || {};
 
-        this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize, this.tileCoordinates.y * this.tileSize);
+        // center of tile
+        this.container = this.scene.add.container(this.tileCoordinates.x * this.tileSize + this.tileSize * 0.5, this.tileCoordinates.y * this.tileSize + this.tileSize * 0.5);
 
         this.addCircle();
         this.addTxt();
         this.addCross();
         this.addFieldOfView();
+
+        this.container
+            .setSize(this.tileSize, this.tileSize)
+            .setInteractive();
     }
 
     addCircle()
     {
         this.btnObj = this.scene.add.circle(
-            this.center,
-            this.center,
+            0,
+            0,
             this.radius,
             this.fill,
             this.fillAlpha
         ).setOrigin(0.5);
 
         this.btnObj.setStrokeStyle(this.border.width, this.border.color);
-
-        this.btnObj.setInteractive();
 
         this.container.add(this.btnObj);
     }
@@ -165,17 +165,16 @@ export default class GridUnit
     addDefaultEvents()
     {
         
-        this.btnObj.on('pointerover', () => {
+        this.container.on('pointerover', () => {
             if(this.status === statusOption.default) {
                 this.btnObj.setFillStyle(this.fill);
             }
             // this.fow.setVisible(true);
         }, this);
-        this.btnObj.on('pointerout', () => {
+        this.container.on('pointerout', () => {
             if(this.status === statusOption.default){
                 this.btnObj.setFillStyle(this.fill);
             }
-
             // this.fow.setVisible(false);
         }, this);
     }
@@ -221,8 +220,8 @@ export default class GridUnit
         this.scene.tweens.add({
             targets: this.container,
             duration: this.scene.turndelay - 1,
-            x: this.tileCoordinates.x * this.tileSize,
-            y: this.tileCoordinates.y * this.tileSize,
+            x: this.tileCoordinates.x * this.tileSize + this.tileSize * 0.5,
+            y: this.tileCoordinates.y * this.tileSize + this.tileSize * 0.5,
             delay: 0,
             repeat: 0,
         });
