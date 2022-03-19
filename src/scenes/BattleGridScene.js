@@ -82,6 +82,11 @@ export class BattleGridScene extends Phaser.Scene {
         tilemap.putTilesAt(battle.arena.tiles, 0, 0, true, tileGridLayer);
         battle.arena.tilemap = tilemap;
 
+        const deploymentTiles = battle.deploymentTiles.map((deploymentTile) => {
+            return tilemap.getTileAt(deploymentTile.x, deploymentTile.y);
+        })
+        this.data.set('deploymentTiles',deploymentTiles);
+
         this.data.set('tilemap', tilemap);
 
         const hoverMarker = this.createTileSelector(markerType.hover);
