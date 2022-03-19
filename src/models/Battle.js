@@ -42,6 +42,8 @@ export default class Battle {
      * @param {Combatant[]} props.combatants
      * @param {Arena} props.arena
      * @param {integer} props.battleType
+     * @param {Phaser.Math.Vector2[]} props.deploymentTiles
+     * @param {boolean} props.debugMode
      */
     constructor(props) {
         this.combatants = props.combatants;
@@ -52,6 +54,7 @@ export default class Battle {
         this.arena = props.arena;
         this.battleType = props.battleType;
         this.debugMode = props.debugMode;
+        this.deploymentTiles = props.deploymentTiles || [];
     }
 
     getFastestTurnTime() {
