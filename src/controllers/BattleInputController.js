@@ -116,6 +116,10 @@ export default class BattleInputController{
             }
 
         });
+        this.scene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            gameObject.x = dragX;
+            gameObject.y = dragY;
+        });
         // noinspection JSUnusedLocalSymbols
         this.scene.input.on('wheel', function(pointer, currentlyOver, dx, dy, dz, event){
             let newZoom = this.cam.zoom - dy/1000;

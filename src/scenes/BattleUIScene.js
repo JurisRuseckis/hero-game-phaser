@@ -22,6 +22,7 @@ export class BattleUIScene extends Phaser.Scene
     init(data)
     {
         this.data.set('battle', data.battle);
+        this.data.set('gridUnits', data.gridUnits);
     }
 
     preload ()

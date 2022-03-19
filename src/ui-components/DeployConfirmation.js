@@ -45,6 +45,10 @@ export default class DeployConfirmation {
         btn.addDefaultEvents();
         btn.btnObj.on('pointerdown', () => {
             const battle = this.scene.data.get('battle');
+            const gridUnits = this.scene.data.get('gridUnits');
+            gridUnits.forEach((gridUnit) => {
+                gridUnit.container.input.draggable = false;
+            })
             if(battle){
                 battle.finishDeployment();
             }

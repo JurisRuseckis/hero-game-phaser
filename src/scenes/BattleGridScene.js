@@ -90,7 +90,8 @@ export class BattleGridScene extends Phaser.Scene {
         const gridUnits = this.drawCombatants(Object.values(battle.getCombatants(false)));
 
         this.scene.launch(cfg.scenes.battleUI, {
-            battle: battle
+            battle: battle,
+            gridUnits: gridUnits
         });
 
         this.data.set('hoverMarker', hoverMarker);
@@ -216,6 +217,9 @@ export class BattleGridScene extends Phaser.Scene {
             gridUnit.addDefaultEvents();
             const tile = tilemap.getTileAt(combatant.coordinates.x, combatant.coordinates.y);
             tile.properties['cmbId'] = combatant.id;
+            if(combatant.team === 1){
+                this.input.setDraggable(gridUnit.container);
+            }
 
             return gridUnit;
         }).flat();
