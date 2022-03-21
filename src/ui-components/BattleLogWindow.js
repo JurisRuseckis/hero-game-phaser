@@ -31,7 +31,7 @@ export default class BattleLogWindow
         // this.width = this.scene.scale.width / 3;
         // this.height = this.width * 1.2;
 
-        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.6;
+        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.66;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
         this.margin = styles.padding;
 
