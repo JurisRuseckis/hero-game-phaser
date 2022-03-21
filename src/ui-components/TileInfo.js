@@ -18,7 +18,7 @@ export default class TileInfo
         // this.width = this.scene.scale.width / 3;
         // this.height = this.width * 1.2;
 
-        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.3;
+        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.33;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
         this.margin = styles.padding;
 
@@ -67,7 +67,7 @@ export default class TileInfo
             fontSize: styles.fontSize.large
         }).setOrigin(0).setName('cmbTitle');
 
-        const hp = this.scene.add.text(this.margin, title.getBottomCenter().y, 'hp/max hp', {
+        const hp = this.scene.add.text(this.margin, title.getBottomCenter().y + this.margin, 'hp/max hp', {
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbHp');
 
@@ -75,7 +75,11 @@ export default class TileInfo
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbSpeed');
 
-        const turnMeter = this.scene.add.text(this.margin, speed.getBottomCenter().y, 'turnMeter', {
+        const atk = this.scene.add.text(this.margin, speed.getBottomCenter().y, 'attack', {
+            fontSize: styles.fontSize.default
+        }).setOrigin(0).setName('cmbAttack');
+
+        const turnMeter = this.scene.add.text(this.margin, atk.getBottomCenter().y, 'turnMeter', {
             fontSize: styles.fontSize.default
         }).setOrigin(0).setName('cmbTurnMeter');
 
@@ -101,13 +105,14 @@ export default class TileInfo
             title,
             hp,
             speed,
+            atk,
             turnMeter,
             closeBtn.container
         ]).setName('combatantPropContainer').setVisible(false));
     }
 
     createTileProps(){
-        const title = this.scene.add.text(this.margin, this.margin, 'title (x,y)', {
+        const title = this.scene.add.text(this.margin, this.margin, '', {
             fontSize: styles.fontSize.large
         }).setOrigin(0).setName('tileTitle');
 
@@ -154,9 +159,9 @@ export default class TileInfo
 
         this.tileCombatants = cmbList.map((combatant, key) => {
 
-            let label = `${combatant.label} team ${combatant.team}`;
+            let label = `${combatant.label} [team ${combatant.team}]`;
             if(combatant.hp <= 0){
-                label = `${combatant.label} team ${combatant.team} (dead)`;
+                label = `☠️${combatant.label} [team ${combatant.team}]`;
             }
 
 
@@ -203,14 +208,17 @@ export default class TileInfo
         this.clearCombatantProps();
         const tileContainer = this.container.getByName('combatantPropContainer');
 
-        let label = `${combatant.label} team ${combatant.team}`;
+        let label = `${combatant.label} [team ${combatant.team}]`;
         if(combatant.hp <= 0){
-            label = `${combatant.label} team ${combatant.team} (dead)`;
+            label = `☠️${combatant.label} [team ${combatant.team}]`;
         }
 
         tileContainer.getByName('cmbTitle').setText(label);
         tileContainer.getByName('cmbHp').setText(`HP: ${combatant.hp}/${combatant.maxHp}`);
-        tileContainer.getByName('cmbSpeed').setText(`Speed: ${combatant.currentSpd}`);
+        tileContainer.getByName('cmbSpeed').setText(`Base Speed: ${combatant.character.baseSpeed}`);
+        tileContainer.getByName('cmbAttack').setText(`Attack: [${combatant.character.atk[0]}-${combatant.character.atk[1]}]`);
+        // last element in stats
+        // mby should rename to lastElem or smth
         const turnMeterLabel = tileContainer.getByName('cmbTurnMeter');
         turnMeterLabel.setText(`TurnMeter: ${combatant.turnMeter}/1`);
         let line = turnMeterLabel.getBottomCenter().y;
