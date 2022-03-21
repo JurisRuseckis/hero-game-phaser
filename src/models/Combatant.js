@@ -87,7 +87,7 @@ export class Combatant {
     }
 
     calculateDmg() {
-        return this.character.atk + randomInt(4);
+        return randomInt(this.character.atk[1], this.character.atk[0]);
     }
 
     /**

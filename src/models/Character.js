@@ -15,7 +15,7 @@ export default class Character
      * @param {number} props.baseSpeed
      * @param {string} props.name
      * @param {string} props.img
-     * @param {number} props.atk
+     * @param {[number,number]} props.atk [min,max]
      * @param {string} props.race
      * @param {boolean} props.isPlayable
      * @param {Object} props.combatActions
