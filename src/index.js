@@ -8,6 +8,7 @@ import {InventoryScene} from "./scenes/InventoryScene";
 import { BattleGridScene } from './scenes/BattleGridScene';
 import {BattleUIScene} from "./scenes/BattleUIScene";
 import {CampScene} from "./scenes/CampScene";
+import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 const config = {
     scale: {
@@ -29,7 +30,14 @@ const config = {
         InventoryScene,
         LoadingScene,
         NavigationScene,
-    ]
+    ],
+    plugins: {
+        scene: [{
+            key: 'rexuiplugin',
+            plugin: UIPlugin,
+            mapping: 'rexUI'
+        }]
+    }
 };
 
 // noinspection JSUnusedLocalSymbols

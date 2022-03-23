@@ -26,7 +26,8 @@
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "phaser": "^3.50.0",
+    "phaser": "^3.55.2",
+    "phaser3-rex-plugins": "^1.1.68",
     "uuid": "^3.3.2"
   }
 }
