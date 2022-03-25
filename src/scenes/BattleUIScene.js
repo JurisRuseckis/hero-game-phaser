@@ -27,6 +27,11 @@ export class BattleUIScene extends Phaser.Scene
 
     preload ()
     {
+        // this.load.scenePlugin({
+        //     key: 'rexuiplugin',
+        //     plugin: UIPlugin,
+        //     mapping: 'rexUI'
+        // })
     }
 
     create ()
@@ -47,7 +52,7 @@ export class BattleUIScene extends Phaser.Scene
             alignment: uiAlignment.bottomRight
         });
         if(styles.isMobile){
-            tileInfo.container.setVisible(false);
+            tileInfo.cont.setVisible(false);
         }
         const debugWindow = new DebugWindow({
             scene: this,
@@ -99,7 +104,6 @@ export class BattleUIScene extends Phaser.Scene
         quickMenu.update();
         deployConfirmation.update();
         battleLogWindow.update();
-        tileInfo.update();
         if(selectedTile && selectedTile.update){
             tileInfo.setTile(selectedTile);
             selectedTile.update = false;

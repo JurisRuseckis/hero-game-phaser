@@ -22,6 +22,10 @@ export default class BattleInputController{
         }, this);
 
         this.scene.input.on('pointermove', (pointer) => {
+            this.scene.registry.set('pointerCoords', {
+                x: pointer.x,
+                y: pointer.y
+            })
             // handle screen drag
             // curently drag feels like workaround and probably will need a rework
             // there must be a way to handle this in phaser

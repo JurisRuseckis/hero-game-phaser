@@ -26,21 +26,33 @@ export default class TileInfo
             throw "not implemented";
         }
 
-        // if bottom right
-        this.x = this.scene.scale.displaySize.width - (this.width + this.margin) / this.scene.scale.displayScale.x;
-        this.y = this.scene.scale.displaySize.height - (this.height + this.margin) / this.scene.scale.displayScale.y;
-
-
         // bg for battleLogWindow
         const bgBox = this.scene.add.rectangle(0,0,this.width,this.height,styles.colors.modernBg, .8).setOrigin(0);
         bgBox.setInteractive();
         bgBox.setStrokeStyle(1, styles.colors.modernBorder);
         bgBox.setName('bgBox');
 
+        this.cont = this.createWindow();
+        this.cont.layout();
+
+
+        this.cont.getByName('scrollPanel').setChildrenInteractive({
+            targets: [
+                this.cont.getByName('combatantList', true)
+            ]
+        })
+            .on('child.over', function (child) {
+                child.getByName('cmbListBtnBg').setFillStyle(styles.colors.modernBorder)
+            })
+            .on('child.out', function (child) {
+                child.getByName('cmbListBtnBg').setFillStyle(styles.colors.modernBtn)
+            })
+
         // main container
-        this.container = this.scene.add.container(this.x, this.y, [
+        this.container = this.scene.add.container(0,0, [
             bgBox,
         ]);
+        this.container.setVisible(false);
 
         this.tileCombatants = [];
         this.combatantAbilities = [];
@@ -54,12 +66,177 @@ export default class TileInfo
         this.container.setDepth(1);
     }
 
-    update() {
-        // transform viewport coordinates to game coordinates.
-        const targetCoordinates  = new Phaser.Math.Vector2(this.scene.scale.transformX(this.x), this.scene.scale.transformY(this.y));
-        // console.log(targetCoordinates);
-        // apply to container
-        this.container.setPosition(targetCoordinates.x, targetCoordinates.y);
+    createWindow() {
+        const bg = this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, undefined)
+            .setFillStyle(styles.colors.modernBg, .8)
+            .setStrokeStyle(1, styles.colors.modernBorder, 1);
+
+        const label = this.scene.rexUI.add.label({
+            orientation: 'x',
+        });
+
+        this.title = this.scene.add.text(0, 0, 'Tile',{
+            fontSize: styles.fontSize.large,
+            color: styles.textColors.white
+        });
+
+        label.add(this.title, {expand: true});
+
+        return this.scene.rexUI.add.sizer({
+            anchor: {
+                right: `right-${styles.padding}`,
+                bottom: `bottom-${styles.padding}`
+            },
+            width: this.width,
+            height: this.height,
+            orientation: 'v',
+            space: {
+                left: styles.padding,
+                right: styles.padding,
+                top: styles.padding,
+                bottom: styles.padding,
+                item: styles.padding,
+            }
+        })
+            .addBackground(bg)
+            .add(label, { expand: true, align: 'left' })
+            .add(this.createScrollablePanel(), { expand: true, align: 'left' })
+            .setName('tileInfo')
+    }
+
+    createScrollablePanel(){
+        return this.scene.rexUI.add.scrollablePanel({
+            name: 'scrollPanel',
+            x: 0,
+            y: 0,
+            width: 600,
+            height: 440,
+
+            scrollMode: 'v',
+
+            panel: {
+                child:  this.createCombatantList(),
+
+                mask: {
+                    padding: 1,
+                },
+            },
+
+            slider: {
+                track: this.scene.rexUI.add.roundRectangle(0, 0, 20, 10, 10, styles.colors.modernBorder),
+                thumb: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 13, styles.colors.modernBtn),
+            },
+
+            mouseWheelScroller: {
+                focus: false,
+                speed: 0.1
+            },
+
+            space: {
+                left: styles.padding,
+                right: styles.padding,
+                top: styles.padding,
+                bottom: styles.padding,
+                panel: styles.padding,
+            }
+        })
+    }
+
+    createCombatantList(){
+        this.combatantList = this.scene.rexUI.add.sizer({
+            orientation: 'v',
+            space: {item: styles.padding},
+            name: 'combatantList'
+        })
+            .add(this.createCombatantListItem(), {expand: true});
+
+        return this.combatantList;
+    }
+
+    createCombatantListItem(){
+        const bg = this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, undefined)
+            .setFillStyle(styles.colors.modernBtn, 1)
+            .setStrokeStyle(1, styles.colors.modernBorder, 1)
+            .setName('cmbListBtnBg');
+
+        const unitSprite = this.scene.rexUI.add.roundRectangle(0, 0, 150, 150, 0, undefined)
+            .setFillStyle(styles.colors.modernBg, .8)
+            .setStrokeStyle(1, styles.colors.modernBorder, 1);
+
+        const listItem = this.scene.rexUI.add.sizer({
+            orientation: 'h',
+            space: {
+                left: styles.padding,
+                right: styles.padding,
+                top: styles.padding,
+                bottom: styles.padding,
+                item: styles.padding,
+            }
+        })
+            .addBackground(bg)
+            .add(unitSprite, { expand: true, align: 'left' })
+            .add(this.createCombatantShortInfoBox(), { expand: true, align: 'left' })
+
+        return listItem;
+    }
+
+    createCombatantShortInfoBox(){
+        const label = this.scene.rexUI.add.label({
+            orientation: 'x',
+        });
+
+        this.title = this.scene.add.text(0, 0, 'Tile',{
+            fontSize: styles.fontSize.large,
+            color: styles.textColors.white
+        });
+
+        label.add(this.title, {expand: true});
+
+        const infoBox = this.scene.rexUI.add.sizer({
+            orientation: 'v',
+            space: {
+                left: styles.padding,
+                right: styles.padding,
+                top: styles.padding,
+                bottom: styles.padding,
+                item: styles.padding,
+            }
+        })
+            .add(label, {expand: true, align: "left"})
+            .add(this.createHealthBar(), {expand: true, align: "left"});
+
+        return infoBox;
+    }
+
+    createHealthBar(){
+        const numberBar = this.scene.rexUI.add.numberBar({
+
+            width: this.width * 0.6,
+            height: 30,
+
+            slider: {
+                // width: 120, // Fixed width
+                track: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, styles.colors.modernBg),
+                indicator: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, styles.colors.green),
+            },
+
+            text: this.scene.add.text(0, 0, ''),
+
+            space: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+                slider: 10,
+            },
+
+            valuechangeCallback: function (value, oldValue, numberBar) {
+                console.log(value, oldValue);
+                numberBar.text = `${Math.round(Phaser.Math.Linear(0, 125, value))}/${Math.round(Phaser.Math.Linear(125, 125, value))}`;
+            },
+        })
+        numberBar.setValue(75, 0, 125);
+        return numberBar;
     }
 
     createCombatantProps(bgBox){
@@ -112,22 +289,18 @@ export default class TileInfo
     }
 
     createTileProps(){
-        const title = this.scene.add.text(this.margin, this.margin, '', {
-            fontSize: styles.fontSize.large
-        }).setOrigin(0).setName('tileTitle');
-
-        this.container.add(this.scene.add.container(0, 0, [
-            title,
-        ]).setName('tilePropContainer'));
+        this.container.add(this.scene.add.container(0, 0).setName('tilePropContainer'));
     }
 
     setTile(tile){
+        // not checking if same tile, cause we are not refreshing autmatically
+        this.combatantList.removeAll(true);
         if(!tile){
             this.clearTileProps();
             return;
         }
         const tileContainer = this.container.getByName('tilePropContainer')
-        tileContainer.getByName('tileTitle').setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY}) `);
+        this.title.setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY})`);
         this.setTileProps(tile, tileContainer);
     }
 
