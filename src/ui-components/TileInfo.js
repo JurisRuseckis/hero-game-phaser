@@ -185,7 +185,7 @@ export default class TileInfo
             orientation: 'x',
         });
 
-        this.title = this.scene.add.text(0, 0, 'Tile',{
+        this.title = this.scene.add.text(0, 0, 'Hero',{
             fontSize: styles.fontSize.large,
             color: styles.textColors.white
         });
@@ -203,24 +203,32 @@ export default class TileInfo
             }
         })
             .add(label, {expand: true, align: "left"})
-            .add(this.createHealthBar(), {expand: true, align: "left"});
+            .add(this.createBar('Health', 200, 100), {expand: true, align: "left"})
+            .add(this.createBar('Turnmeter', 200, 100, styles.colors.white), {expand: true, align: "left"})
+            .add(this.scene.rexUI.add.label({
+                orientation: 'x',
+                text: this.scene.add.text(0, 0, 'Damage: 1-4',{
+                    fontSize: styles.fontSize.default,
+                    color: styles.textColors.white
+                })
+            }), {expand: true, align: "left"});
 
         return infoBox;
     }
 
-    createHealthBar(){
+    createBar(label, maxVal, val, barColor=styles.colors.red){
         const numberBar = this.scene.rexUI.add.numberBar({
-
+            name: `tileinfo-${label}`,
             width: this.width * 0.6,
             height: 30,
 
             slider: {
-                // width: 120, // Fixed width
+                width: this.width * 0.4, // Fixed width
                 track: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, styles.colors.modernBg),
-                indicator: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, styles.colors.green),
+                indicator: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, barColor),
             },
 
-            text: this.scene.add.text(0, 0, ''),
+            text: this.scene.add.text(0, 0, '', {fontSize: styles.fontSize.default,}),
 
             space: {
                 left: 10,
@@ -231,11 +239,10 @@ export default class TileInfo
             },
 
             valuechangeCallback: function (value, oldValue, numberBar) {
-                console.log(value, oldValue);
-                numberBar.text = `${Math.round(Phaser.Math.Linear(0, 125, value))}/${Math.round(Phaser.Math.Linear(125, 125, value))}`;
+                numberBar.text = `${Math.round(Phaser.Math.Linear(0, maxVal, value))}/${maxVal} ${label}`;
             },
-        })
-        numberBar.setValue(75, 0, 125);
+        });
+        numberBar.setValue(val, 0, maxVal);
         return numberBar;
     }
 
