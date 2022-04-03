@@ -15,22 +15,12 @@ export default class TileInfo
         this.scene = props.scene;
         this.alignment = props.alignment;
 
-        // this.width = this.scene.scale.width / 3;
-        // this.height = this.width * 1.2;
-
         this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.33;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
-        this.margin = styles.padding;
 
         if(this.alignment !== uiAlignment.bottomRight){
             throw "not implemented";
         }
-
-        // bg for battleLogWindow
-        const bgBox = this.scene.add.rectangle(0,0,this.width,this.height,styles.colors.modernBg, .8).setOrigin(0);
-        bgBox.setInteractive();
-        bgBox.setStrokeStyle(1, styles.colors.modernBorder);
-        bgBox.setName('bgBox');
 
         this.cont = this.createWindow();
         this.cont.layout();
@@ -48,22 +38,7 @@ export default class TileInfo
                 child.getByName('cmbListBtnBg').setFillStyle(styles.colors.modernBtn)
             })
 
-        // main container
-        this.container = this.scene.add.container(0,0, [
-            bgBox,
-        ]);
-        this.container.setVisible(false);
-
         this.tileCombatants = [];
-        this.combatantAbilities = [];
-        this.combatantTurns = [];
-
-        this.createTileProps();
-        this.createCombatantProps(bgBox);
-
-        // scroll factor fucks up pointerOver for childrem without scrollFactor 0
-        this.container.setScrollFactor(0, 0, true);
-        this.container.setDepth(1);
     }
 
     createWindow() {
@@ -110,7 +85,7 @@ export default class TileInfo
             x: 0,
             y: 0,
             width: 600,
-            height: 440,
+            height: this.height - (3*styles.padding + styles.fontSize.large),
 
             scrollMode: 'v',
 
@@ -148,12 +123,11 @@ export default class TileInfo
             space: {item: styles.padding},
             name: 'combatantList'
         })
-            .add(this.createCombatantListItem(), {expand: true});
 
         return this.combatantList;
     }
 
-    createCombatantListItem(){
+    createCombatantListItem(combatant){
         const bg = this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, undefined)
             .setFillStyle(styles.colors.modernBtn, 1)
             .setStrokeStyle(1, styles.colors.modernBorder, 1)
@@ -165,6 +139,7 @@ export default class TileInfo
 
         const listItem = this.scene.rexUI.add.sizer({
             orientation: 'h',
+            width: this.width * 0.8,
             space: {
                 left: styles.padding,
                 right: styles.padding,
@@ -175,22 +150,28 @@ export default class TileInfo
         })
             .addBackground(bg)
             .add(unitSprite, { expand: true, align: 'left' })
-            .add(this.createCombatantShortInfoBox(), { expand: true, align: 'left' })
+            .add(this.createCombatantStatBars(combatant), { expand: true, align: 'left' })
+            .add(this.createCombatantAtt(`${combatant.character.atk[0]}-${combatant.character.atk[1]}`, combatant.combatActions.attack.range), { expand: true, align: 'left' });
 
         return listItem;
     }
 
-    createCombatantShortInfoBox(){
+    createCombatantStatBars(combatant){
         const label = this.scene.rexUI.add.label({
             orientation: 'x',
         });
 
-        this.title = this.scene.add.text(0, 0, 'Hero',{
+        let labeltxt = `${combatant.label} [team ${combatant.team}]`;
+        if(combatant.hp <= 0){
+            labeltxt = `☠️${combatant.label} [team ${combatant.team}]`;
+        }
+
+        const title = this.scene.add.text(0, 0, labeltxt,{
             fontSize: styles.fontSize.large,
             color: styles.textColors.white
         });
 
-        label.add(this.title, {expand: true});
+        label.add(title, {expand: true});
 
         const infoBox = this.scene.rexUI.add.sizer({
             orientation: 'v',
@@ -203,15 +184,8 @@ export default class TileInfo
             }
         })
             .add(label, {expand: true, align: "left"})
-            .add(this.createBar('Health', 200, 100), {expand: true, align: "left"})
-            .add(this.createBar('Turnmeter', 200, 100, styles.colors.white), {expand: true, align: "left"})
-            .add(this.scene.rexUI.add.label({
-                orientation: 'x',
-                text: this.scene.add.text(0, 0, 'Damage: 1-4',{
-                    fontSize: styles.fontSize.default,
-                    color: styles.textColors.white
-                })
-            }), {expand: true, align: "left"});
+            .add(this.createBar('Health', combatant.maxHp, combatant.hp), {expand: true, align: "left"})
+            .add(this.createBar('Turnmeter', 1, combatant.turnMeter, styles.colors.white), {expand: true, align: "left"});
 
         return infoBox;
     }
@@ -219,11 +193,11 @@ export default class TileInfo
     createBar(label, maxVal, val, barColor=styles.colors.red){
         const numberBar = this.scene.rexUI.add.numberBar({
             name: `tileinfo-${label}`,
-            width: this.width * 0.6,
+            width: this.width * 0.4,
             height: 30,
 
             slider: {
-                width: this.width * 0.4, // Fixed width
+                width: this.width * 0.2, // Fixed width
                 track: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, styles.colors.modernBg),
                 indicator: this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 10, barColor),
             },
@@ -246,85 +220,57 @@ export default class TileInfo
         return numberBar;
     }
 
-    createCombatantProps(bgBox){
-        const title = this.scene.add.text(this.margin, this.margin, 'combatant title', {
-            fontSize: styles.fontSize.large
-        }).setOrigin(0).setName('cmbTitle');
-
-        const hp = this.scene.add.text(this.margin, title.getBottomCenter().y + this.margin, 'hp/max hp', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbHp');
-
-        const speed = this.scene.add.text(this.margin, hp.getBottomCenter().y, 'speed', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbSpeed');
-
-        const atk = this.scene.add.text(this.margin, speed.getBottomCenter().y, 'attack', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbAttack');
-
-        const turnMeter = this.scene.add.text(this.margin, atk.getBottomCenter().y, 'turnMeter', {
-            fontSize: styles.fontSize.default
-        }).setOrigin(0).setName('cmbTurnMeter');
-
-
-
-        const btnSize = styles.viewPort.width * 0.02;
-        const closeBtn = new Btn({
-            scene: this.scene,
-            x: bgBox.getBottomRight().x - (this.margin + btnSize),
-            y: this.margin,
-            width: btnSize,
-            height: btnSize,
-            text: 'x',
-            textStyle: {fontSize: styles.fontSize.default}
+    createCombatantAtt(dmgInterval, range){
+        const label = this.scene.rexUI.add.label({
+            orientation: 'x',
         });
-        closeBtn.addDefaultEvents();
-        closeBtn.btnObj.on('pointerdown', () => {
-            this.container.getByName('combatantPropContainer').setVisible(false);
-            this.container.getByName('tilePropContainer').setVisible(true);
-        }, this);
 
-        this.container.add(this.scene.add.container(0, 0, [
-            title,
-            hp,
-            speed,
-            atk,
-            turnMeter,
-            closeBtn.container
-        ]).setName('combatantPropContainer').setVisible(false));
-    }
+        const title = this.scene.add.text(0, 0, 'Attack',{
+            fontSize: styles.fontSize.large,
+            color: styles.textColors.white
+        });
 
-    createTileProps(){
-        this.container.add(this.scene.add.container(0, 0).setName('tilePropContainer'));
+        label.add(title, {expand: true});
+
+        const infoBox = this.scene.rexUI.add.sizer({
+            orientation: 'v',
+            space: {
+                left: styles.padding,
+                right: styles.padding,
+                top: styles.padding,
+                bottom: styles.padding,
+                item: styles.padding,
+            }
+        })
+            .add(label, {expand: true, align: "left"})
+            .add(this.scene.rexUI.add.label({
+                orientation: 'x',
+                text: this.scene.add.text(0, 0, `Damage: ${dmgInterval}`,{
+                    fontSize: styles.fontSize.default,
+                    color: styles.textColors.white
+                })
+            }), {expand: true, align: "left"})
+            .add(this.scene.rexUI.add.label({
+                orientation: 'x',
+                text: this.scene.add.text(0, 0, `Range: ${range}`,{
+                    fontSize: styles.fontSize.default,
+                    color: styles.textColors.white
+                })
+            }), {expand: true, align: "left"});
+
+        return infoBox;
     }
 
     setTile(tile){
-        // not checking if same tile, cause we are not refreshing autmatically
+        // not checking if same tile, cause we are not refreshing automatically
         this.combatantList.removeAll(true);
+
+        this.tileCombatants = [];
         if(!tile){
-            this.clearTileProps();
             return;
         }
-        const tileContainer = this.container.getByName('tilePropContainer')
+
         this.title.setText(`${tileLabel[tile.tileIndex]} (${tile.tileX},${tile.tileY})`);
-        this.setTileProps(tile, tileContainer);
-    }
-
-    clearTileProps(){
-        this.tileCombatants.forEach((x) => {
-            x.destroy();
-        })
-        this.tileCombatants = [];
-        this.container.getByName('combatantPropContainer').setVisible(false);
-        this.container.getByName('tilePropContainer').setVisible(true);
-    }
-
-    setTileProps(tile, tileContainer){
-
-        this.clearTileProps();
-        const title = tileContainer.getByName('tileTitle');
-        const bgBox = this.container.getByName('bgBox');
 
         let cmbList = [];
         if(tile.combatant){
@@ -337,85 +283,11 @@ export default class TileInfo
             })
         }
 
-        this.tileCombatants = cmbList.map((combatant, key) => {
-
-            let label = `${combatant.label} [team ${combatant.team}]`;
-            if(combatant.hp <= 0){
-                label = `☠️${combatant.label} [team ${combatant.team}]`;
-            }
-
-
-            const btn = new Btn({
-                key: 'tileCombatant',
-                scene: this.scene,
-                x: this.margin,
-                y: title.height + this.margin * 2 + (styles.fontSize.large + this.margin) * key,
-                width: bgBox.width - this.margin * 2,
-                height: 36,
-                text: label,
-                textStyle: {fontSize: styles.fontSize.default}
-            });
-
-            btn.addDefaultEvents();
-            btn.btnObj.on('pointerdown', () => {
-                this.setCombatantProps(combatant);
-                this.container.getByName('combatantPropContainer').setVisible(true);
-                this.container.getByName('tilePropContainer').setVisible(false);
-            }, this);
-
-            tileContainer.add(btn.container)
-
-            return btn;
-        })
-    }
-
-    clearCombatantProps(){
-        this.combatantAbilities.forEach((x) => {
-            x.destroy();
+        this.tileCombatants = cmbList.map((combatant) => {
+            this.combatantList.add(this.createCombatantListItem(combatant))
         });
-        this.combatantAbilities = [];
-        this.combatantTurns.forEach((x) => {
-            x.destroy();
-        });
-        this.combatantTurns = [];
-    }
 
-    /**
-     *
-     * @param combatant {Combatant}
-     */
-    setCombatantProps(combatant){
-        this.clearCombatantProps();
-        const tileContainer = this.container.getByName('combatantPropContainer');
-
-        let label = `${combatant.label} [team ${combatant.team}]`;
-        if(combatant.hp <= 0){
-            label = `☠️${combatant.label} [team ${combatant.team}]`;
-        }
-
-        tileContainer.getByName('cmbTitle').setText(label);
-        tileContainer.getByName('cmbHp').setText(`HP: ${combatant.hp}/${combatant.maxHp}`);
-        tileContainer.getByName('cmbSpeed').setText(`Base Speed: ${combatant.character.baseSpeed}`);
-        tileContainer.getByName('cmbAttack').setText(`Attack: [${combatant.character.atk[0]}-${combatant.character.atk[1]}]`);
-        // last element in stats
-        // mby should rename to lastElem or smth
-        const turnMeterLabel = tileContainer.getByName('cmbTurnMeter');
-        turnMeterLabel.setText(`TurnMeter: ${combatant.turnMeter}/1`);
-        let line = turnMeterLabel.getBottomCenter().y;
-
-        this.combatantAbilities = Object.entries(combatant.combatActions).map((combatAction, index)=>{
-            const txt =this.scene.add.text(
-                this.margin + (160 + this.margin)*index,
-                line + this.margin,
-                `${combatAction[0]}(${combatAction[1].cooldown})`,
-                {
-                    fontSize: styles.fontSize.default
-                }).setOrigin(0)
-                tileContainer.add(txt);
-            return txt;
-        });
-        // here comes turns
-        
+        this.cont.layout();
     }
 
 }
