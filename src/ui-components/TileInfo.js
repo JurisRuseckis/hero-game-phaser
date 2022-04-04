@@ -37,8 +37,6 @@ export default class TileInfo
             .on('child.out', function (child) {
                 child.getByName('cmbListBtnBg').setFillStyle(styles.colors.modernBtn)
             })
-
-        this.tileCombatants = [];
     }
 
     createWindow() {
