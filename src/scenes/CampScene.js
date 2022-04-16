@@ -2,10 +2,10 @@ import Phaser from "phaser";
 import {cfg} from "../cfg";
 import {styles} from "../styles";
 import BattleTeam from "../models/BattleTeam";
-import Btn from "../ui-components/Btn";
 import {characterRoster} from "../models/Generators/Characters";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import {battleAI} from "../models/AI/BattleAIs";
+import CampSceneGrid from "../ui-components/CampSceneGrid";
 
 export class CampScene extends Phaser.Scene
 {
@@ -40,68 +40,14 @@ export class CampScene extends Phaser.Scene
 
     create ()
     {
-        // will need to load save here
-        const menuItems = this.getMenuItems();
-        // precalculate to get box height by aspect ratio
-        const btnWidth = styles.grid.window - styles.padding*2;
-        const menuItemHeight = btnWidth * 0.15;
-
-        const boxContainer = this.add.rectangle(
-            styles.viewPort.centerX,
-            styles.panelLayout.contentStart,
-            styles.grid.window,
-            styles.panelLayout.contentHeight,
-            styles.colors.modernBg
-        ).setOrigin(0.5,0);
-        boxContainer.setStrokeStyle(styles.borderWidth, styles.colors.modernBorder);
-
-        const boxContainerBounds = boxContainer.getBounds();
-        const boxTitle = this.add.text(
-            boxContainer.x,
-            boxContainerBounds.top + styles.padding,
-            "Camp",
-            {fontSize: styles.fontSize.title}
-        ).setOrigin(0.5,0);
-
-        const slotsInRow = 6;
-        // width - container padding - space between slots, divided by slots wanted
-        const slotSize = (boxContainer.width - styles.padding * (1 + slotsInRow)) / slotsInRow;
-        // prob will use in future to add scrollbar to see each lvl
-        const rows = Math.floor((boxContainer.height - boxTitle.height - styles.padding * 2 - slotSize/2 ) / (slotSize+styles.padding));
-
-        const startX = boxContainerBounds.left + styles.padding;
-        const startY =  boxContainerBounds.top + boxTitle.height + styles.padding * 2;
-        // as it is square...
-        const step = slotSize + styles.padding;
-        let row = 0;
-        let column = 0;
-
-        const buttons = menuItems.map((menuItem, index) => {
-        
-            const btn = new Btn({
-                scene: this,
-                x: startX + column * step,
-                y: startY + row * step,
-                width: slotSize,
-                height: slotSize,
-                text: index+1,
-                textStyle: {fontSize: styles.fontSize.large},
-                ornament: menuItem.completed ? "✓" : undefined
-            });
-
-            if(column+1 >= slotsInRow){
-                column=0;
-                row++;
-            } else {
-                column++;
-            }
-
-            btn.addDefaultEvents();
-            btn.btnObj.on('pointerdown', menuItem.onClick);
-
-            return btn;
-        })
-
+        const campSceneGrid = new CampSceneGrid({
+            scene: this,
+            alignment: {
+                centerX: 'center',
+                top: `top+${styles.panelLayout.contentStart}`
+            },
+            levels: this.getMenuItems()
+        });
     }
 
     loadLevels () {
@@ -294,16 +240,67 @@ export class CampScene extends Phaser.Scene
                     this.startBattle(testBattle,5);
                 }
             },
+            {
+                id: 6,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
+            {
+                id: 7,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
+            {
+                id: 8,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
+            {
+                id: 9,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
+            {
+                id: 10,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
+            {
+                id: 11,
+                label: "Random Battle",
+                onClick: ()=>{
+                    const testBattle = BattleGenerator.generate({})
+                    this.startBattle(testBattle,0);
+                }
+            },
         ]
     }
 
     getMenuItems ()
     {
         const completedLevels = this.registry.get("completedLevels");
-        const levels = this.loadLevels().map((level, index) => {
-            level.completed = completedLevels.includes(level.id);
-            return level;
-        })
+        const levels = {
+            title: "test",
+            items: this.loadLevels().map((level, index) => {
+                level.completed = completedLevels.includes(level.id);
+                return level;
+            })
+        }
         return levels;
     }
 

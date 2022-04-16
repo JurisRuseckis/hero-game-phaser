@@ -22,7 +22,6 @@ export default class BattleLogWindow
         this.cont.layout();
 
         this.logListWidth = this.logList.width;
-        console.log(this.logListWidth);
     }
 
     createWindow(anchor) {
