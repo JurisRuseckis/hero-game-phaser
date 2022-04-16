@@ -1,5 +1,4 @@
 import {styles} from "../styles";
-import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
 import {tileLabel} from "../models/AI/BattleAI";
 
@@ -13,16 +12,11 @@ export default class TileInfo
      */
     constructor(props) {
         this.scene = props.scene;
-        this.alignment = props.alignment;
 
         this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.333;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
 
-        if(this.alignment !== uiAlignment.bottomRight){
-            throw "not implemented";
-        }
-
-        this.cont = this.createWindow();
+        this.cont = this.createWindow(props.alignment);
         this.cont.layout();
 
 
@@ -39,7 +33,7 @@ export default class TileInfo
             })
     }
 
-    createWindow() {
+    createWindow(anchor) {
         const bg = this.scene.rexUI.add.roundRectangle(0, 0, 0, 0, 0, undefined)
             .setFillStyle(styles.colors.modernBg, .8)
             .setStrokeStyle(1, styles.colors.modernBorder, 1);
@@ -56,10 +50,7 @@ export default class TileInfo
         label.add(this.title, {expand: true});
 
         return this.scene.rexUI.add.sizer({
-            anchor: {
-                right: `right-${styles.padding}`,
-                bottom: `bottom-${styles.padding}`
-            },
+            anchor: anchor,
             width: this.width,
             height: this.height,
             orientation: 'v',

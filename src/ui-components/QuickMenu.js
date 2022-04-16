@@ -1,5 +1,4 @@
 import {styles} from "../styles";
-import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
 import {cfg} from "../cfg";
 import {playSpeed} from "../scenes/BattleGridScene";
@@ -14,10 +13,6 @@ export default class QuickMenu {
     constructor(props) {
         this.scene = props.scene;
         this.alignment = props.alignment;
-
-        if(this.alignment !== uiAlignment.topRight){
-            throw "not implemented";
-        }
 
         const menuItems = this.getMenuItems();
         const btnSize = styles.viewPort.width * 0.02;

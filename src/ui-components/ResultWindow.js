@@ -1,5 +1,4 @@
 import {styles} from "../styles";
-import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
 import {cfg} from "../cfg";
 
@@ -18,10 +17,6 @@ export default class ResultWindow
         this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.4;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
         this.margin = styles.padding;
-
-        if(this.alignment !== uiAlignment.middle){
-            throw "not implemented";
-        }
 
         // if middle
         this.x = styles.isMobile

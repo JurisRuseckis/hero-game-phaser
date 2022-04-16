@@ -1,7 +1,5 @@
 import {styles} from "../styles";
-import {uiAlignment} from "./BattleLogWindow";
 import Btn from "./Btn";
-import {cfg} from "../cfg";
 
 export default class DeployConfirmation {
     /**
@@ -13,10 +11,6 @@ export default class DeployConfirmation {
     constructor(props) {
         this.scene = props.scene;
         this.alignment = props.alignment;
-
-        if(this.alignment !== uiAlignment.top){
-            throw "not implemented";
-        }
 
         const btnSize = styles.viewPort.width * 0.02;
 

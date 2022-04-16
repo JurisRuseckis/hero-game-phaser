@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import BattleUIInputController from "../controllers/BattleUIInputController";
-import BattleLogWindow, {uiAlignment} from "../ui-components/BattleLogWindow";
+import BattleLogWindow from "../ui-components/BattleLogWindow";
 import TileInfo from "../ui-components/TileInfo";
 import DebugWindow from "../ui-components/DebugWindow";
 import ResultWindow from "../ui-components/ResultWindow";
@@ -44,12 +44,11 @@ export class BattleUIScene extends Phaser.Scene
         const battle = this.data.get('battle');
         const battleLogWindow = new BattleLogWindow({
             scene: this,
-            battleLog: battle.battleLog,
-            alignment: uiAlignment.bottomLeft
+            battleLog: battle.battleLog
         });
         const tileInfo = new TileInfo({
             scene: this,
-            alignment: uiAlignment.bottomRight
+            alignment: styles.anchors.bottomRight
         });
         if(styles.isMobile){
             tileInfo.cont.setVisible(false);
@@ -58,17 +57,14 @@ export class BattleUIScene extends Phaser.Scene
             scene: this,
         });
         const resultWindow = new ResultWindow({
-            scene: this,
-            alignment: uiAlignment.middle
+            scene: this
         });
         resultWindow.container.setVisible(false);
         const quickMenu = new QuickMenu({
-            scene: this,
-            alignment: uiAlignment.topRight
+            scene: this
         });
         const deployConfirmation = new DeployConfirmation({
-            scene: this,
-            alignment: uiAlignment.top
+            scene: this
         });
 
 

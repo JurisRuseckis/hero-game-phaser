@@ -27,7 +27,48 @@ const panelLayout = {
     contentHeight: viewPort.height - (headerHeight + misc.padding * 2) // nav height and padding before & after
 };
 
+const anchors = {
+    topLeft: {
+        left: `left+${misc.padding}`,
+        top: `top+${misc.padding}`
+    },
+    top: {
+        centerX: `center`,
+        top: `top+${misc.padding}`
+    },
+    topRight: {
+        right: `right-${misc.padding}`,
+        top: `top+${misc.padding}`
+    },
+    middleLeft: {
+        left: `left+${misc.padding}`,
+        centerY: `center`,
+    },
+    middle: {
+        centerX: `center`,
+        centerY: `center`,
+    },
+    middleRight: {
+        right: `right-${misc.padding}`,
+        centerY: `center`,
+    },
+    bottomLeft: {
+        left: `left+${misc.padding}`,
+        bottom: `bottom-${misc.padding}`
+    },
+    bottom: {
+        centerX: `center`,
+        bottom: `bottom-${misc.padding}`
+    },
+    bottomRight: {
+        right: `right-${misc.padding}`,
+        bottom: `bottom-${misc.padding}`
+    },
+}
+
 export const styles = {
+    anchors: anchors,
+
     isMobile : isMobile,
 
     viewPort: {

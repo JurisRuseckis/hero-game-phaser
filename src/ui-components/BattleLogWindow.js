@@ -1,18 +1,6 @@
 import {styles} from "../styles";
 import {teamTextColors} from "../battle-grid-components/GridUnit";
 
-export const uiAlignment = {
-    topLeft: 1,
-    top: 2,
-    topRight: 3,
-    middleLeft: 4,
-    middle: 5,
-    middleRight: 6,
-    bottomLeft: 7,
-    bottom: 8,
-    bottomRight: 9,
-}
-
 export default class BattleLogWindow
 {
     /**
@@ -34,10 +22,6 @@ export default class BattleLogWindow
         this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.66;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
         this.margin = styles.padding;
-
-        if(this.alignment !== uiAlignment.bottomLeft){
-            throw "not implemented";
-        }
 
         // if bottom left
         this.x = this.margin / this.scene.scale.displayScale.x;
