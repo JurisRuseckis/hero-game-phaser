@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { cfg } from "../cfg";
-import tileSetImage from "../assets/tileset_full.png";
+import tileSetImage from "../assets/tileset.png";
 import BattleInputController from "../controllers/BattleInputController";
 import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../battle-grid-components/GridUnit";
