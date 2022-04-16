@@ -13,7 +13,7 @@ export default class TileInfo
     constructor(props) {
         this.scene = props.scene;
 
-        this.width = styles.isMobile ? styles.grid.window : styles.viewPort.width * 0.333;
+        this.width = styles.isMobile ? styles.grid.window : (styles.viewPort.width - 2 * styles.padding) * 0.333;
         this.height = styles.isMobile ? styles.grid.window * 0.2 : styles.viewPort.width * 0.2;
 
         this.cont = this.createWindow(props.alignment);
@@ -42,7 +42,7 @@ export default class TileInfo
             orientation: 'x',
         });
 
-        this.title = this.scene.add.text(0, 0, 'Tile',{
+        this.title = this.scene.add.text(0, 0, '',{
             fontSize: styles.fontSize.large,
             color: styles.textColors.white
         });

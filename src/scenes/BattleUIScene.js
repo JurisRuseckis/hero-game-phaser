@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
-import BattleUIInputController from "../controllers/BattleUIInputController";
+// import BattleUIInputController from "../controllers/BattleUIInputController";
 import BattleLogWindow from "../ui-components/BattleLogWindow";
 import TileInfo from "../ui-components/TileInfo";
 import DebugWindow from "../ui-components/DebugWindow";
@@ -44,7 +44,8 @@ export class BattleUIScene extends Phaser.Scene
         const battle = this.data.get('battle');
         const battleLogWindow = new BattleLogWindow({
             scene: this,
-            battleLog: battle.battleLog
+            battleLog: battle.battleLog,
+            alignment: styles.anchors.bottomLeft
         });
         const tileInfo = new TileInfo({
             scene: this,
@@ -76,10 +77,10 @@ export class BattleUIScene extends Phaser.Scene
         this.data.set('quickMenu', quickMenu);
         this.data.set('deployConfirmation', deployConfirmation);
 
-        const inputController = new BattleUIInputController({
-            scene: this,
-        });
-        this.data.set('inputController', inputController);
+        // const inputController = new BattleUIInputController({
+        //     scene: this,
+        // });
+        // this.data.set('inputController', inputController);
     }
 
     update(time, delta){
