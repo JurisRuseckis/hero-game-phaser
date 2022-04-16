@@ -103,12 +103,10 @@ export default class BattleLogWindow
     }
 
     createLogListItems(items){
-        let textColor = styles.textColors.white;
-
         items.forEach((item) => {
-            if(item.color) {
-                textColor = item.color;
-            }
+            const textColor = item.color 
+                ? item.color
+                : styles.textColors.white
 
             this.logList.add(this.scene.add.text(0,0,item.text,{
                 fontSize: styles.fontSize.default, 
