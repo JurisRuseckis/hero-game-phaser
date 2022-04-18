@@ -21,6 +21,23 @@ export default class CampSceneGrid
 
         this.cont = this.createWindow(props.alignment);
         this.cont.layout();
+
+        this.cont.getByName('scrollPanel').setChildrenInteractive({
+            targets:[
+                ...this.levels.map((level) => {
+                    return this.cont.getByName(level.key, true);
+                })
+            ]
+        })
+            .on('child.over', function (child) {
+                child.getByName(`btn-${child.searchKey}`).setFillStyle(styles.colors.modernBorder)
+            })
+            .on('child.out', function (child) {
+                child.getByName(`btn-${child.searchKey}`).setFillStyle(styles.colors.modernBtn)
+            })
+            .on('child.click', function (child) {
+                child.onclickfn();
+            })
     }
 
     createWindow(anchor){
@@ -105,7 +122,10 @@ export default class CampSceneGrid
             space: {item: styles.padding / 2},
             name: 'tableList'
         })
-        .add(this.createTable(this.levels), {expand:true, align:'left'})
+
+        this.levels.forEach((level)=>{
+            this.tableList.add(this.createTable(level), {expand:true, align:'left'})
+        })
 
         return this.tableList;
     }
@@ -130,7 +150,7 @@ export default class CampSceneGrid
             rowProportions: 1,
             // columnProportions: 1,
             space: { column: styles.padding, row: styles.padding },
-            name: data.title  // Search this name to get table back
+            name: data.key  // Search this name to get table back
         });
 
         data.items.forEach((item, index) => {
@@ -161,6 +181,7 @@ export default class CampSceneGrid
     }
 
     createSlot(title, data){
+        // TODO: remake all ui components someday
         const btn = new Btn({
             scene: this.scene,
             x: 0,
@@ -171,10 +192,14 @@ export default class CampSceneGrid
             textStyle: {fontSize: styles.fontSize.large},
             ornament: data.completed ? "✓" : undefined
         });
-
-        btn.addDefaultEvents();
-        btn.btnObj.on('pointerdown', data.onClick);
-
+        btn.container.searchKey = btn.key;
+        btn.container.onclickfn = data.onClick;
+        // manually fixing offsets to implement with rexui
+        btn.btnObj.setOrigin(0.5);
+        btn.txtObj.setPosition(0,0,0,0);
+        if(btn.ornament){
+            btn.ornament.setPosition(0,0,0,0);
+        }
         return btn.container;
     }
 
