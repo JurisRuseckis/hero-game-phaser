@@ -56,7 +56,7 @@ export class NavigationScene extends Phaser.Scene
             //     }
             // },
             {
-                label: "camp",
+                label: "Battle",
                 onClick: ()=>{
                     this.changeScene(cfg.scenes.camp, {});
                 }

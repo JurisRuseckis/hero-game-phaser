@@ -47,7 +47,7 @@ export default class CampSceneGrid
 
         const label = this.scene.rexUI.add.label({
             orientation: 'y',
-            text: this.scene.add.text(0, 0, 'Camp',{
+            text: this.scene.add.text(0, 0, 'Battle',{
                 fontSize: styles.fontSize.title,
                 color: styles.textColors.white
             })
