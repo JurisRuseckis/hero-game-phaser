@@ -221,6 +221,7 @@ export default class GridUnit
                 const targetTile = tilemap.getTileAt(hoveredTile.tileX,hoveredTile.tileY);
                 targetTile.properties.cmbId = initialTile.properties.cmbId;
                 initialTile.properties.cmbId = null;
+                this.tileCoordinates.set(hoveredTile.tileX,hoveredTile.tileY);
             } else {
                 this.container.x = this.initialCoords.x;
                 this.container.y = this.initialCoords.y;
