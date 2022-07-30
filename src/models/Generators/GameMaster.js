@@ -107,7 +107,7 @@ export default class GameMaster
         
         const roosterIndex = randomInt(warChest.availableRaces.length);
         const rosterOptions = warChest.getCharactersByRace(warChest.availableRaces[roosterIndex]);
-        console.log(rosterOptions)
+
         if(roosterIndex === 4) {
             size *= 2;
         }
