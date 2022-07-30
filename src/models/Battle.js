@@ -27,13 +27,6 @@ export const battleStatus = {
     deploy: 3
 }
 
-export const battleType = {
-    // no movement
-    static: 0,
-    // grid movement
-    field: 1
-}
-
 export default class Battle {
 
     /**
@@ -41,7 +34,6 @@ export default class Battle {
      * @param {Object} props
      * @param {Combatant[]} props.combatants
      * @param {Arena} props.arena
-     * @param {integer} props.battleType
      * @param {Phaser.Math.Vector2[]} props.deploymentTiles
      * @param {boolean} props.debugMode
      */
@@ -52,7 +44,6 @@ export default class Battle {
         this.battleLog = new BattleLog();
         this.turnCount = 0;
         this.arena = props.arena;
-        this.battleType = props.battleType;
         this.debugMode = props.debugMode;
         this.deploymentTiles = props.deploymentTiles || [];
     }
