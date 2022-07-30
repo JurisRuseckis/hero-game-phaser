@@ -1,12 +1,8 @@
 import CombatAction, {actionTags} from "../CombatAction";
 import Phaser from "phaser";
-import BattleAI, {tileType} from "../AI/BattleAI";
+import {tileType} from "../AI/BattleAI";
 
-/**
- * Default action that each characters will have
- * @type {Object}
- */
-export const defaultActions = {
+export const combatActions = {
     // add charge so combatant can damage someone with moving
     wait: new CombatAction({
         key: 'wait',
@@ -40,10 +36,10 @@ export const defaultActions = {
             //     arena.tilemap.getTileAt(executor.coordinates.x, executor.coordinates.y),
             //     arena.tilemap.getTileAt(target.tile.x, target.tile.y));
 
-            // calculate 
+            // calculate
             const dX = executor.coordinates.x - target.tile.x;
             const dY = executor.coordinates.y - target.tile.y;
-            // curently max == 2 so no diagonals and only 1 tile to check 
+            // curently max == 2 so no diagonals and only 1 tile to check
             let middleTile = false;
             if(Math.abs(dX) > 1){
                 middleTile = arena.tilemap.getTileAt(target.tile.x+dX/2,target.tile.y);
@@ -75,13 +71,7 @@ export const defaultActions = {
         targetRules: (executor, target, arena) => {
             return executor.team !== target.combatant.team;
         }
-    })
-};
-
-/**
- * @type {Object}
- */
-export const actionPool = {
+    }),
     heal : new CombatAction({
         key: 'heal',
         tags: [actionTags.targetable],
@@ -100,5 +90,5 @@ export const actionPool = {
             console.log(target)
             return executor.team === target.combatant.team;
         }
-    }),
+    })
 }
