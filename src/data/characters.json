@@ -1,0 +1,277 @@
+[
+  {
+    "key": "orc_peon",
+    "name": "peon",
+    "race": "orc",
+    "baseHP": 10,
+    "baseSpeed": 0.35,
+    "atk": [
+      1,
+      5
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "orc_warrior",
+    "name": "warrior",
+    "race": "orc",
+    "baseHP": 50,
+    "baseSpeed": 0.3,
+    "atk": [
+      5,
+      9
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "orc_warchief",
+    "name": "warchief",
+    "race": "orc",
+    "baseHP": 100,
+    "baseSpeed": 0.2,
+    "atk": [
+      10,
+      15
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack",
+      "heal"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "human_gatherer",
+    "name": "gatherer",
+    "race": "human",
+    "baseHP": 8,
+    "baseSpeed": 0.4,
+    "atk": [
+      1,
+      4
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "human_hunter",
+    "name": "hunter",
+    "race": "human",
+    "baseHP": 45,
+    "baseSpeed": 0.4,
+    "atk": [
+      3,
+      7
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "human_chieftain",
+    "name": "chieftain",
+    "race": "human",
+    "baseHP": 90,
+    "baseSpeed": 0.3,
+    "atk": [
+      4,
+      12
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack",
+      "heal"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "dwarf_miner",
+    "name": "miner",
+    "race": "dwarf",
+    "baseHP": 9,
+    "baseSpeed": 0.35,
+    "atk": [
+      2,
+      6
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "dwarf_warrior",
+    "name": "warrior",
+    "race": "dwarf",
+    "baseHP": 45,
+    "baseSpeed": 0.45,
+    "atk": [
+      4,
+      9
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "dwarf_commander",
+    "name": "commander",
+    "race": "dwarf",
+    "baseHP": 95,
+    "baseSpeed": 0.25,
+    "atk": [
+      9,
+      15
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack",
+      "heal"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "elf_bowyer",
+    "name": "bowyer",
+    "race": "elf",
+    "baseHP": 6,
+    "baseSpeed": 0.6,
+    "atk": [
+      2,
+      6
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "elf_archer",
+    "name": "archer",
+    "race": "elf",
+    "baseHP": 30,
+    "baseSpeed": 0.7,
+    "atk": [
+      2,
+      8
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "elf_lord",
+    "name": "lord",
+    "race": "elf",
+    "baseHP": 90,
+    "baseSpeed": 0.9,
+    "atk": [
+      7,
+      15
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack",
+      "heal"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "goblin_mob",
+    "name": "mob",
+    "race": "goblin",
+    "baseHP": 3,
+    "baseSpeed": 0.6,
+    "atk": [
+      2,
+      2
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "goblin_warrior",
+    "name": "warrior",
+    "race": "goblin",
+    "baseHP": 15,
+    "baseSpeed": 0.7,
+    "atk": [
+      1,
+      6
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack"
+    ],
+    "battleAI": "basic"
+  },
+  {
+    "key": "goblin_warboss",
+    "name": "warboss",
+    "race": "goblin",
+    "baseHP": 45,
+    "baseSpeed": 0.9,
+    "atk": [
+      4,
+      8
+    ],
+    "isPlayable": false,
+    "combatActions": [
+      "wait",
+      "walk",
+      "attack",
+      "heal"
+    ],
+    "battleAI": "basic"
+  }
+]

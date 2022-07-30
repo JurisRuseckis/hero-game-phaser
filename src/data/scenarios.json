@@ -1,0 +1,85 @@
+{
+  "chapters": [
+    {
+      "key":"debug",
+      "title":"debug"
+    }
+  ],
+  "scenarios": [
+    {
+      "indexChapterScenario" : 0,
+      "chapter": "debug",
+      "title": "Random Battle",
+      "arena": [],
+      "armies": [[],[],[],[]],
+      "deploymentTiles": []
+    },
+    {
+      "indexChapterScenario" : 1,
+      "chapter": "debug",
+      "title": "Defensive Battle",
+      "arena": [],
+      "armies": [[],[],[],[]],
+      "deploymentTiles": []
+    },
+    {
+      "indexChapterScenario" : 2,
+      "chapter": "debug",
+      "title": "1 on 1",
+      "arena":  [
+        [0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [0,1,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0]
+      ],
+      "armies": [
+        [{
+          "formation": [["elf_lord"]],
+          "coordinates": [1,2],
+          "direction": "RIGHT"
+        }],
+        [{
+          "formation": [["dwarf_commander"]],
+          "coordinates": [9,2],
+          "direction": "LEFT"
+        }]
+      ],
+      "deploymentTiles": []
+    },
+    {
+      "indexChapterScenario" : 3,
+      "chapter": "debug",
+      "title": "1 on 1 labyrinth",
+      "arena":  [
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,0,1,0,1,0,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
+        [0,1,0,1,0,1,0,1,1,0,1,1,0,1,0,1,0,1,0],
+        [0,1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,1,0],
+        [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      ],
+      "armies": [
+        [{
+          "formation": [["elf_lord"]],
+          "coordinates": [1,1],
+          "direction": "RIGHT"
+        }],
+        [{
+          "formation": [["elf_lord"]],
+          "coordinates": [17,1],
+          "direction": "LEFT"
+        }]
+      ],
+      "deploymentTiles": [[1,1],[2,1],[3,1]]
+    }
+  ]
+}
