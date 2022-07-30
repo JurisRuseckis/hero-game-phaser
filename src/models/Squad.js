@@ -1,22 +1,28 @@
 import Phaser from "phaser";
 import {rotateMatrix} from "../helpers/rotateMatrix";
-import Character from "./Character";
 
-export default class BattleTeam
+export default class Squad
 {
+    /**
+     *
+     * @param {Object} props
+     * @param {Character[][]} props.formation
+     * @param {Phaser.Math.Vector2} props.coordinates
+     * @param {Phaser.Math.Vector2} props.direction
+     */
     constructor(props) {
         // divide team's army into squads etc to enable multiple formations and multiple field commanders
         this.formation = props.formation;
-        this.singleUnits = props.singleUnits || [];
+        this.coordinates = props.coordinates;
 
         // this.characters = this.formation.flat().filter(c => c instanceof Character);
-        this.height = this.singleUnits.length > 0 ? 0 : this.formation.length;
-        this.width = this.singleUnits.length > 0 ? 0 : Math.max(...this.formation.map(r => r.length));
+        this.height = this.formation.length;
+        this.width = Math.max(...this.formation.map(r => r.length));
         /**
-         * default direction will always be to right
+         * default direction will be to right(from player side) by default
          * @type {Phaser.Math.Vector2}
          */
-        this.direction = Phaser.Math.Vector2.RIGHT;
+        this.direction = props.direction || Phaser.Math.Vector2.RIGHT;
     }
 
     /**
@@ -28,16 +34,21 @@ export default class BattleTeam
             direction.normalize();
         }
 
-        if(this.singleUnits.length > 0){
-            return this.formation;
-        }
-
         // probably everything will be f-up by js references
         this.formation = rotateMatrix(this.formation, this.direction, direction);
         return this.formation;
     }
 
+    recalculateDimensions(){
+        this.height = this.formation.length;
+        this.width = Math.max(...this.formation.map(r => r.length));
+    }
+
     printFormation(){
         return this.formation.map(r => r.map(c => c.name))
+    }
+
+    getLargestDimension() {
+        return Math.max(this.width, this.height);
     }
 }
