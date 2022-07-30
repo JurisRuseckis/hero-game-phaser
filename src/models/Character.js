@@ -19,6 +19,7 @@ export default class Character
      * @param {string} props.race
      * @param {boolean} props.isPlayable
      * @param {Object} props.combatActions
+     * @param {Number} props.tier
      * @param {BattleAI} props.battleAI
      */
     constructor(props) {
@@ -29,6 +30,7 @@ export default class Character
         this.atk = props.atk;
         this.race = props.race;
         this.battleAI = props.battleAI;
+        this.tier = props.tier
         /**
          * @type {Object}
          */
@@ -50,6 +52,7 @@ export default class Character
             isPlayable: this.isPlayable,
             combatActions: Object.values(this.combatActions).map(combatAction => combatAction.key),
             battleAI: this.battleAI.key,
+            tier: this.tier,
         }
     }
 }

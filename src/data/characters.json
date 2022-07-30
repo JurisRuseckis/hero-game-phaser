@@ -3,6 +3,7 @@
     "key": "orc_peon",
     "name": "peon",
     "race": "orc",
+    "tier": 1,
     "baseHP": 10,
     "baseSpeed": 0.35,
     "atk": [
@@ -21,6 +22,7 @@
     "key": "orc_warrior",
     "name": "warrior",
     "race": "orc",
+    "tier": 2,
     "baseHP": 50,
     "baseSpeed": 0.3,
     "atk": [
@@ -39,6 +41,7 @@
     "key": "orc_warchief",
     "name": "warchief",
     "race": "orc",
+    "tier": 3,
     "baseHP": 100,
     "baseSpeed": 0.2,
     "atk": [
@@ -58,6 +61,7 @@
     "key": "human_gatherer",
     "name": "gatherer",
     "race": "human",
+    "tier": 1,
     "baseHP": 8,
     "baseSpeed": 0.4,
     "atk": [
@@ -76,6 +80,7 @@
     "key": "human_hunter",
     "name": "hunter",
     "race": "human",
+    "tier": 2,
     "baseHP": 45,
     "baseSpeed": 0.4,
     "atk": [
@@ -94,6 +99,7 @@
     "key": "human_chieftain",
     "name": "chieftain",
     "race": "human",
+    "tier": 3,
     "baseHP": 90,
     "baseSpeed": 0.3,
     "atk": [
@@ -113,6 +119,7 @@
     "key": "dwarf_miner",
     "name": "miner",
     "race": "dwarf",
+    "tier": 1,
     "baseHP": 9,
     "baseSpeed": 0.35,
     "atk": [
@@ -131,6 +138,7 @@
     "key": "dwarf_warrior",
     "name": "warrior",
     "race": "dwarf",
+    "tier": 2,
     "baseHP": 45,
     "baseSpeed": 0.45,
     "atk": [
@@ -149,6 +157,7 @@
     "key": "dwarf_commander",
     "name": "commander",
     "race": "dwarf",
+    "tier": 3,
     "baseHP": 95,
     "baseSpeed": 0.25,
     "atk": [
@@ -168,6 +177,7 @@
     "key": "elf_bowyer",
     "name": "bowyer",
     "race": "elf",
+    "tier": 1,
     "baseHP": 6,
     "baseSpeed": 0.6,
     "atk": [
@@ -186,6 +196,7 @@
     "key": "elf_archer",
     "name": "archer",
     "race": "elf",
+    "tier": 2,
     "baseHP": 30,
     "baseSpeed": 0.7,
     "atk": [
@@ -204,6 +215,7 @@
     "key": "elf_lord",
     "name": "lord",
     "race": "elf",
+    "tier": 3,
     "baseHP": 90,
     "baseSpeed": 0.9,
     "atk": [
@@ -223,6 +235,7 @@
     "key": "goblin_mob",
     "name": "mob",
     "race": "goblin",
+    "tier": 1,
     "baseHP": 3,
     "baseSpeed": 0.6,
     "atk": [
@@ -241,6 +254,7 @@
     "key": "goblin_warrior",
     "name": "warrior",
     "race": "goblin",
+    "tier": 2,
     "baseHP": 15,
     "baseSpeed": 0.7,
     "atk": [
@@ -259,6 +273,7 @@
     "key": "goblin_warboss",
     "name": "warboss",
     "race": "goblin",
+    "tier": 3,
     "baseHP": 45,
     "baseSpeed": 0.9,
     "atk": [
