@@ -1,11 +1,9 @@
 import Phaser from "phaser";
 import {cfg} from "../cfg";
 import {styles} from "../styles";
-import BattleTeam from "../models/BattleTeam";
-import {characterRoster} from "../models/Generators/Characters";
-import BattleGenerator from "../models/Generators/BattleGenerator";
-import {battleAI} from "../models/AI/BattleAIs";
 import CampSceneGrid from "../ui-components/CampSceneGrid";
+import {warChest} from "../index";
+import GameMaster from "../models/Generators/GameMaster";
 
 export class CampScene extends Phaser.Scene
 {
@@ -50,214 +48,18 @@ export class CampScene extends Phaser.Scene
         });
     }
 
-    loadLevels () {
-        return [
-            {
-                key: "debug",
-                title: "debug",
-                items:  [
-                    {
-                        id: 0,
-                        label: "Random Battle",
-                        onClick: ()=>{
-                            const testBattle = BattleGenerator.generate({})
-                            this.startBattle(testBattle,0);
-                        }
-                    },
-                    {
-                        id: 1,
-                        label: "Defensive Battle",
-                        onClick: ()=>{
-                            const defensiveDwarf = {
-                                ...characterRoster.dwarf.warrior
-                            };
-                            defensiveDwarf.battleAI = battleAI.defensive;
-                            const testTeam = new BattleTeam({
-                                formation: [
-                                    [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                                    [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                                    [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                                    [defensiveDwarf,defensiveDwarf,defensiveDwarf,defensiveDwarf],
-                                ],
-                            });
-                            const testBattle = BattleGenerator.generate({
-                                // teamCount: 2,
-                                // teamSize: 2,
-                                teams: [testTeam]
-                            })
-
-                            this.startBattle(testBattle,1);
-                        }
-                    },
-                    {
-                        id: 2,
-                        label: "1 on 1",
-                        onClick: ()=>{
-                            const testBattle = BattleGenerator.generate({
-                                teamCount: 2,
-                                // teamSize: 2,
-                                arenaTiles: [
-                                    [0,0,0,0,0,0,0,0,0,0,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,0,0,0,0,0,0,0,0,0,0],
-                                ],
-                                teams: [new BattleTeam({
-                                    formation: [
-                                        [characterRoster.elf.lord],
-                                    ],
-                                }), new BattleTeam({
-                                    formation: [
-                                        [characterRoster.dwarf.commander],
-                                    ],
-                                })]
-                            })
-                            this.startBattle(testBattle,2);
-                        }
-                    },
-                    {
-                        id: 3,
-                        label: "1 on 1 labyrinth",
-                        onClick: ()=>{
-                            const defensiveDwarf = {
-                                ...characterRoster.dwarf.warrior
-                            };
-                            defensiveDwarf.battleAI = battleAI.defensive;
-                            const testBattle = BattleGenerator.generate({
-                                teamCount: 2,
-                                // teamSize: 2,
-                                arenaTiles: [
-                                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                    [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,0,0,0,0,0,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,0,1,0,1,0,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,0],
-                                    [0,1,0,1,0,1,0,1,1,0,1,1,0,1,0,1,0,1,0],
-                                    [0,1,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                ],
-                                teams: [new BattleTeam({
-                                    formation: [
-                                        [characterRoster.elf.lord],
-                                    ],
-                                }), new BattleTeam({
-                                    formation: [
-                                        [characterRoster.elf.lord],
-                                        // [characterRoster.dwarf.warrior],
-                                    ],
-                                })]
-                            })
-                            this.startBattle(testBattle,3);
-                        }
-                    },
-                    {
-                        id: 4,
-                        label: "custom shit",
-                        onClick: ()=>{
-                            const defensiveDwarf = {
-                                ...characterRoster.dwarf.warrior
-                            };
-                            defensiveDwarf.battleAI = battleAI.defensive;
-                            const testBattle = BattleGenerator.generate({
-                                teamCount: 2,
-                                // teamSize: 2,
-                                arenaTiles: [
-                                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,0],
-                                    [0,1,1,1,0,0,1,1,0,0,0,1,1,0,0,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0],
-                                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                                ],
-                                teams: [new BattleTeam({
-                                    formation: [
-                                        [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
-                                        [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
-                                        [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
-                                        [characterRoster.elf.bowyer,characterRoster.elf.bowyer],
-                                    ],
-                                }), new BattleTeam({
-                                    formation: [
-                                        [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
-                                        [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
-                                        [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
-                                        [characterRoster.dwarf.miner,characterRoster.dwarf.miner],
-                                    ],
-                                })]
-                            })
-                            this.startBattle(testBattle,4);
-                        }
-                    },
-                    {
-                        id: 5,
-                        label: "custom deployment",
-                        onClick: ()=>{
-                            const testBattle = BattleGenerator.generate({
-                                teamCount: 2,
-                                // teamSize: 2,
-                                arenaTiles: [
-                                    [0,0,0,0,0,0,0,0,0,0,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,1,1,1,1,1,1,1,1,1,0],
-                                    [0,0,0,0,0,0,0,0,0,0,0],
-                                ],
-                                teams: [new BattleTeam({
-                                    singleUnits: [
-                                        {
-                                            character: characterRoster.dwarf.commander,
-                                            coordinates: new Phaser.Math.Vector2(1,1)
-                                        },
-                                        {
-                                            character: characterRoster.dwarf.commander,
-                                            coordinates: new Phaser.Math.Vector2(1,3)
-                                        },
-                                    ]
-                                }), new BattleTeam({
-                                    singleUnits: [
-                                        {
-                                            character: characterRoster.human.peasant,
-                                            coordinates: new Phaser.Math.Vector2(3,1)
-                                        },
-                                        {
-                                            character: characterRoster.human.peasant,
-                                            coordinates: new Phaser.Math.Vector2(3,3)
-                                        },
-                                    ]
-                                })]
-                            })
-                            this.startBattle(testBattle,5);
-                        }
-                    },
-                ]
-            }
-        ]
-    }
-
     getMenuItems ()
     {
         const completedLevels = this.registry.get("completedLevels");
-        return this.loadLevels().map((chapter)=>{
-            chapter.items = chapter.items.map((level, index) => {
-                level.completed = completedLevels.includes(level.id);
-                return level;
+        return warChest.scenarios.tree.map((chapter)=>{
+            chapter.items = chapter.items.map((scenario, index) => {
+                scenario.completed = completedLevels.includes(`${scenario.chapter}.${scenario.indexChapterScenario}`);
+                const battle = GameMaster.setupBattle(scenario);
+                scenario.onClick = () => {
+                    this.startBattle(battle,scenario.indexChapterScenario);
+                }
+                return scenario;
             });
-
             return chapter
         });
     }
