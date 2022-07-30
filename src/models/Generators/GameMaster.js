@@ -2,11 +2,11 @@ import {randomInt} from "../../helpers/randomInt";
 import {Combatant} from "../Combatant";
 import Arena from "../Arena";
 import Phaser from "phaser";
-import {characterRoster} from "./Characters";
 import Army from "../Army";
 import {tileType} from "../AI/BattleAI";
 import Squad from "../Squad";
 import Battle from "../Battle";
+import {warChest} from "../../index";
 
 const deploymentOrientations = {
     horizontal: 0,
@@ -105,8 +105,9 @@ export default class GameMaster
      */
     static generateTeam(size){
         
-        const roosterIndex = randomInt(5);
-        const rosterOptions = Object.values(characterRoster)[roosterIndex];
+        const roosterIndex = randomInt(warChest.availableRaces.length);
+        const rosterOptions = warChest.getCharactersByRace(warChest.availableRaces[roosterIndex]);
+        console.log(rosterOptions)
         if(roosterIndex === 4) {
             size *= 2;
         }
