@@ -9,6 +9,7 @@ import { BattleGridScene } from './scenes/BattleGridScene';
 import {BattleUIScene} from "./scenes/BattleUIScene";
 import {CampScene} from "./scenes/CampScene";
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+import WarChest from "./models/WarChest";
 
 const config = {
     scale: {
@@ -39,6 +40,11 @@ const config = {
         }]
     }
 };
+
+export const warChest = new WarChest({
+    characters: require('./data/characters.json'),
+    scenarios: require('./data/scenarios.json'),
+})
 
 // noinspection JSUnusedLocalSymbols
 const game = new Phaser.Game(config);
