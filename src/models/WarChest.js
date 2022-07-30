@@ -1,7 +1,6 @@
 /**
  * Loads content from json files to phaser registry
  */
-import {characterRoster} from "./Generators/Characters";
 import {combatActions} from "./Generators/BattleActions";
 import Character from "./Character";
 import {battleAI} from "./AI/BattleAIs";
@@ -30,6 +29,9 @@ export default class WarChest
          * @type {Character[]}
          */
         this.characters = this.loadCharacters(props.characters);
+        this.availableRaces = this.characters.map(c => c.race).filter((value, index, self) => {
+            return self.indexOf(value) === index
+        });
         /**
          *
          * @type {Object[]}
@@ -106,13 +108,13 @@ export default class WarChest
         return scenarios;
     }
 
-    printCharactersAsJSON(){
-        let chars = []
-        Object.values(characterRoster).forEach((race) => {
-            Object.values(race).forEach((char) => {
-                chars.push(char.printJSON())
-            })
-        })
-        console.log(chars);
+    getCharactersByRace(race) {
+        return this.characters.filter((char) => race === char.race).sort((a,b) => (
+            a.tier > b.tier)
+            ? 1
+            : (a.tier < b.tier)
+                ? -1
+                : 0
+        )
     }
 }
