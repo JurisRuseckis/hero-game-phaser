@@ -2,7 +2,6 @@ import Phaser from "phaser";
 import { cfg } from "../cfg";
 import tileSetImage from "../assets/tileset.png";
 import BattleInputController from "../controllers/BattleInputController";
-import BattleGenerator from "../models/Generators/BattleGenerator";
 import GridUnit, { statusOption } from "../battle-grid-components/GridUnit";
 import { battleStatus } from "../models/Battle";
 import { styles } from "../styles";
@@ -67,7 +66,7 @@ export class BattleGridScene extends Phaser.Scene {
 
         let battle = this.data.get('battle');
         if (!battle) {
-            battle = BattleGenerator.generate({});
+            return;
         }
 
         this.data.set('battle', battle);
