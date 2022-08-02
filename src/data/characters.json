@@ -52,8 +52,7 @@
     "combatActions": [
       "wait",
       "walk",
-      "attack",
-      "heal"
+      "attack"
     ],
     "battleAI": "basic"
   },
@@ -110,8 +109,7 @@
     "combatActions": [
       "wait",
       "walk",
-      "attack",
-      "heal"
+      "attack"
     ],
     "battleAI": "basic"
   },
@@ -168,8 +166,7 @@
     "combatActions": [
       "wait",
       "walk",
-      "attack",
-      "heal"
+      "attack"
     ],
     "battleAI": "basic"
   },
@@ -226,8 +223,7 @@
     "combatActions": [
       "wait",
       "walk",
-      "attack",
-      "heal"
+      "attack"
     ],
     "battleAI": "basic"
   },
@@ -284,8 +280,7 @@
     "combatActions": [
       "wait",
       "walk",
-      "attack",
-      "heal"
+      "attack"
     ],
     "battleAI": "basic"
   }
