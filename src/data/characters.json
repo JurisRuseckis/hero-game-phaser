@@ -24,7 +24,7 @@
     "race": "orc",
     "tier": 2,
     "baseHP": 50,
-    "baseSpeed": 0.3,
+    "baseSpeed": 0.45,
     "atk": [
       5,
       9
@@ -43,7 +43,7 @@
     "race": "orc",
     "tier": 3,
     "baseHP": 100,
-    "baseSpeed": 0.2,
+    "baseSpeed": 0.5,
     "atk": [
       10,
       15
@@ -100,7 +100,7 @@
     "race": "human",
     "tier": 3,
     "baseHP": 90,
-    "baseSpeed": 0.3,
+    "baseSpeed": 0.4,
     "atk": [
       4,
       12
@@ -118,7 +118,7 @@
     "name": "miner",
     "race": "dwarf",
     "tier": 1,
-    "baseHP": 9,
+    "baseHP": 10,
     "baseSpeed": 0.35,
     "atk": [
       2,
@@ -137,11 +137,11 @@
     "name": "warrior",
     "race": "dwarf",
     "tier": 2,
-    "baseHP": 45,
+    "baseHP": 50,
     "baseSpeed": 0.45,
     "atk": [
       4,
-      9
+      10
     ],
     "isPlayable": false,
     "combatActions": [
@@ -156,8 +156,8 @@
     "name": "commander",
     "race": "dwarf",
     "tier": 3,
-    "baseHP": 95,
-    "baseSpeed": 0.25,
+    "baseHP": 100,
+    "baseSpeed": 0.5,
     "atk": [
       9,
       15
@@ -171,8 +171,8 @@
     "battleAI": "basic"
   },
   {
-    "key": "elf_bowyer",
-    "name": "bowyer",
+    "key": "elf_militia",
+    "name": "militia",
     "race": "elf",
     "tier": 1,
     "baseHP": 6,
@@ -213,11 +213,11 @@
     "name": "lord",
     "race": "elf",
     "tier": 3,
-    "baseHP": 90,
-    "baseSpeed": 0.9,
+    "baseHP": 85,
+    "baseSpeed": 0.8,
     "atk": [
-      7,
-      15
+      6,
+      13
     ],
     "isPlayable": false,
     "combatActions": [
@@ -254,7 +254,7 @@
     "baseHP": 15,
     "baseSpeed": 0.7,
     "atk": [
-      1,
+      2,
       6
     ],
     "isPlayable": false,
@@ -271,7 +271,7 @@
     "race": "goblin",
     "tier": 3,
     "baseHP": 45,
-    "baseSpeed": 0.9,
+    "baseSpeed": 0.8,
     "atk": [
       4,
       8
