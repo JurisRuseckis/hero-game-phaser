@@ -80,6 +80,38 @@
         }]
       ],
       "deploymentTiles": [[1,1],[2,1],[3,1]]
+    },
+    {
+      "indexChapterScenario" : 4,
+      "chapter": "debug",
+      "title": "dwarves vs elves",
+      "arena": [],
+      "armies": [
+        [{
+          "formation": [
+            ["elf_militia", "elf_militia", "elf_militia", "elf_militia"],
+            ["elf_militia", "elf_militia", "elf_militia", "elf_militia"],
+            ["elf_militia", "elf_militia", "elf_militia", "elf_militia"],
+            ["elf_archer", "elf_archer", "elf_archer", "elf_archer"],
+            ["elf_lord"]
+          ],
+          "coordinates": [-1,-1],
+          "direction": "RIGHT"
+        }],
+        [{
+          "formation": [
+            ["dwarf_miner", "dwarf_miner", "dwarf_miner", "dwarf_miner"],
+            ["dwarf_miner", "dwarf_miner", "dwarf_miner", "dwarf_miner"],
+            ["dwarf_miner", "dwarf_miner", "dwarf_miner", "dwarf_miner"],
+            ["dwarf_warrior", "dwarf_warrior", "dwarf_warrior", "dwarf_warrior"],
+            ["dwarf_commander"]
+          ],
+          "coordinates": [-1,-1],
+          "direction": "LEFT"
+        }]
+      ],
+      "deploymentTiles": []
     }
   ]
 }
+
