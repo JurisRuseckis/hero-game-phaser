@@ -85,7 +85,13 @@ export default class WarChest
                         squad.direction = Phaser.Math.Vector2[squad.direction]
 
                         // todo: make string shortcuts for middle, left, right, etc
-                        squad.coordinates = new Phaser.Math.Vector2(squad.coordinates[0],squad.coordinates[1])
+                        if(squad.coordinates[0] === -1){
+                            delete squad.coordinates
+                        } else {
+                            //currently whis will trigger teams auto location in generator
+                            //as they wont have coordinates same as generated teams
+                            squad.coordinates = new Phaser.Math.Vector2(squad.coordinates[0],squad.coordinates[1])
+                        }
 
                         squad.formation = squad.formation.map((row) =>{
                             return row.map((column) => {
