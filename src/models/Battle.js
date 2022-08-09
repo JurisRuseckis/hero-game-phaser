@@ -44,8 +44,24 @@ export default class Battle {
         this.battleLog = new BattleLog();
         this.turnCount = 0;
         this.arena = props.arena;
-        this.debugMode = props.debugMode;
+        this.debugMode = true;
         this.deploymentTiles = props.deploymentTiles || [];
+        // todo: pass them in teams and let battle throw in one combatant element
+        this.teamStats = this.getTeamStats(this.combatants);
+    }
+
+    getTeamStats(combatants){
+        const teams = combatants.reduce((r, c)=>{
+            r[c.team] = r[c.team] || [];
+            r[c.team].push(c);
+            return r;
+        }, [])
+        return teams.map((team) => {
+            return {
+                'totalHP' : team.map((combatant) => combatant.hp).reduce((sum, hp)=> sum + hp, 0),
+                'count' : team.length
+            }
+        })
     }
 
     getFastestTurnTime() {
@@ -110,10 +126,15 @@ export default class Battle {
             // this.scene.showResults({});
             this.battleLog.addText(`Battle ended. Team ${this.combatants[0].team} has won`)
             if (this.debugMode) {
-                console.log('survivors');
-                console.table(this.combatants);
-                console.log('corpses');
-                console.table(this.corpses);
+                // console.log('survivors');
+                // console.table(this.combatants);
+                // console.log('corpses');
+                // console.table(this.corpses);
+                const winner = this.combatants[0].team;
+                const leftoverHP = this.combatants.map((c)=> c.hp).reduce((sum, hp)=> sum + hp, 0);
+                const totalHP = this.teamStats[this.combatants[0].team].totalHP;
+                const percentage = ( leftoverHP / totalHP ) * 100
+                console.log(`team ${winner}, ${leftoverHP}/${totalHP} HP (${percentage}%)`)
             }
             // move to scene
             // this.scene.updateActionBtns([]);
