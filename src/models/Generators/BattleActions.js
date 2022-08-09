@@ -7,7 +7,7 @@ export const combatActions = {
     wait: new CombatAction({
         key: 'wait',
         tags: [actionTags.any],
-        range: 2,
+        range: 0,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
@@ -72,23 +72,36 @@ export const combatActions = {
             return executor.team !== target.combatant.team;
         }
     }),
-    heal : new CombatAction({
-        key: 'heal',
+    charge: new CombatAction({
+        key: 'charge',
         tags: [actionTags.targetable],
         range: 2,
-        cooldown: 20,
+        cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
-            const healAmount = executor.calculateDmg();
-            target.combatant.hp += healAmount;
-            if(target.combatant.hp > target.combatant.maxHp){
-                target.combatant.hp = target.combatant.maxHp;
-            }
-            return `${executor.label} from team ${executor.team} heals ${target.combatant.label} from team ${target.combatant.team} for ${healAmount} hp!`;
+            const dmg = executor.calculateDmg();
+            target.combatant.hp -= dmg;
+            return `${executor.label} from team ${executor.team} charges at ${target.combatant.label} from team ${target.combatant.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target, arena) => {
-            console.log(target)
-            return executor.team === target.combatant.team;
+            return executor.team !== target.combatant.team;
+
+            // calculate
+            const dX = executor.coordinates.x - target.tile.x;
+            const dY = executor.coordinates.y - target.tile.y;
+            // curently max == 2 so no diagonals and only 1 tile to check
+            let middleTile = false;
+            if(Math.abs(dX) > 1){
+                middleTile = arena.tilemap.getTileAt(target.tile.x+dX/2,target.tile.y);
+            } else if (Math.abs(dY) > 1){
+                middleTile = arena.tilemap.getTileAt(target.tile.x,target.tile.y+dY/2);
+            }
+
+            return middleTile
+                && !middleTile.properties['cmbId']
+                && middleTile.index !== tileType.wall
+                && !(middleTile.x === executor.coordinates.x
+                    && middleTile.y === executor.coordinates.y)
         }
     })
 }
