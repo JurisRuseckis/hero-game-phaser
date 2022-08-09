@@ -48,10 +48,9 @@ export default class Character
             race: this.race,
             baseHP: this.baseHP,
             baseSpeed: this.baseSpeed,
-            atk: this.atk,
-            isPlayable: this.isPlayable,
-            combatActions: Object.values(this.combatActions).map(combatAction => combatAction.key),
-            battleAI: this.battleAI.key,
+            atk: `${this.atk[0]}-${this.atk[1]}`,
+            // combatActions: Object.values(this.combatActions).map(combatAction => combatAction.key),
+            // battleAI: this.battleAI.key,
             tier: this.tier,
         }
     }
