@@ -29,7 +29,7 @@ export const combatActions = {
             return `${executor.label} from team ${executor.team} walks from tile at [${init.x},${init.y}] to tile at [${target.tile.x},${target.tile.y}]`;
         },
         targetRules: (executor, target, arena) => {
-            // todo: make it possible to move more than 2 tiles
+            // todo: make it possible to move more than 2 tiles also implement char skills to range
             // const shortestPathToEnemy = BattleAI.calculateShortestPath(
             //     arena,
             //     executor,
@@ -59,7 +59,7 @@ export const combatActions = {
     }),
     attack: new CombatAction({
         key: 'attack',
-        tags: [actionTags.targetable],
+        tags: [actionTags.targetable, actionTags.melee],
         range: 1,
         cooldown: 0,
         operation: (executor, target, arena) => {
@@ -74,9 +74,9 @@ export const combatActions = {
     }),
     charge: new CombatAction({
         key: 'charge',
-        tags: [actionTags.targetable],
+        tags: [actionTags.targetable, actionTags.melee],
         range: 2,
-        cooldown: 0,
+        cooldown: 1,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
             
@@ -91,6 +91,7 @@ export const combatActions = {
                 middleTile = arena.tilemap.getTileAt(target.tile.x,target.tile.y+dY/2);
             }
 
+            //at this point it should be valid tile
             executor.coordinates.set(middleTile.x, middleTile.y);
             
             const dmg = executor.calculateDmg();
@@ -119,7 +120,7 @@ export const combatActions = {
     }),
     bowAttack: new CombatAction({
         key: 'bowAttack',
-        tags: [actionTags.targetable],
+        tags: [actionTags.targetable, actionTags.ranged],
         range: 3,
         cooldown: 0,
         operation: (executor, target, arena) => {
@@ -131,31 +132,26 @@ export const combatActions = {
             return `${executor.label} from team ${executor.team} shoots arrow at ${target.combatant.label} from team ${target.combatant.team} for ${dmg} damage!`;
         },
         targetRules: (executor, target, arena) => {
-            // calculate
-            const dX = executor.coordinates.x - target.tile.x;
-            const dY = executor.coordinates.y - target.tile.y;
-            // curently max == 2 so no diagonals and only 1 tile to check
-            let middleTile = false;
-            const executorTile = arena.tilemap.getTileAt(executor.coordinates.x,executor.coordinates.y);
-            const distance = BattleAI.getDistanceCost(executorTile,target.tile);
-            
-            let tilesBlocking = true;
-            let middleTiles = [];
-            if(distance > 0 && distance <= 1.4){
-                // when no tiles are between
-                tilesBlocking=true;
-            } else if (distance <= 2){
-                // 1 tile between
+            // currently ranged attacks will be able to shoot over walls
+            return executor.team !== target.combatant.team
+        }
+    }),
+    throwSpear: new CombatAction({
+        key: 'throwSpear',
+        tags: [actionTags.targetable, actionTags.ranged],
+        range: 2,
+        cooldown: 2,
+        operation: (executor, target, arena) => {
+            executor.turnMeter = 0;
 
-            } else if(distance <=3){
-                // 2 tiles between
-                
-            } else {
-                return false;
-            }
+            const dmg = executor.calculateDmg();
+            target.combatant.hp -= dmg;
 
-            return middleTile.index !== tileType.wall
-                && executor.team !== target.combatant.team
+            return `${executor.label} from team ${executor.team} throws spear at ${target.combatant.label} from team ${target.combatant.team} for ${dmg} damage!`;
+        },
+        targetRules: (executor, target, arena) => {
+            // currently ranged attacks will be able to shoot over walls
+            return executor.team !== target.combatant.team
         }
     })
 }
