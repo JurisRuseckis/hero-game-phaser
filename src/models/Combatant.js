@@ -1,6 +1,7 @@
 import { capitalize } from "../helpers/capitalize";
 import {randomInt} from "../helpers/randomInt";
 import { v4 as uuidv4 } from 'uuid';
+import CombatAction from "./CombatAction";
 
 export class Combatant {
     /**
@@ -56,7 +57,7 @@ export class Combatant {
         /**
          * @type {Object}
          */
-        this.combatActions = props.character.combatActions;
+        this.combatActions = this.createCombatActionInstances(props.character.combatActions);
         /**
          * @type {BattleAI}
          */
@@ -88,6 +89,18 @@ export class Combatant {
 
     calculateDmg() {
         return randomInt(this.character.atk[1], this.character.atk[0]);
+    }
+
+    createCombatActionInstances(combatActions){
+        let cmbActions = {};
+        Object.values(combatActions).forEach((combatAction) => {
+            //all these cloning shits that does not work
+            // cmbActions[combatAction] = structuredClone(this.combatActions[combatAction]);
+            // cmbActions[combatAction] = JSON.parse(JSON.stringify(this.combatActions[combatAction]));
+            // cmbActions[combatAction] = {...this.combatActions[combatAction]};
+            cmbActions[combatAction.key] = new CombatAction({...combatAction});
+        });
+        return cmbActions;
     }
 
     /**
