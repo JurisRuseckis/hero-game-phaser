@@ -1,10 +1,12 @@
 import Phaser from "phaser";
 
 export const actionTags = {
-    any: 0,
-    ground: 1,
-    singleCombatant: 2,
-    targetable: 3
+    any: 'any',
+    ground: 'ground',
+    singleCombatant: 'singleCombatant',
+    targetable: 'targetable',
+    ranged: 'ranged',
+    melee: 'melee'
 }
 
 export default class CombatAction
@@ -29,7 +31,10 @@ export default class CombatAction
         this.cooldownLeft = 0;
 
         this.tags = props.tags;
+        //mby should add min range
         this.range = props.range;
+
+        this.executionValue=0;
 
         /**
          * filled after action is picked
