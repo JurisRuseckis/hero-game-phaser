@@ -258,6 +258,7 @@ export class BattleGridScene extends Phaser.Scene {
         let turnObjs = {};
         switch (battleLogItem.action.key) {
             case 'walk':
+            case 'charge':
                 if (this.debugMode) {
                     //movement direction
                     turnObjs.arrowLine = this.add.graphics();
@@ -305,6 +306,8 @@ export class BattleGridScene extends Phaser.Scene {
                 originTile.properties['cmbId'] = null;
                 break;
             case 'attack':
+            case 'bowAttack':
+            case 'throwSpear':
                 if (this.debugMode) {
                     turnObjs.arrowLine = this.add.graphics();
                     turnObjs.arrowLine.lineStyle(this.unitSize / 4, 0xff0000, 1);
