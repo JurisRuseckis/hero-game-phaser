@@ -49,13 +49,6 @@ export const battleAI = {
             )
 
             const chosenAbility = abilityQueue.filter((a) => abilityCalculators[a.key](battle, executor, a, closestEnemy))[0];
-
-            if(battle.debugMode){
-                if(executor.label === 'Dwarf Commander'){
-                    console.log(`${executor.id}(${executor.label})/[${abilityQueue.map((a) => `${a.key}(${a.executionValue})`).join(',')}]=>${chosenAbility.key}`)
-                }
-            }
-
             return chosenAbility
 
             // return abilityCalculators[chosenAbility.key](battle, executor, chosenAbility, closestEnemy) ? chosenAbility : executor.combatActions.wait;
