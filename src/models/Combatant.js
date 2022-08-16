@@ -57,7 +57,7 @@ export class Combatant {
         /**
          * @type {Object}
          */
-        this.combatActions = this.cloneCombatActions(props.character.combatActions);
+        this.combatActions = this.removeRefsCombatActions(props.character.combatActions);
         /**
          * @type {BattleAI}
          */
@@ -83,6 +83,11 @@ export class Combatant {
         this.moveTargets = [];
     }
 
+    removeRefs() {
+        this.coordinates = new Phaser.Math.Vector2(this.coordinates.x,this.coordinates.y)
+        this.direction = new Phaser.Math.Vector2(this.direction.x,this.direction.y)
+    }
+
     calculateHP() {
         return this.character.baseHP;
     }
@@ -91,7 +96,7 @@ export class Combatant {
         return randomInt(this.character.atk[1], this.character.atk[0]);
     }
 
-    cloneCombatActions(combatActions){
+    removeRefsCombatActions(combatActions){
         let cmbActions = {};
         Object.values(combatActions).forEach((combatAction) => {
             //all these cloning shits that does not work
