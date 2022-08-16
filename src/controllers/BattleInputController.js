@@ -4,6 +4,7 @@ export default class BattleInputController{
      * 
      * @param {Object} props
      * @param {Phaser.Scene} props.scene
+     * @param {boolean} props.disableInput
      */
     constructor(props)
     {
@@ -29,7 +30,9 @@ export default class BattleInputController{
         this.hoveredTile = null;
         this.selectedTile = null;
 
-        this.addEvents();
+        if(!props.disableInput){
+            this.addEvents();
+        }
     }
 
     addEvents() {
