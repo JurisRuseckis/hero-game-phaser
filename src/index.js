@@ -10,6 +10,7 @@ import {BattleUIScene} from "./scenes/BattleUIScene";
 import {CampScene} from "./scenes/CampScene";
 import UIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 import WarChest from "./models/WarChest";
+import {BattleSimulatorScene} from "./scenes/BattleSimulatorScene";
 
 const config = {
     scale: {
@@ -25,6 +26,7 @@ const config = {
         // BattleGridScene,
         MainMenuScene,
         BattleGridScene,
+        BattleSimulatorScene,
         BattleUIScene,
         CampScene,
         CharacterScene,
