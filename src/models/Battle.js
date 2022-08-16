@@ -1,6 +1,7 @@
 import {Combatant} from "./Combatant";
 import {groupArrByKey} from "../helpers/groupArrByKey";
 import BattleLog, {battleLogType} from "./BattleLog";
+import Arena from "./Arena";
 
 /**
  * battle
@@ -50,6 +51,15 @@ export default class Battle {
         this.teamStats = this.getTeamStats(this.combatants);
     }
 
+    removeRefs(){
+        this.combatants = this.combatants.map((c) => {
+            const combatant = new Combatant({...c});
+            combatant.removeRefs();
+            return combatant;
+        });
+        this.arena = new Arena({...this.arena})
+    }
+
     getTeamStats(combatants){
         const teams = combatants.reduce((r, c)=>{
             r[c.team] = r[c.team] || [];
@@ -58,6 +68,7 @@ export default class Battle {
         }, [])
         return teams.map((team) => {
             return {
+                'race' : team[0].character.race,
                 'totalHP' : team.map((combatant) => combatant.hp).reduce((sum, hp)=> sum + hp, 0),
                 'count' : team.length
             }
@@ -130,11 +141,11 @@ export default class Battle {
                 // console.table(this.combatants);
                 // console.log('corpses');
                 // console.table(this.corpses);
-                const winner = this.combatants[0].team;
-                const leftoverHP = this.combatants.map((c)=> c.hp).reduce((sum, hp)=> sum + hp, 0);
-                const totalHP = this.teamStats[this.combatants[0].team].totalHP;
-                const percentage = ( leftoverHP / totalHP ) * 100
-                console.log(`team ${winner}, ${leftoverHP}/${totalHP} HP (${percentage}%)`)
+                // const winner = this.combatants[0].team;
+                // const leftoverHP = this.combatants.map((c)=> c.hp).reduce((sum, hp)=> sum + hp, 0);
+                // const totalHP = this.teamStats[this.combatants[0].team].totalHP;
+                // const percentage = ( leftoverHP / totalHP ) * 100
+                // console.log(`team ${winner}, ${leftoverHP}/${totalHP} HP (${percentage}%)`)
             }
             // move to scene
             // this.scene.updateActionBtns([]);
@@ -224,5 +235,27 @@ export default class Battle {
         }
 
         return this.combatants[0].team;
+    }
+
+    getBattleSummary(){
+        if (this.status !== battleStatus.finished){
+            return null;
+        }
+
+        // todo: add stat counters for each combatant
+        return {
+            'rawData' : {
+                'teamStats': this.teamStats,
+                'winners' : this.combatants[0].team,
+                'turnCount' : this.turnCount,
+                'winnerStats' : {
+                    'leftoverHP' : this.combatants.map((c)=> c.hp).reduce((sum, hp)=> sum + hp, 0)
+                }
+            },
+            'texts': {
+                'belligerents': this.teamStats.filter((s) => !!s).map((s, i) => `team ${i+1} (${s.race})`).join(" v "),
+                'winners' : `team ${this.combatants[0].team} (${this.teamStats[this.combatants[0].team].race})`,
+            }
+        }
     }
 }
