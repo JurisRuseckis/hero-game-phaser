@@ -121,7 +121,7 @@ export const combatActions = {
     bowAttack: new CombatAction({
         key: 'bowAttack',
         tags: [actionTags.targetable, actionTags.ranged],
-        range: 3,
+        range: 5,
         cooldown: 0,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
@@ -139,7 +139,7 @@ export const combatActions = {
     throwSpear: new CombatAction({
         key: 'throwSpear',
         tags: [actionTags.targetable, actionTags.ranged],
-        range: 2,
+        range: 3,
         cooldown: 2,
         operation: (executor, target, arena) => {
             executor.turnMeter = 0;
