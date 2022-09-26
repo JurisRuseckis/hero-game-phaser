@@ -56,7 +56,7 @@ export class CampScene extends Phaser.Scene
                 scenario.completed = completedLevels.includes(`${scenario.chapter}.${scenario.indexChapterScenario}`);
                 const battle = GameMaster.setupBattle(scenario);
                 scenario.onClick = () => {
-                    this.startBattle(battle,scenario.indexChapterScenario);
+                    this.startBattle(battle,`${scenario.chapter}.${scenario.indexChapterScenario}`);
                 }
                 return scenario;
             });
@@ -68,6 +68,7 @@ export class CampScene extends Phaser.Scene
         this.registry.set('scenarioId', scenarioId);
         this.registry.set('transition', {
             target: cfg.scenes.battleGrid,
+            // target: cfg.scenes.battleSimulator,
             data: {
                 battle: testBattle,
                 scenarioId: scenarioId
