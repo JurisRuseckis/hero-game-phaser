@@ -36,6 +36,7 @@ export default class GameMaster
             combatants: combatants,
             arena: arena,
             deploymentTiles: deploymentTiles,
+            scenario: scenario,
             // todo: implement debug somewhere in root
             debugMode: false,
         });
@@ -92,8 +93,8 @@ export default class GameMaster
      */
     static getTeams(scenario) {
         return scenario.armies.map((army) => {
-            if(army.squads.length < 1){
-                return this.generateTeam(17);
+            if(typeof army === "string"  || army.squads.length < 1){
+                return this.generateTeam({size: 11, race: typeof army === "string" ? army : false});
             }
             return army;
         })
@@ -101,13 +102,17 @@ export default class GameMaster
 
     /**
      * generates random team
-     * @param {integer} size 
+     * @param {Object} props
+     * @param {integer} props.size
+     * @param {string} props.race
      */
-    static generateTeam(size){
-        
-        const roosterIndex = randomInt(warChest.availableRaces.length);
+    static generateTeam(props){
+        const roosterIndex = props.race
+            ? warChest.availableRaces.indexOf(props.race)
+            : randomInt(warChest.availableRaces.length);
         const rosterOptions = warChest.getCharactersByRace(warChest.availableRaces[roosterIndex]);
 
+        let size = props.size;
         if(roosterIndex === 4) {
             size *= 2;
         }
@@ -115,7 +120,7 @@ export default class GameMaster
         // remove leader slot
         let available = size - 1; 
         // leader will be just one so we will multiply first 2 tiers
-        let proportions = [0.75,0.25];
+        let proportions = [0.8,0.2];
         let firstTier = Math.floor(available*proportions[0]);
         let secondTier = available - firstTier;
         let chars = [];
