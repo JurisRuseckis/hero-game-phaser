@@ -135,7 +135,7 @@ export class BattleGridScene extends Phaser.Scene {
             let completedLevels = this.registry.get('completedLevels');
             const scenarioId = this.registry.get('scenarioId');
             // console.log(scenarioId, completedLevels, resultTriggered);
-            if(Number.isInteger(scenarioId) && !resultTriggered){
+            if(!resultTriggered){
                 if(battle.getWinnerTeam() === 1) {
                     completedLevels.push(scenarioId);
                     this.registry.set('completedLevels',completedLevels);
