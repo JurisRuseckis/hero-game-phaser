@@ -37,6 +37,7 @@ export default class Battle {
      * @param {Arena} props.arena
      * @param {Phaser.Math.Vector2[]} props.deploymentTiles
      * @param {boolean} props.debugMode
+     * @param {Object} props.scenario
      */
     constructor(props) {
         this.combatants = props.combatants;
@@ -47,6 +48,7 @@ export default class Battle {
         this.arena = props.arena;
         this.debugMode = true;
         this.deploymentTiles = props.deploymentTiles || [];
+        this.scenario = props.scenario;
         // todo: pass them in teams and let battle throw in one combatant element
         this.teamStats = this.getTeamStats(this.combatants);
     }
