@@ -79,6 +79,10 @@ export default class WarChest
 
             // todo string shortcuts or random armies instead of empty arrays
             scenario.armies = scenario.armies.map((army)=>{
+                // todo: in future add more keywords like race, size, ai etc
+                if(typeof army[0] === "string"){
+                    return army[0]
+                }
                 return new Army({
                     squads : army.map((squad)=>{
 
