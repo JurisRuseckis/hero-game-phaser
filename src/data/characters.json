@@ -194,7 +194,7 @@
     "baseSpeed": 0.4,
     "atk": [
       2,
-      6
+      5
     ],
     "isPlayable": false,
     "combatActions": [
@@ -214,7 +214,7 @@
     "baseSpeed": 0.5,
     "atk": [
       2,
-      8
+      7
     ],
     "isPlayable": false,
     "combatActions": [
@@ -235,7 +235,7 @@
     "baseSpeed": 0.65,
     "atk": [
       6,
-      13
+      12
     ],
     "isPlayable": false,
     "combatActions": [
@@ -252,8 +252,8 @@
     "name": "mob",
     "race": "goblin",
     "tier": 1,
-    "baseHP": 3,
-    "baseSpeed": 0.35,
+    "baseHP": 5,
+    "baseSpeed": 0.4,
     "atk": [
       2,
       2
