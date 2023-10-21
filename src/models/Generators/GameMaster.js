@@ -105,7 +105,7 @@ export default class GameMaster
      */
     static generateTeam(size){
         
-        const roosterIndex = randomInt(warChest.availableRaces.length);
+        const roosterIndex = warChest.availableRaces.indexOf("human");
         const rosterOptions = warChest.getCharactersByRace(warChest.availableRaces[roosterIndex]);
 
         if(roosterIndex === 4) {
