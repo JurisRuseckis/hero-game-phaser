@@ -1,7 +1,7 @@
 # hero game 
 Turn based combat auto fight game where target is to position troop starting locations so that you win the game.
 Later plans was to add camp where you can create your own party of troops.
-Probably won't continue to develop this for a whiel. Thats all folks.
+Probably won't continue to develop this for a while. Thats all folks.
 
 ## Requirements
 
